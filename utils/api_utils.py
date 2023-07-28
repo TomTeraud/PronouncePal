@@ -1,13 +1,11 @@
 import os
+from dotenv import load_dotenv
 
-def get_api_key(api_key_string=None):
-    if api_key_string is None:
-        # Get the API key from environment variable if None provided
-        api_key = os.getenv("OPENAI_API_KEY")
-        if api_key is None:
-            print("Error: API key not found in environment variable (OPENAI_API_KEY).")
-            exit()
-    else:
-        api_key = api_key_string
-
+def get_api_key():
+    # Get the OpenAI API key from the environment variable
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        print("Error: OpenAI API key not found in environment variable (OPENAI_API_KEY).")
+        return None
     return api_key
