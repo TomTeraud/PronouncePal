@@ -2,7 +2,6 @@ import openai
 from dotenv import load_dotenv
 import tkinter as tk
 from tkinter import messagebox
-from scipy.io import wavfile
 from utils.audio_utils import AudioRecorder
 from utils.api_utils import get_api_key
 
