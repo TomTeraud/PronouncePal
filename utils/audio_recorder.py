@@ -2,7 +2,6 @@ import sounddevice as sd
 import numpy as np
 from scipy.io import wavfile
 
-
 class AudioRecorder:
     def __init__(self, file_path):
         self.file_path = file_path
