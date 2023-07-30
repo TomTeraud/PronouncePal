@@ -1,4 +1,7 @@
-.venv
 .env
-temp_audio.wav
+.venv
+.vscode
+audio_recording.wav
+logick.py
+mainv2.py
 __pycache__

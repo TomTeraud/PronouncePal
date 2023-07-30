@@ -3,11 +3,12 @@ import numpy as np
 from scipy.io import wavfile
 
 class AudioRecorder:
-    def __init__(self, file_path):
+    def __init__(self, file_path, recording_duration):
+        print(file_path)
         self.file_path = file_path
         self.audio_data = None
         self.recording = False
-        self.recording_duration = 2  # Adjust the recording duration as needed
+        self.recording_duration = recording_duration
 
     def start_recording(self):
         self.recording = True
@@ -18,10 +19,7 @@ class AudioRecorder:
         sd.wait()
         wav_data = np.array(self.audio_data, dtype=np.int16)
         wavfile.write(self.file_path, 44100, wav_data)
-
-    @property
-    def elapsed_time(self):
-        return len(self.audio_data) / 44100
+        print("recording is ended")
 
     def is_recording(self):
         return self.recording
