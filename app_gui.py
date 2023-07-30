@@ -34,7 +34,6 @@ class AudioRecorderGUI:
     def start_recording(self):
         # Check if the recorder is not already recording
         if not self.recorder.is_recording():
-            print("Recording audio...")
             # Start recording using the AudioRecorder instance
             self.recorder.start_recording()
             # Disable the "Record" button during recording
