@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
+from utils.transcribe_audio import transcribe_audio
 
 class AudioRecorderGUI:
     def __init__(self, recorder):
-        # Initialize the AudioRecorderGUI with an instance of AudioRecorder
+        # Initialize the AudioRecorderGUI with an instance of class AudioRecorderController
         self.recorder = recorder
-
         # Create the Tkinter root window
         self.root = tk.Tk()
         self.root.title("Audio Recorder")
@@ -17,15 +17,15 @@ class AudioRecorderGUI:
         self.root.rowconfigure(0, weight=1)
 
         # Create a StringVar to display transcribed value later when it is generated
-        self.text_var = tk.StringVar()
-        self.text_var.set("...")
+        self.transcribed_text_var = tk.StringVar()
+        self.transcribed_text_var.set("...")
 
         # Add widgets here using grid with different row and column values
         self.record_button = ttk.Button(parent, text="Record", command=self.start_recording)
         self.record_button.grid(row=0, column=1)
         self.label = ttk.Label(parent, text='Record audio for 2 sec:').grid(row=0, column=0)
         self.label = ttk.Label(parent, text="Transcribed text:").grid(row=1, column=0)
-        self.label = ttk.Label(parent, textvariable=self.text_var).grid(row=1, column=1)
+        self.label = ttk.Label(parent, textvariable=self.transcribed_text_var).grid(row=1, column=1)
 
         # Apply padding to all widgets inside the mainframe
         for child in parent.winfo_children():
@@ -49,6 +49,8 @@ class AudioRecorderGUI:
             # Enable the "Record" button after recording is finished
             self.record_button.config(state=tk.NORMAL)
             print("Recording finished.")
+            self.transcribed_text_var.set(transcribe_audio(self.recorder.file_path))
+
         else:
             print("Recording was not in progress.")
 
