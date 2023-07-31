@@ -1,7 +1,9 @@
 import os
 from dotenv import load_dotenv
 
+
 def get_api_key():
+
     # Try to load the API key from the .env file
     load_dotenv()
     api_key = os.getenv("OPENAI_API_KEY")

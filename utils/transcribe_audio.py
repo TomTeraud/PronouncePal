@@ -2,7 +2,6 @@ import openai
 from utils.openai_utils import get_api_key
 
 def transcribe_audio(audio_file_path):
-    # Rest of the transcribe_audio() function
     api_key = get_api_key()
     if not api_key:
         return None
