@@ -6,15 +6,23 @@ def create_sample_from_text_file(selected_file_path):
     connection = sqlite3.connect(config.DATABASE)
     cursor = connection.cursor()
 
-    # Read sentences from the text file and insert them into the 'text_samples' table
-    with open(selected_file_path, 'r') as file:
-        sentences = file.readlines()
-        for sentence in sentences:
-            cursor.execute('INSERT INTO text_samples (sentence) VALUES (?)', (sentence.strip(),))
+    try:
+        with open(selected_file_path, 'r') as file:
+            sentences = file.readlines()
+            for sentence in sentences:
+                stripped_sentence = sentence.strip()
+                if stripped_sentence:  # Check if the sentence is not empty
+                    cursor.execute('INSERT INTO text_samples (sentence) VALUES (?)', (stripped_sentence,))
 
-    # Commit the changes and close the connection
-    connection.commit()
-    connection.close()
+        # Commit the changes and close the connection
+        connection.commit()
+    except Exception as e:
+        connection.rollback()  # Rollback changes if an exception occurs
+        print("An error occurred while reading the text file or inserting into the database.")
+        print(e)
+    finally:
+        connection.close()
+
 
 def add_rating(sentence_id, rating, user_name):
     connection = sqlite3.connect(config.DATABASE)

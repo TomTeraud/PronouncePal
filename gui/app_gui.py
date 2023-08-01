@@ -4,6 +4,7 @@ from utils.transcribe_audio import transcribe_audio
 from db.database_handler import get_random_sample
 from gui.menu_bar import MenuBar
 
+
 class AudioRecorderGUI:
     def __init__(self, recorder):
         # Initialize the AudioRecorderGUI with an instance of class AudioRecorderController
@@ -71,20 +72,26 @@ class AudioRecorderGUI:
             self.record_button.config(state=tk.NORMAL)
             # Set the transcribed_text to the transcribed text from the audio file
             self.transcribed_text = transcribe_audio(self.recorder.file_path)
+            
             # Update the text in the Text widget
-            self.trans_text.delete("1.0", tk.END)
-            self.trans_text.insert(tk.END, self.transcribed_text)
+            if self.transcribed_text:
+                # Check if the transcribed_text is not empty before inserting into the Text widget
+                self.trans_text.delete("1.0", tk.END)
+                self.trans_text.insert(tk.END, self.transcribed_text)
+            else:
+                print("Transcription failed: Empty transcribed_text.")
 
         else:
             print("Recording was not in progress.")
+    
 
     def next_sampe(self):
-        sample = get_random_sample()
-        if sample == None:
-            sample = "First, add text file to database library. You can do it under Edit menu bar."    
-            print("sampe:{}".format(sample))    
+        self.sample = get_random_sample()
+        if self.sample == None:
+            # TO DO!!! Setup placeholder texfile.
+            self.sample = "First, add text file to database library. You can do it under Edit menu bar."    
         self.read_text.delete("1.0", tk.END)
-        self.read_text.insert(tk.END, sample)
+        self.read_text.insert(tk.END, self.sample[1])
 
 
     def run(self):
