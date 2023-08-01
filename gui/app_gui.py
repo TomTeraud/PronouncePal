@@ -79,8 +79,12 @@ class AudioRecorderGUI:
             print("Recording was not in progress.")
 
     def next_sampe(self):
+        sample = get_random_sample()
+        if sample == None:
+            sample = "First, add text file to database library. You can do it under Edit menu bar."    
+            print("sampe:{}".format(sample))    
         self.read_text.delete("1.0", tk.END)
-        self.read_text.insert(tk.END, get_random_sample())
+        self.read_text.insert(tk.END, sample)
 
 
     def run(self):
