@@ -9,8 +9,8 @@ def main():
     # Initialize the database and create tables if they don't exist
     create_tables()
 
-    # Populate the 'text_samples' table from the text file
-    create_sample_from_text_file()
+    # # Populate the 'text_samples' table from the text file
+    # create_sample_from_text_file()
 
     # Create an instance of AudioRecorder with the specified file path and recording duration
     recorder = AudioRecorderController(file_path, recording_duration)
