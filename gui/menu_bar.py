@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-from database_handler import create_sample_from_text_file
-
+from db.database_handler import create_sample_from_text_file
 
 class MenuBar(tk.Menu):
     def __init__(self, master, gui):

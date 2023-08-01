@@ -1,4 +1,3 @@
-# db_init.py
 import sqlite3
 import config
 

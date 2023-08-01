@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from utils.transcribe_audio import transcribe_audio
-from database_handler import get_random_sample
-from menu_bar import MenuBar
+from db.database_handler import get_random_sample
+from gui.menu_bar import MenuBar
 
 class AudioRecorderGUI:
     def __init__(self, recorder):

@@ -11,4 +11,4 @@ api_key = os.environ.get("OPENAI_API_KEY")
 engine_id = "whisper-1"  # Replace with your desired engine ID
 
 # Set db name
-DATABASE = 'your_database.db'
+DATABASE = 'db/your_database.db'
