@@ -9,3 +9,9 @@ api_key = os.environ.get("OPENAI_API_KEY")
 
 # Engine ID for audio transcription
 engine_id = "whisper-1"  # Replace with your desired engine ID
+
+# Set db name
+DATABASE = 'your_database.db'
+
+# Set text file name from wich populate db
+TEXT_FILE = 'your_text_file.txt'
