@@ -69,7 +69,7 @@ def get_random_sample():
     # Close the connection
     connection.close()
 
-    return random_sample
+    return random_sample[1]
 
 def get_ratings_by_sentence(sentence_id):
     connection = sqlite3.connect(config.DATABASE)

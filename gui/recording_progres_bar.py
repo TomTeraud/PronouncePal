@@ -5,22 +5,27 @@ class RecordingProgresBar:
     def __init__(self, master, duration):
         # Save the reference to the master (parent) widget
         self.master = master
-        # Save duration in seconds
-        self.duration = duration
         # Create a DoubleVar to control the progress bar value
         self._progress_var = tk.DoubleVar()
         self._progress_var.set(0)
 
-        # Set up variables for managing the progress update process
+        # Initialize other attributes with default values
         self._running = False
-        self._steps_per_second = 30
-        self._max = 100  # Set max to 100 for percentage-based progress
-        self._update_rate = int(1000 / self._steps_per_second)
-        self._step = self._max / (self.duration / self._update_rate)
-        
+        self._step_per_second = 30
+        self._max = 100  # Set maximum to 100 for percentage-based progress
+        self._update_rate = int(1000 / self._step_per_second)
+
+        # Set the initial duration and calculate the step
+        self.set_duration(duration)
+
         # Create the progress bar widget and associate it with the progress_var
         self._progress_bar = ttk.Progressbar(self.master, variable=self._progress_var, maximum=self._max)
         self._progress_bar.grid(row=2, column=0, sticky="NSEW")
+
+    def set_duration(self, duration):
+        # Setter method for updating the duration and recalculating the step
+        self.duration = duration
+        self._step = self._max / (self.duration / self._update_rate)
 
     def start_recording_bar_progress(self):
         # Start the progress update process if it's not already running

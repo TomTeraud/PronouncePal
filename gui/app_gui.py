@@ -12,17 +12,19 @@ class AudioRecorderGUI:
         # Initialize the AudioRecorderGUI with an instance of class AudioRecorderController
         self.recorder = recorder
         
-        # Store record duration on variable in milisecounds
+        # Get a random sample and set the recording duration
+        self.get_random_sample()
+        self.recorder.recording_duration = self.word_count
+        
+        # Store record duration in milliseconds
         self.mil_sec = int(self.recorder.recording_duration * 1000)
         
-
         # Create the Tkinter root window
         self.root = tk.Tk()
         self.root.title("Audio Recorder")
 
         # Create an instance of RecordingProgresBar and pass self.root as the parent widget
         self.recording_progres_bar = RecordingProgresBar(self.root, self.mil_sec)  # Pass self.root as the master
-
 
         # Create the menu bar
         menubar = MenuBar(self.root, self)
@@ -37,15 +39,18 @@ class AudioRecorderGUI:
         # Record button.
         self.record_button = ttk.Button(parent, text="Record", command=self.start_recording)
         self.record_button.grid(row=0, column=1)
+
         # New text sample button
-        self.get_new_sample = ttk.Button(parent, text="New text sampe", command=self.next_sampe)
+        self.get_new_sample = ttk.Button(parent, text="New text sample", command=self.next_sample)
         self.get_new_sample.grid(row=0, column=0)
         
         # Create text field widgets
         # Widget for text to read
         self.read_text = tk.Text(parent, wrap=tk.WORD)
+        self.update_text_widget()
         self.read_text.grid(row=1, column=0, sticky="NSEW")
-        # Widget for transcribed text        
+        
+        # Widget for transcribed text
         self.trans_text = tk.Text(parent, wrap=tk.WORD)
         self.trans_text.grid(row=1, column=1, sticky="NSEW")
 
@@ -95,16 +100,34 @@ class AudioRecorderGUI:
         # Enable the "Record" button after recording and transcribing finished
         self.record_button.config(state=tk.NORMAL, text="Record")
 
-    
+    def next_sample(self):
+        self.sample = self.get_random_sample()
+        self.update_recording_duration()
+        self.update_progress_bar_duration()
+        self.update_text_widget()
 
-    def next_sampe(self):
+    def get_random_sample(self):
+        # Get the next random sample
         self.sample = get_random_sample()
-        if self.sample == None:
-            # TO DO!!! Setup placeholder texfile.
-            self.sample = "First, add text file to database library. You can do it under Edit menu bar."    
-        self.read_text.delete("1.0", tk.END)
-        self.read_text.insert(tk.END, self.sample[1])
+        self.words = self.sample.split()
+        self.word_count = len(self.words)
+        return self.sample
 
+    def update_recording_duration(self):
+        # Set recording time calculated from word count
+        self.recorder.recording_duration = len(self.words)
+
+    def update_progress_bar_duration(self):
+        # Update the progress bar's duration
+        self.mil_sec = int(self.recorder.recording_duration * 1000)
+        self.recording_progres_bar.set_duration(self.mil_sec)
+
+    def update_text_widget(self):
+        if self.sample is None:
+            # TO DO!!! Setup placeholder text file.
+            self.sample = "First, add text file to the database library. You can do it under the Edit menu bar."
+        self.read_text.delete("1.0", tk.END)
+        self.read_text.insert(tk.END, self.sample)
 
     def run(self):
         # Start the Tkinter event loop
