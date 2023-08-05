@@ -4,16 +4,25 @@ import threading
 from utils.transcribe_audio import transcribe_audio
 from db.database_handler import get_random_sample
 from gui.menu_bar import MenuBar
+from gui.recording_progres_bar import RecordingProgresBar
 
 
 class AudioRecorderGUI:
     def __init__(self, recorder):
         # Initialize the AudioRecorderGUI with an instance of class AudioRecorderController
         self.recorder = recorder
+        
+        # Store record duration on variable in milisecounds
+        self.mil_sec = int(self.recorder.recording_duration * 1000)
+        
 
         # Create the Tkinter root window
         self.root = tk.Tk()
         self.root.title("Audio Recorder")
+
+        # Create an instance of RecordingProgresBar and pass self.root as the parent widget
+        self.recording_progres_bar = RecordingProgresBar(self.root, self.mil_sec)  # Pass self.root as the master
+
 
         # Create the menu bar
         menubar = MenuBar(self.root, self)
@@ -25,11 +34,9 @@ class AudioRecorderGUI:
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
 
-        # Add widgets here using grid with different row and column values
         # Record button.
         self.record_button = ttk.Button(parent, text="Record", command=self.start_recording)
         self.record_button.grid(row=0, column=1)
-
         # New text sample button
         self.get_new_sample = ttk.Button(parent, text="New text sampe", command=self.next_sampe)
         self.get_new_sample.grid(row=0, column=0)
@@ -38,7 +45,6 @@ class AudioRecorderGUI:
         # Widget for text to read
         self.read_text = tk.Text(parent, wrap=tk.WORD)
         self.read_text.grid(row=1, column=0, sticky="NSEW")
-        
         # Widget for transcribed text        
         self.trans_text = tk.Text(parent, wrap=tk.WORD)
         self.trans_text.grid(row=1, column=1, sticky="NSEW")
@@ -59,7 +65,9 @@ class AudioRecorderGUI:
             # Disable the "Record" button during recording
             self.record_button.config(state=tk.DISABLED, text="Recording")
             # Schedule the stop_recording method to be called after the specified recording duration
-            self.root.after(int(self.recorder.recording_duration * 1000), self.stop_recording)
+            self.root.after(self.mil_sec, self.stop_recording)
+            # Start recording bar
+            self.recording_progres_bar.start_recording_bar_progress()
 
     def stop_recording(self):
         # Check if the recorder is currently recording
