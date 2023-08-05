@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import threading
 from utils.transcribe_audio import transcribe_audio
 from db.database_handler import get_random_sample
 from gui.menu_bar import MenuBar
@@ -32,9 +33,6 @@ class AudioRecorderGUI:
         # New text sample button
         self.get_new_sample = ttk.Button(parent, text="New text sampe", command=self.next_sampe)
         self.get_new_sample.grid(row=0, column=0)
-
-        self.label = ttk.Label(parent, text='Record audio for 2 sec')
-        self.label.grid(row=0, column=1, sticky="E")
         
         # Create text field widgets
         # Widget for text to read
@@ -56,33 +54,39 @@ class AudioRecorderGUI:
     def start_recording(self):
         # Check if the recorder is not already recording
         if not self.recorder.is_recording():
-            # Start recording using the AudioRecorder instance
+            # Start recording using the AudioRecorderController instance
             self.recorder.start_recording()
             # Disable the "Record" button during recording
-            self.record_button.config(state=tk.DISABLED)
+            self.record_button.config(state=tk.DISABLED, text="Recording")
             # Schedule the stop_recording method to be called after the specified recording duration
             self.root.after(int(self.recorder.recording_duration * 1000), self.stop_recording)
 
     def stop_recording(self):
         # Check if the recorder is currently recording
         if self.recorder.is_recording():
-            # Stop recording using the AudioRecorder instance
+            # Stop recording using the AudioRecorderController instance
             self.recorder.stop_recording()
             # Enable the "Record" button after recording is finished
-            self.record_button.config(state=tk.NORMAL)
-            # Set the transcribed_text to the transcribed text from the audio file
-            self.transcribed_text = transcribe_audio(self.recorder.file_path)
-            
-            # Update the text in the Text widget
-            if self.transcribed_text:
-                # Check if the transcribed_text is not empty before inserting into the Text widget
-                self.trans_text.delete("1.0", tk.END)
-                self.trans_text.insert(tk.END, self.transcribed_text)
-            else:
-                print("Transcription failed: Empty transcribed_text.")
-
+            self.record_button.config(text="Transcribing")
+            # Start transcription in a separate thread
+            threading.Thread(target=self.transcribe_audio_and_update_text).start()
         else:
             print("Recording was not in progress.")
+
+    def transcribe_audio_and_update_text(self):
+        # Transcribe audio and get the transcribed text
+        self.transcribed_text = transcribe_audio(self.recorder.file_path)
+        # Update the text in the Text widget
+        if self.transcribed_text:
+            # Check if the transcribed_text is not empty before inserting into the Text widget
+            self.trans_text.delete("1.0", tk.END)
+            self.trans_text.insert(tk.END, self.transcribed_text)
+        else:
+            print("Transcription failed: Empty transcribed_text.")
+        
+        # Enable the "Record" button after recording and transcribing finished
+        self.record_button.config(state=tk.NORMAL, text="Record")
+
     
 
     def next_sampe(self):
