@@ -67,8 +67,9 @@ class AudioRecorderGUI:
         if not self.recorder.is_recording():
             # Start recording using the AudioRecorderController instance
             self.recorder.start_recording()
-            # Disable the "Record" button during recording
+            # Disable the "Record" buttons during recording
             self.record_button.config(state=tk.DISABLED, text="Recording")
+            self.get_new_sample.config(state=tk.DISABLED, text="Recording")
             # Schedule the stop_recording method to be called after the specified recording duration
             self.root.after(self.mil_sec, self.stop_recording)
             # Start recording bar
@@ -81,6 +82,8 @@ class AudioRecorderGUI:
             self.recorder.stop_recording()
             # Enable the "Record" button after recording is finished
             self.record_button.config(text="Transcribing")
+            self.get_new_sample.config(text="Transcribing")
+
             # Start transcription in a separate thread
             threading.Thread(target=self.transcribe_audio_and_update_text).start()
         else:
@@ -99,6 +102,8 @@ class AudioRecorderGUI:
         
         # Enable the "Record" button after recording and transcribing finished
         self.record_button.config(state=tk.NORMAL, text="Record")
+        self.get_new_sample.config(state=tk.NORMAL, text="New text sample")
+
 
     def next_sample(self):
         self.sample = self.get_random_sample()
