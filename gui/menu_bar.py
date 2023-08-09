@@ -3,12 +3,11 @@ from tkinter import filedialog
 from db.database_handler import create_sample_from_text_file
 
 class MenuBar(tk.Menu):
-    def __init__(self, master, gui):
-        super().__init__(master)
-
-        # Save a reference to the AudioRecorderGUI instance
-        self.gui = gui
-
+    def __init__(self, parent, text_sample):
+        super().__init__(parent)
+        self.text_sample = text_sample
+        self.update_sample = text_sample.update_sample
+        self.sample_exists = text_sample.sample_exists
         # Adding menu
         menu_file = tk.Menu(self)
         menu_edit = tk.Menu(self)
@@ -32,3 +31,4 @@ class MenuBar(tk.Menu):
             print("Selected file:", self.selected_file_path)
             # Populate db
             create_sample_from_text_file(self.selected_file_path)
+            self.text_sample.update_sample()

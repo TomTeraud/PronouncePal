@@ -2,6 +2,7 @@ import sqlite3
 import random
 import config
 
+# Populate database. For each sentence create new line.
 def create_sample_from_text_file(selected_file_path):
     connection = sqlite3.connect(config.DATABASE)
     cursor = connection.cursor()
@@ -57,7 +58,7 @@ def get_random_sample():
     total_samples = cursor.fetchone()[0]
 
     if total_samples == 0:
-        return None  # Return None if there are no samples in the table
+        return # Return None if there are no samples in the table
 
     # Generate a random index within the range of total samples
     random_index = random.randint(0, total_samples - 1)
@@ -68,7 +69,7 @@ def get_random_sample():
 
     # Close the connection
     connection.close()
-
+    # print("SAMPLE ASKED FROM DATABSE_HANDLER USING GET_RANDOM_SAMPLE")
     return random_sample[1]
 
 def get_ratings_by_sentence(sentence_id):

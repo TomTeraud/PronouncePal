@@ -1,21 +1,27 @@
 from audio_recorder_controler import AudioRecorderController
-from gui.app_gui import AudioRecorderGUI
-from config import file_path
 from db.db_init import create_tables
+from utils.text_sample import TextSample
+from config import file_path
+from gui.app_gui import AudioRecorderGUI
+
+
+
 
 def main():
-
     # Initialize the database and create tables if they don't exist
     create_tables()
-    recording_duration = 0
-    # Create an instance of AudioRecorder with the specified file path and recording duration
-    recorder = AudioRecorderController(file_path, recording_duration)
 
-    # Create an instance of AudioRecorderGUI with the AudioRecorder instance
-    gui = AudioRecorderGUI(recorder)
+    # Create text sample object
+    text_sample = TextSample()
+
+    # Create an instance of AudioRecorder with the specified file path, recording duration, and text_sample
+    recorder = AudioRecorderController(file_path, text_sample)
+
+    # Create an instance of AudioRecorderGUI with the AudioRecorder instance and text_sample
+    gui = AudioRecorderGUI(recorder, text_sample)
 
     # Start the application by running the GUI event loop
-    gui.run()
+    gui.mainloop()
 
 if __name__ == "__main__":
     main()
