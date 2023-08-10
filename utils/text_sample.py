@@ -21,7 +21,7 @@ class TextSample:
             # print(f"UPDATE_SAMPLE TRIGGERED in text_sample.py:::{self.word_count}-->>:::")
         else:
             self.sample_exists = False
-            self.sample = "No sample available"
+            self.sample = "No sample available. Hint: Edit/Add text file to library"
             print("Failed to obtain sample from get_random_sample()")
 
 

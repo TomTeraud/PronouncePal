@@ -7,12 +7,23 @@ class ButtonManager(tk.Frame):
         self.text_sample = text_sample
         self.text_field_instance = text_field_instance
 
-        # Create a button and associate it with a command
+        # Create the "Click Me" button and associate it with the on_button_click method
         self.click_button = ttk.Button(self, text="Click Me", command=self.on_button_click)
         self.click_button.grid(column=3, row=3)
 
+        # Call the update_button_state method initially to set the button state
+        self.update_button_state()
+
     def on_button_click(self):
-        # Update the text sample and call the update_text_sample method of TextField
+        # Update the text sample and the displayed text in the text field
         self.text_sample.update_sample()
         self.text_field_instance.update_text_sample()
-        print(f"Button Clicked! Text Sample: {self.text_sample.sample}")
+
+        # Update the button state after updating the sample
+        self.update_button_state()
+
+    def update_button_state(self):
+        if self.text_sample.sample_exists:
+            self.click_button.config(state=tk.NORMAL)  # Enable the button
+        else:
+            self.click_button.config(state=tk.DISABLED)  # Disable the button

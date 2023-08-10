@@ -29,6 +29,6 @@ class AudioRecorderGUI(tk.Tk):
         self.button_manager.grid(column=0, row=0)
 
         # Create and configure the MenuBar
-        self.menu_bar = MenuBar(self, self.text_sample)
+        self.menu_bar = MenuBar(self, self.text_sample, self.text_field, self.button_manager)
         self.config(menu=self.menu_bar)
         
