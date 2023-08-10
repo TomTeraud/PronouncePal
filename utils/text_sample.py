@@ -18,7 +18,6 @@ class TextSample:
             self.sample = new_sample
             self.update_word_count()
             self.calculate_duration()
-            # print(f"UPDATE_SAMPLE TRIGGERED in text_sample.py:::{self.word_count}-->>:::")
         else:
             self.sample_exists = False
             self.sample = "No sample available. Hint: Edit/Add text file to library"
@@ -39,4 +38,6 @@ class TextSample:
         words_per_minute = 120  # Assumed average reading speed in words per minute
         if self.word_count is not None:
             self.sec_to_read = self.word_count / (words_per_minute / 60)
+            # Ensure the calculated duration is not less than 2 seconds
+            self.sec_to_read = max(self.sec_to_read, 2)
             self.mill_sec_to_read = int(self.sec_to_read * 1000)
