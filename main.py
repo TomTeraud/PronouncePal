@@ -1,7 +1,6 @@
 from audio_recorder_controler import AudioRecorderController
 from db.db_init import create_tables
 from utils.text_sample import TextSample
-from config import file_path
 from gui.app_gui import AudioRecorderGUI
 
 
@@ -15,7 +14,7 @@ def main():
     text_sample = TextSample()
 
     # Create an instance of AudioRecorder with the specified file path, recording duration, and text_sample
-    recorder = AudioRecorderController(file_path, text_sample)
+    recorder = AudioRecorderController(text_sample)
 
     # Create an instance of AudioRecorderGUI with the AudioRecorder instance and text_sample
     gui = AudioRecorderGUI(recorder, text_sample)

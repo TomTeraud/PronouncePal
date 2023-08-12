@@ -3,26 +3,29 @@ import numpy as np
 from scipy.io import wavfile
 import threading
 import time
+from config import file_path
+from utils.transcribe_audio import transcribe_audio
 
 class AudioRecorderController:
-    def __init__(self, file_path, text_sample):
+    def __init__(self, text_sample):
         """
         Initialize the AudioRecorderController.
 
         Args:
-            file_path (str): Path to the audio file where the recording will be saved.
             text_sample (TextSample): An instance of the TextSample class.
         """
         self.audio_data = None
         self.recording = False
         self.file_path = file_path
-        self.recording_duration = text_sample.sec_to_read  
+        self.text_sample = text_sample
+        self.transcribed_text = None
+        self.start_transcribtion = transcribe_audio
 
     def start_recording(self):
-        print(f"start recording for:{self.recording_duration} sec")
         """
         Start the audio recording process and automatically stop after recording_duration.
         """
+        self.recording_duration = self.text_sample.sec_to_read  # Update recording duration based on the current text sample
         self.recording = True
         self.audio_data = sd.rec(int(self.recording_duration * 44100), samplerate=44100, channels=1, dtype=np.int16)
         
@@ -44,6 +47,9 @@ class AudioRecorderController:
         wav_data = np.array(self.audio_data, dtype=np.int16)
         wavfile.write(self.file_path, 44100, wav_data)
 
+        # Perform transcription after stopping recording
+        self.transcribed_text = self.start_transcribtion()
+        print(f"TRANSCRIBED TEXT IN AUD_REC_CONTROL: {self.transcribed_text}")
     def is_recording(self):
         """
         Check if the audio recording is currently in progress.

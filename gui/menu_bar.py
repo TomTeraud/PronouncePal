@@ -34,7 +34,7 @@ class MenuBar(tk.Menu):
             self.text_sample.update_sample()
 
             # Update the button state in the button manager
-            self.button_manager.update_button_state()
+            self.button_manager.update_button_state_in_manager()
 
             # Update the displayed text sample in the text field
             self.text_field_instance.update_text_sample()

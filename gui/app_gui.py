@@ -3,6 +3,7 @@ from tkinter import ttk
 from gui.text_fields import TextField
 from gui.button_manager import ButtonManager
 from gui.menu_bar import MenuBar
+from utils.transcribe_audio import transcribe_audio
 
 
 class AudioRecorderGUI(tk.Tk):
@@ -25,7 +26,7 @@ class AudioRecorderGUI(tk.Tk):
         self.text_field.grid(column=0, row=1)
 
         # Create and place the ButtonManager
-        self.button_manager = ButtonManager(parent, self.text_sample, self.text_field)
+        self.button_manager = ButtonManager(parent, self.text_sample, self.text_field, self.recorder)
         self.button_manager.grid(column=0, row=0)
 
         # Create and configure the MenuBar

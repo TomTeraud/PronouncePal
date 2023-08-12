@@ -23,8 +23,6 @@ class TextSample:
             self.sample = "No sample available. Hint: Edit/Add text file to library"
             print("Failed to obtain sample from get_random_sample()")
 
-
-
     def update_word_count(self):
         # Method to update the word count based on the current sample
         if self.sample is None:
