@@ -3,7 +3,6 @@ from tkinter import ttk
 from gui.text_fields import TextField
 from gui.button_manager import ButtonManager
 from gui.menu_bar import MenuBar
-from utils.transcribe_audio import transcribe_audio
 
 
 class AudioRecorderGUI(tk.Tk):

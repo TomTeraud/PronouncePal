@@ -1,4 +1,4 @@
-from audio_recorder_controler import AudioRecorderController
+from utils.audio_recorder_controler import AudioRecorderController
 from db.db_init import create_tables
 from utils.text_sample import TextSample
 from gui.app_gui import AudioRecorderGUI

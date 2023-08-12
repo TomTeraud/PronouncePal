@@ -26,7 +26,6 @@ class MenuBar(tk.Menu):
         self.selected_file_path = filedialog.askopenfilename(filetypes=file_types)
 
         if self.selected_file_path:
-            print("Selected file:", self.selected_file_path)
             # Populate the database with the selected text file
             create_sample_from_text_file(self.selected_file_path)
 

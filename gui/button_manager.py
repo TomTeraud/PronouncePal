@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from utils.transcribe_audio import transcribe_audio  # Import the module containing the transcribe_audio function
+from utils.transcribe_audio import Transcriber  # Import the module containing the transcribe_audio function
 
 
 class ButtonManager(tk.Frame):
@@ -10,7 +10,7 @@ class ButtonManager(tk.Frame):
         self.text_field_instance = text_field_instance
         self.recorder = recorder
 
-        self.load_sample_button = LoadSampleButton(self, self, self.text_sample, self.text_field_instance)  # Pass button_manager as well
+        self.load_sample_button = LoadSampleButton(self, self, self.text_sample, self.text_field_instance)  # Pass button_manager as well(self)
         self.record_button = RecordButton(self, self.text_sample, self.recorder, self.load_sample_button)  # Pass load_sample_button
 
         self.load_sample_button.grid(column=0, row=0)
@@ -58,30 +58,44 @@ class LoadSampleButton(ttk.Button):
 
 class RecordButton(ttk.Button):
     def __init__(self, parent, text_sample, recorder, load_sample_button):
-        super().__init__(parent, text="Start recording", command=self.toggle_recording)
+        super().__init__(parent, text="Start recording", command=self.start_recording)
         self.text_sample = text_sample
         self.recorder = recorder
         self.is_recording = False
+        self.is_transcribing = False
         self.load_sample_button = load_sample_button  # Reference to the LoadSampleButton instance
+        self.recorder.set_callback(self.start_audio_file_transcription)
+        
+        # Create an instance of Transcriber
+        self.transcriber = Transcriber()
+        self.transcriber.set_callback(self.update_button_state)
 
         self.update_button_state()
 
-    def toggle_recording(self):
-        # Toggle recording logic here
-        ...
+    def start_recording(self):
+        # Start recording logic here
+        self.is_recording = True
+        self.update_button_state()
+        self.recorder.start_recording()
+
+    def start_audio_file_transcription(self):
+        self.is_recording = False
+        self.is_transcribing = True
+        self.update_button_state()
+        self.transcriber.transcribe_audio()
+        self.is_transcribing = False
+        self.update_button_state()
 
     def update_button_state(self):
-        self.sample_exists = self.text_sample.sample_exists
-
-        # Disable the button if sample does not exist
-        print("Trigger this, if new sample loaded!!!!!!!!!!!!!!!!!!!!")
-        if not self.load_sample_button.sample_exists:
+        # Update the button state logic here
+        if not self.text_sample.sample_exists or self.is_recording or self.is_transcribing:
             self.config(state=tk.DISABLED)
-        else:
-            self.config(state=tk.NORMAL)
+            if not self.text_sample.sample_exists:
+                self.config(text="No sample")    
+            elif self.is_recording:
+                self.config(text="Recording...")
+            else:
+                self.config(text="Transcribing...")
 
-        if self.sample_exists:
-            self.recording_duration = self.text_sample.sec_to_read
-            self.config(text="Start recording for {:.1f} seconds".format(self.recording_duration))
         else:
-            self.config(text="Sample unavailable")
+            self.config(text="Start recording", state=tk.NORMAL)

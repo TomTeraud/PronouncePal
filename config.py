@@ -1,7 +1,7 @@
 import os
 
 # Recording configuration
-file_path = "audio_recording.wav"
+file_path = "static/audio_recording.wav"
 # recording_duration = 2
 
 # API key configuration
