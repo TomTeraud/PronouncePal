@@ -1,17 +1,14 @@
 import tkinter as tk
 
-class TextField(tk.Frame):
-    def __init__(self, parent, text_sample):
+class SampleTextField(tk.Text):
+    def __init__(self, parent, text_sample, column, row):
         super().__init__(parent, borderwidth=10, relief="solid")
+
         self.text_sample = text_sample
 
-        # Create a Text widget to display the text sample
-        self.sample_text_widget = tk.Text(self)
-        self.sample_text_widget.grid(row=0, column=0, sticky="nsew")
-
-        # Create a Text widget to display the transcribed text
-        self.transcribed_text_widget = tk.Text(self)
-        self.transcribed_text_widget.grid(row=1, column=0, sticky="nsew")
+        # Configure column and row weights for resizing
+        parent.columnconfigure(column, weight=1)
+        parent.rowconfigure(row, weight=1)
 
         # Call method to update the displayed text sample
         self.update_text_sample()
@@ -21,10 +18,21 @@ class TextField(tk.Frame):
         sample_text = self.text_sample.sample
 
         # Clear and update the Text widget for the text sample
-        self.sample_text_widget.delete("1.0", tk.END)
-        self.sample_text_widget.insert("1.0", sample_text)
+        self.delete("1.0", tk.END)
+        self.insert("1.0", sample_text)
 
-    def update_transcribed_text(self, transcribed_text):
+
+
+class TranscribedTextField(tk.Text):
+    def __init__(self, parent, transcriber, column, row):
+        super().__init__(parent, borderwidth=10, relief="solid")
+        self.transcriber = transcriber
+        # Configure column and row weights for resizing
+        parent.columnconfigure(column, weight=1)
+        parent.rowconfigure(row, weight=1)
+
+    def update_transcribed_text(self):
         # Clear and update the Text widget for the transcribed text
-        self.transcribed_text_widget.delete("1.0", tk.END)
-        self.transcribed_text_widget.insert("1.0", transcribed_text)
+        transcribed_text = self.transcriber.transcribed_text
+        self.delete("1.0", tk.END)
+        self.insert("1.0", transcribed_text)

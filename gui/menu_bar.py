@@ -29,11 +29,7 @@ class MenuBar(tk.Menu):
             # Populate the database with the selected text file
             create_sample_from_text_file(self.selected_file_path)
 
-            # Update the text sample
+            # Update both buttons
             self.text_sample.update_sample()
-
-            # Update the button state in the button manager
-            self.button_manager.update_button_state_in_manager()
-
-            # Update the displayed text sample in the text field
             self.text_field_instance.update_text_sample()
+            self.button_manager.update_buttons()
