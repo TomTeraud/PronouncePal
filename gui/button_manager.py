@@ -62,8 +62,9 @@ class LoadSampleButton(ttk.Button):
             self.config(state=tk.NORMAL)
 
 class RecordButton(ttk.Button):
-    def __init__(self, parent, text_sample, transcriber, recorder, transcribed_text_field, button_manager):
+    def __init__(self, parent, text_sample, transcriber, recorder, transcribed_text_field, button_manager, progress_bar):
         super().__init__(parent, text="Start recording", command=self.start_recording)
+        self.progress_bar = progress_bar
         self.button_manager = button_manager
         self.button_manager.set_record_button(self)
         self.transcriber = transcriber
@@ -79,6 +80,7 @@ class RecordButton(ttk.Button):
     def start_recording(self):
         # Start recording and update button states
         self.button_manager.start_recording()
+        self.progress_bar.start_recording_bar_progress()
         self.recorder.start_recording()
 
     def start_audio_file_transcription(self):
