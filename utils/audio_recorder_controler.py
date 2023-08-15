@@ -18,7 +18,6 @@ class AudioRecorderController:
         self.is_recording = False
         self.file_path = file_path
         self.text_sample = text_sample
-        self.transcribed_text = None
         self.callback = None
 
     def set_callback(self, callback):

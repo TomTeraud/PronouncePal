@@ -9,6 +9,9 @@ class MenuBar(tk.Menu):
         self.text_field_instance = text_field_instance
         self.button_manager = button_manager
 
+        self.create_menus()
+
+    def create_menus(self):
         # Create "File" and "Edit" menus
         menu_file = tk.Menu(self)
         menu_edit = tk.Menu(self)
@@ -23,13 +26,13 @@ class MenuBar(tk.Menu):
         file_types = [("Text Files", "*.txt")]
 
         # Open a file selection window and store the selected file path
-        self.selected_file_path = filedialog.askopenfilename(filetypes=file_types)
+        selected_file_path = filedialog.askopenfilename(filetypes=file_types)
 
-        if self.selected_file_path:
+        if selected_file_path:
             # Populate the database with the selected text file
-            create_sample_from_text_file(self.selected_file_path)
+            create_sample_from_text_file(selected_file_path)
 
-            # Update both buttons
+            # Update both buttons and text field
             self.text_sample.update_sample()
             self.text_field_instance.update_text_sample()
             self.button_manager.update_buttons()

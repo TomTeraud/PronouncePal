@@ -8,7 +8,6 @@ class Transcriber:
         self.api_key = self.get_api_key()
         openai.api_key = self.api_key
         self.transcribed_text = None
-        self.is_transcribing = False
 
 
     def set_callback(self, callback):
@@ -54,7 +53,6 @@ class Transcriber:
             str: Transcribed text if successful, else None.
         """
         try:
-            self.is_transcribing = True
             with open(file_path, "rb") as audio_file:
                 response = openai.Audio.transcribe(engine_id, audio_file)
                 # Extract the transcribed text from the JSON response
@@ -66,8 +64,6 @@ class Transcriber:
             self.transcribed_text = None
             return None
         finally:
-            self.is_transcribing = False
-            
             # Call the provided callback function if it's provided
             if callback:
                 callback()  # Call the callback function

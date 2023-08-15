@@ -1,14 +1,9 @@
 import tkinter as tk
 
 class SampleTextField(tk.Text):
-    def __init__(self, parent, text_sample, column, row):
+    def __init__(self, parent, text_sample):
         super().__init__(parent, borderwidth=10, relief="solid")
-
         self.text_sample = text_sample
-
-        # Configure column and row weights for resizing
-        parent.columnconfigure(column, weight=1)
-        parent.rowconfigure(row, weight=1)
 
         # Call method to update the displayed text sample
         self.update_text_sample()
@@ -22,14 +17,10 @@ class SampleTextField(tk.Text):
         self.insert("1.0", sample_text)
 
 
-
 class TranscribedTextField(tk.Text):
-    def __init__(self, parent, transcriber, column, row):
+    def __init__(self, parent, transcriber):
         super().__init__(parent, borderwidth=10, relief="solid")
         self.transcriber = transcriber
-        # Configure column and row weights for resizing
-        parent.columnconfigure(column, weight=1)
-        parent.rowconfigure(row, weight=1)
 
     def update_transcribed_text(self):
         # Clear and update the Text widget for the transcribed text
