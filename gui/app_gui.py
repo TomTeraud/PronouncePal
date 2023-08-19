@@ -6,11 +6,9 @@ from gui.menu_bar import MenuBar
 from gui.recording_progres_bar import RecordingProgresBar
 
 class AudioRecorderGUI(tk.Tk):
-    def __init__(self, recorder, text_sample, transcriber):
+    def __init__(self, text_sample):
         super().__init__()
         self.text_sample = text_sample
-        self.transcriber = transcriber
-        self.recorder = recorder
 
         self.title("Audio Recorder")
         self.setup_gui()
@@ -26,7 +24,7 @@ class AudioRecorderGUI(tk.Tk):
         self.sample_text_field = SampleTextField(parent, self.text_sample)
         self.sample_text_field.grid(row=0, column=0, sticky="nsew")
 
-        self.transcribed_text_field = TranscribedTextField(parent, self.transcriber)
+        self.transcribed_text_field = TranscribedTextField(parent)
         self.transcribed_text_field.grid(row=0, column=1, sticky="nsew")
 
         self.button_manager = ButtonManager()
@@ -42,8 +40,6 @@ class AudioRecorderGUI(tk.Tk):
         self.record_button = RecordButton(
             parent,
             self.text_sample,
-            self.transcriber,
-            self.recorder,
             self.transcribed_text_field,
             self.button_manager,
             self.progress_bar,

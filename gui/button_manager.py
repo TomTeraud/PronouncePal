@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from utils.audio_recorder_controler import AudioRecorderController as ARC
 
 class ButtonManager:
     def __init__(self):
@@ -62,18 +63,14 @@ class LoadSampleButton(ttk.Button):
             self.config(state=tk.NORMAL)
 
 class RecordButton(ttk.Button):
-    def __init__(self, parent, text_sample, transcriber, recorder, transcribed_text_field, button_manager, progress_bar):
+    def __init__(self, parent, text_sample, transcribed_text_field, button_manager, progress_bar):
         super().__init__(parent, text="Start recording", command=self.start_recording)
         self.progress_bar = progress_bar
         self.button_manager = button_manager
         self.button_manager.set_record_button(self)
-        self.transcriber = transcriber
 
         self.text_sample = text_sample
-        self.recorder = recorder
         self.transcribed_text_field = transcribed_text_field
-        self.recorder.set_callback(self.start_audio_file_transcription)
-        self.transcriber.set_callback(self.update_button_state)
 
         self.update_button_state()
 
@@ -81,13 +78,12 @@ class RecordButton(ttk.Button):
         # Start recording and update button states
         self.button_manager.start_recording()
         self.progress_bar.start_recording_bar_progress()
-        self.recorder.start_recording()
+        ARC.start_recording(self.text_sample, self.start_audio_file_transcription)
 
     def start_audio_file_transcription(self):
         # Start transcribing audio, update transcribed text, and button states
         self.button_manager.start_transcribing()
         self.button_manager.stop_recording()
-        self.transcriber.transcribe_audio()
         self.transcribed_text_field.update_transcribed_text()
         self.button_manager.stop_transcribing()
 
@@ -103,3 +99,6 @@ class RecordButton(ttk.Button):
                 self.config(text="Transcribing...")
         else:
             self.config(text="Start recording", state=tk.NORMAL)
+
+    def text(self):
+        print(self.txt)

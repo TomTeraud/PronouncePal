@@ -1,4 +1,5 @@
 import tkinter as tk
+from utils.transcribe_audio import Transcriber
 
 class SampleTextField(tk.Text):
     def __init__(self, parent, text_sample):
@@ -18,12 +19,14 @@ class SampleTextField(tk.Text):
 
 
 class TranscribedTextField(tk.Text):
-    def __init__(self, parent, transcriber):
+    def __init__(self, parent):
         super().__init__(parent, borderwidth=10, relief="solid")
-        self.transcriber = transcriber
 
     def update_transcribed_text(self):
-        # Clear and update the Text widget for the transcribed text
-        transcribed_text = self.transcriber.transcribed_text
-        self.delete("1.0", tk.END)
-        self.insert("1.0", transcribed_text)
+        # Define a callback function to update the Text widget
+        def update_callback(transcribed_text):
+            self.delete("1.0", tk.END)
+            self.insert("1.0", transcribed_text)
+        
+        # Call the class method and pass the callback
+        Transcriber.transcribe_audio(callback=update_callback)
