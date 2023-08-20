@@ -1,11 +1,11 @@
-from db.db_init import create_tables
+from db.database_handler import DatabaseHandler
 from utils.text_sample import TextSample
 from gui.app_gui import AudioRecorderGUI
 
 def main():
     
     # Initialize the database and create tables if they don't exist
-    create_tables()  
+    DatabaseHandler.create_tables()
     
     # Create an instance of TextSample to manage sample text
     text_sample = TextSample()  

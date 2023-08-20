@@ -2,85 +2,109 @@ import sqlite3
 import random
 import config
 
-# Populate database. For each sentence create new line.
-def create_sample_from_text_file(selected_file_path):
-    connection = sqlite3.connect(config.DATABASE)
-    cursor = connection.cursor()
+class DatabaseHandler:
+    def __init__(self):
+        self.connection = sqlite3.connect(config.DATABASE)
+        self.cursor = self.connection.cursor()
 
-    try:
-        with open(selected_file_path, 'r') as file:
-            sentences = file.readlines()
-            for sentence in sentences:
-                stripped_sentence = sentence.strip()
-                if stripped_sentence:  # Check if the sentence is not empty
-                    cursor.execute('INSERT INTO text_samples (sentence) VALUES (?)', (stripped_sentence,))
+    def __del__(self):
+        self.connection.close()
 
-        # Commit the changes and close the connection
+    @classmethod
+    def create_tables(cls):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
+
+        # Create the 'text_samples' table
+        cursor.execute('''CREATE TABLE IF NOT EXISTS text_samples (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            sentence TEXT
+                        )''')
+
+        # Create the 'ratings' table
+        cursor.execute('''CREATE TABLE IF NOT EXISTS ratings (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            sentence_id INTEGER,
+                            rating INTEGER,
+                            user_name TEXT,
+                            FOREIGN KEY (sentence_id) REFERENCES text_samples(id)
+                        )''')
+
         connection.commit()
-    except Exception as e:
-        connection.rollback()  # Rollback changes if an exception occurs
-        print("An error occurred while reading the text file or inserting into the database.")
-        print(e)
-    finally:
         connection.close()
 
+    @classmethod
+    def delete_all_rows(cls):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
 
-def add_rating(sentence_id, rating, user_name):
-    connection = sqlite3.connect(config.DATABASE)
-    cursor = connection.cursor()
+        try:
+            # Delete all rows in 'text_samples' table
+            cursor.execute('DELETE FROM text_samples')
 
-    # Insert the rating into the 'ratings' table with the corresponding sentence_id
-    cursor.execute('INSERT INTO ratings (sentence_id, rating, user_name) VALUES (?, ?, ?)', (sentence_id, rating, user_name))
+            # Delete all rows in 'ratings' table
+            cursor.execute('DELETE FROM ratings')
 
-    # Commit the changes and close the connection
-    connection.commit()
-    connection.close()
+            connection.commit()
+        except Exception as e:
+            connection.rollback()
+            print("An error occurred while deleting rows from the tables.")
+            print(e)
+        finally:
+            connection.close()
 
-def get_all_samples():
-    connection = sqlite3.connect(config.DATABASE)
-    cursor = connection.cursor()
+    @classmethod
+    def create_sample_from_text_file(cls, selected_file_path):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
 
-    # Fetch all rows from the 'text_samples' table
-    cursor.execute('SELECT * FROM text_samples')
-    samples = cursor.fetchall()
+        try:
+            with open(selected_file_path, 'r') as file:
+                sentences = file.readlines()
+                for sentence in sentences:
+                    stripped_sentence = sentence.strip()
+                    if stripped_sentence:
+                        cursor.execute('INSERT INTO text_samples (sentence) VALUES (?)', (stripped_sentence,))
 
-    # Close the connection
-    connection.close()
+            connection.commit()
+        except Exception as e:
+            connection.rollback()
+            print("An error occurred while reading the text file or inserting into the database.")
+            print(e)
+        finally:
+            connection.close()
 
-    return samples
+    def add_rating(self, sentence_id, rating, user_name):
+        self.cursor.execute('INSERT INTO ratings (sentence_id, rating, user_name) VALUES (?, ?, ?)', (sentence_id, rating, user_name))
+        self.connection.commit()
 
-def get_random_sample():
-    connection = sqlite3.connect(config.DATABASE)
-    cursor = connection.cursor()
+    def get_all_samples(self):
+        self.cursor.execute('SELECT * FROM text_samples')
+        samples = self.cursor.fetchall()
+        return samples
 
-    # Get the total count of rows in the 'text_samples' table
-    cursor.execute('SELECT COUNT(*) FROM text_samples')
-    total_samples = cursor.fetchone()[0]
+    @classmethod
+    def get_random_sample(cls):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
 
-    if total_samples == 0:
-        return # Return None if there are no samples in the table
+        try:
+            cursor.execute('SELECT COUNT(*) FROM text_samples')
+            total_samples = cursor.fetchone()[0]
 
-    # Generate a random index within the range of total samples
-    random_index = random.randint(0, total_samples - 1)
+            if total_samples == 0:
+                return None
 
-    # Fetch the random row from the 'text_samples' table
-    cursor.execute('SELECT * FROM text_samples LIMIT 1 OFFSET ?', (random_index,))
-    random_sample = cursor.fetchone()
+            random_index = random.randint(0, total_samples - 1)
 
-    # Close the connection
-    connection.close()
-    # print("SAMPLE ASKED FROM DATABSE_HANDLER USING GET_RANDOM_SAMPLE")
-    return random_sample[1]
+            cursor.execute('SELECT * FROM text_samples LIMIT 1 OFFSET ?', (random_index,))
+            random_sample = cursor.fetchone()
 
-def get_ratings_by_sentence(sentence_id):
-    connection = sqlite3.connect(config.DATABASE)
-    cursor = connection.cursor()
+            return random_sample[1]
+        finally:
+            connection.close()
 
-    # Fetch ratings for a specific sentence_id from the 'ratings' table
-    cursor.execute('SELECT * FROM ratings WHERE sentence_id = ?', (sentence_id,))
-    ratings = cursor.fetchall()
-
-    # Close the connection
-    connection.close()
-
-    return ratings
+    def get_ratings_by_sentence(self, sentence_id):
+        self.cursor.execute('SELECT * FROM ratings WHERE sentence_id = ?', (sentence_id,))
+        ratings = self.cursor.fetchall()
+        return ratings

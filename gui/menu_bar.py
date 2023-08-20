@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-from db.database_handler import create_sample_from_text_file
+from db.database_handler import DatabaseHandler as DH
 
 class MenuBar(tk.Menu):
     def __init__(self, parent, text_sample, text_field_instance, button_manager):
@@ -12,27 +12,32 @@ class MenuBar(tk.Menu):
         self.create_menus()
 
     def create_menus(self):
-        # Create "File" and "Edit" menus
-        menu_file = tk.Menu(self)
-        menu_edit = tk.Menu(self)
-        self.add_cascade(menu=menu_file, label='File')
-        self.add_cascade(menu=menu_edit, label='Edit')
+        self.create_file_menu()
+        self.create_edit_menu()
 
-        # Add options to the "Edit" menu
-        menu_edit.add_command(label="Add text file to library", command=self.select_file)
+    def create_file_menu(self):
+        menu_file = tk.Menu(self)
+        self.add_cascade(menu=menu_file, label='File')
+
+    def create_edit_menu(self):
+        menu_edit = tk.Menu(self)
+        self.add_cascade(menu=menu_edit, label='Edit')
+        menu_edit.add_command(label="Add text file to database", command=self.select_file)
+        menu_edit.add_command(label="Remove all text samples from database", command=self.delete_samples_from_db)
 
     def select_file(self):
-        # Define the file types filter to only allow .txt files
         file_types = [("Text Files", "*.txt")]
-
-        # Open a file selection window and store the selected file path
         selected_file_path = filedialog.askopenfilename(filetypes=file_types)
 
         if selected_file_path:
-            # Populate the database with the selected text file
-            create_sample_from_text_file(selected_file_path)
+            DH.create_sample_from_text_file(selected_file_path)
+            self.update_ui()
 
-            # Update both buttons and text field
-            self.text_sample.update_sample()
-            self.text_field_instance.update_text_sample()
-            self.button_manager.update_buttons()
+    def delete_samples_from_db(self):
+        DH.delete_all_rows()
+        self.update_ui()
+
+    def update_ui(self):
+        self.text_sample.update_sample()
+        self.text_field_instance.update_text_sample()
+        self.button_manager.update_buttons()

@@ -1,4 +1,4 @@
-from db.database_handler import get_random_sample
+from db.database_handler import DatabaseHandler as DH
 
 class TextSample:
     def __init__(self):
@@ -12,7 +12,7 @@ class TextSample:
         
     def update_sample(self):
         # Method to retrieve a new random sample and update the 'sample' attribute
-        new_sample = get_random_sample()  # Update the sample using the imported function
+        new_sample = DH.get_random_sample()  # Update the sample using the imported function
         if new_sample:
             self.sample_exists = True
             self.sample = new_sample
