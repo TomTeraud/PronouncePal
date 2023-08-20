@@ -98,7 +98,4 @@ class RecordButton(ttk.Button):
             else:
                 self.config(text="Transcribing...")
         else:
-            self.config(text="Start recording", state=tk.NORMAL)
-
-    def text(self):
-        print(self.txt)
+            self.config(text=f"Start recording ({self.text_sample.sec_to_read} seconds)", state=tk.NORMAL)
