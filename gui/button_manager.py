@@ -57,7 +57,7 @@ class LoadSampleButton(ttk.Button):
     def update_button_state(self):
         # Disable the button if no sample or recording is ongoing
         self.sample_exists = self.text_sample.sample_exists
-        if not self.sample_exists or self.button_manager.is_recording:
+        if not self.sample_exists or self.button_manager.is_recording or self.button_manager.is_transcribing:
             self.config(state=tk.DISABLED)
         else:
             self.config(state=tk.NORMAL)
