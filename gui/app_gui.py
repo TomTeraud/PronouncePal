@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from gui.text_fields import SampleTextField, TranscribedTextField
-from gui.button_manager import ButtonManager, LoadSampleButton, RecordButton
+from gui.button_manager import ButtonManager, LoadSampleButton, RecordButton, LoadWordSampleButton
 from gui.menu_bar import MenuBar
 from gui.recording_progres_bar import RecordingProgresBar
 
@@ -29,13 +29,24 @@ class AudioRecorderGUI(tk.Tk):
 
         self.button_manager = ButtonManager()
 
-        self.load_sample_button = LoadSampleButton(
-            parent,
+        load_sample_frame = ttk.Frame(parent)
+        load_sample_frame.grid(row=1, column=0, sticky="nsew")  # Span two columns
+
+        self.load_word_sample_button = LoadWordSampleButton(
+            load_sample_frame,
             self.text_sample,
             self.sample_text_field,
             button_manager=self.button_manager
         )
-        self.load_sample_button.grid(row=1, column=0, sticky="nsew")
+        self.load_word_sample_button.grid(row=0, column=0, sticky="nsew")
+
+        self.load_sample_button = LoadSampleButton(
+            load_sample_frame,
+            self.text_sample,
+            self.sample_text_field,
+            button_manager=self.button_manager
+        )
+        self.load_sample_button.grid(row=0, column=1, sticky="nsew")
 
         self.record_button = RecordButton(
             parent,
@@ -52,10 +63,12 @@ class AudioRecorderGUI(tk.Tk):
         # Apply columnconfigure to each column
         for col in range(2):
             parent.columnconfigure(col, weight=1)
+            load_sample_frame.columnconfigure(col, weight=1)
 
         # Apply rowconfigure to each row
-        for row in range(2):
+        for row in range(3):
             parent.rowconfigure(row, weight=1)
+            load_sample_frame.rowconfigure(row, weight=1)
 
         for child in parent.winfo_children():
             child.grid_configure(padx=2, pady=2)

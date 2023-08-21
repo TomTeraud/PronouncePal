@@ -10,9 +10,12 @@ class TextSample:
         self.sample = None
         self.update_sample()
         
-    def update_sample(self):
+    def update_sample(self, one_word_sample=True):
         # Method to retrieve a new random sample and update the 'sample' attribute
-        new_sample = DH.get_random_sample()  # Update the sample using the imported function
+        if one_word_sample:
+            new_sample = DH.get_random_sample_word()  # Update the sample using the imported function
+        else:
+            new_sample = DH.get_random_sample()  # Update the sample using the imported function
         if new_sample:
             self.sample_exists = True
             self.sample = new_sample

@@ -51,6 +51,9 @@ class DatabaseHandler:
             # Delete all rows in 'ratings' table
             cursor.execute('DELETE FROM ratings')
 
+            # Delete all rows in 'words' table
+            cursor.execute('DELETE FROM words')
+
             connection.commit()
         except Exception as e:
             connection.rollback()
@@ -133,6 +136,27 @@ class DatabaseHandler:
             random_sample = cursor.fetchone()
 
             return random_sample[1]
+        finally:
+            connection.close()
+
+    @classmethod
+    def get_random_sample_word(cls):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('SELECT COUNT(*) FROM words')
+            total_words = cursor.fetchone()[0]
+
+            if total_words == 0:
+                return None
+
+            random_index = random.randint(0, total_words - 1)
+
+            cursor.execute('SELECT * FROM words LIMIT 1 OFFSET ?', (random_index,))
+            random_word = cursor.fetchone()
+
+            return random_word[1]
         finally:
             connection.close()
 
