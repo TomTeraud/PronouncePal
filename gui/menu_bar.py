@@ -30,7 +30,8 @@ class MenuBar(tk.Menu):
         selected_file_path = filedialog.askopenfilename(filetypes=file_types)
 
         if selected_file_path:
-            DH.create_sample_from_text_file(selected_file_path)
+            DH.get_and_save_sentences_from_text_file(selected_file_path)
+            DH.save_words_from_sentences()
             self.update_ui()
 
     def delete_samples_from_db(self):
