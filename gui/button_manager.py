@@ -1,14 +1,16 @@
 import tkinter as tk
 from tkinter import ttk
 from utils.audio_recorder_controler import AudioRecorderController as ARC
+import os
 
 class ButtonManager:
     def __init__(self):
         self.load_sample_button = None
+        self.load_word_sample_button = None
         self.record_button = None
         self.is_recording = False
         self.is_transcribing = False
-        self.is_api_key_set = False
+        self.is_api_key_set = self.check_api_key_set()
 
     def set_load_sample_button(self, load_sample_button):
         self.load_sample_button = load_sample_button
@@ -37,6 +39,11 @@ class ButtonManager:
 
     def set_api_key_status(self, is_set):
         self.is_api_key_set = is_set
+        self.update_buttons()
+
+    def check_api_key_set(self):
+        api_key = os.environ.get("OPENAI_API_KEY")
+        return api_key is not None
 
     def update_buttons(self):
         # Update button states based on recording, transcribing, and API key status
@@ -46,6 +53,7 @@ class ButtonManager:
             self.load_word_sample_button.update_button_state()
         if self.record_button:
             self.record_button.update_button_state()
+
 
 class LoadSampleButton(ttk.Button):
     def __init__(self, parent, text_sample, text_field_instance, button_manager):
@@ -129,7 +137,9 @@ class RecordButton(ttk.Button):
                 self.config(text="No sample")
             elif self.button_manager.is_recording:
                 self.config(text="Recording...")
-            else:
+            elif self.button_manager.is_transcribing:
                 self.config(text="Transcribing...")
+            else:
+                self.config(text="setup API key first")
         else:
             self.config(text=f"Start recording ({self.text_sample.sec_to_read} seconds)", state=tk.NORMAL)
