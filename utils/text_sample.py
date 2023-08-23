@@ -23,7 +23,7 @@ class TextSample:
             self.calculate_duration()
         else:
             self.sample_exists = False
-            self.sample = "No sample available. Hint: Edit/Add text file to library"
+            self.sample = "No sample available. Hint: File/Add text file to database"
             print("Failed to obtain sample from get_random_sample()")
 
     def update_word_count(self):

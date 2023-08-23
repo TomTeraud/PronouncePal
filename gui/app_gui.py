@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from gui.text_fields import SampleTextField, TranscribedTextField
 from gui.button_manager import ButtonManager, LoadSampleButton, RecordButton, LoadWordSampleButton
-from gui.menu_bar import MenuBar
+from gui.menu.menu_bar import MenuBar
 from gui.recording_progres_bar import RecordingProgresBar
 
 class AudioRecorderGUI(tk.Tk):

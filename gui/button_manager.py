@@ -8,6 +8,7 @@ class ButtonManager:
         self.record_button = None
         self.is_recording = False
         self.is_transcribing = False
+        self.is_api_key_set = False
 
     def set_load_sample_button(self, load_sample_button):
         self.load_sample_button = load_sample_button
@@ -34,8 +35,11 @@ class ButtonManager:
         self.is_transcribing = False
         self.update_buttons()
 
+    def set_api_key_status(self, is_set):
+        self.is_api_key_set = is_set
+
     def update_buttons(self):
-        # Update button states based on recording and transcribing status
+        # Update button states based on recording, transcribing, and API key status
         if self.load_sample_button:
             self.load_sample_button.update_button_state()
         if self.load_word_sample_button:
@@ -60,9 +64,9 @@ class LoadSampleButton(ttk.Button):
         self.button_manager.update_buttons()
 
     def update_button_state(self):
-        # Disable the button if no sample or recording is ongoing
+        # Disable the button if no sample, recording, or API key is not set
         self.sample_exists = self.text_sample.sample_exists
-        if not self.sample_exists or self.button_manager.is_recording or self.button_manager.is_transcribing:
+        if not self.sample_exists or self.button_manager.is_recording or self.button_manager.is_transcribing or not self.button_manager.is_api_key_set:
             self.config(state=tk.DISABLED)
         else:
             self.config(state=tk.NORMAL)
@@ -84,9 +88,9 @@ class LoadWordSampleButton(ttk.Button):
         self.button_manager.update_buttons()
 
     def update_button_state(self):
-        # Disable the button if no sample or recording is ongoing
+        # Disable the button if no sample, recording, or API key is not set
         self.sample_exists = self.text_sample.sample_exists
-        if not self.sample_exists or self.button_manager.is_recording or self.button_manager.is_transcribing:
+        if not self.sample_exists or self.button_manager.is_recording or self.button_manager.is_transcribing or not self.button_manager.is_api_key_set:
             self.config(state=tk.DISABLED)
         else:
             self.config(state=tk.NORMAL)
@@ -118,8 +122,8 @@ class RecordButton(ttk.Button):
         self.button_manager.stop_transcribing()
 
     def update_button_state(self):
-        # Update button state based on sample, recording, and transcribing status
-        if not self.text_sample.sample_exists or self.button_manager.is_recording or self.button_manager.is_transcribing:
+        # Update button state based on sample, recording, transcribing, and API key status
+        if not self.text_sample.sample_exists or self.button_manager.is_recording or self.button_manager.is_transcribing or not self.button_manager.is_api_key_set:
             self.config(state=tk.DISABLED)
             if not self.text_sample.sample_exists:
                 self.config(text="No sample")
