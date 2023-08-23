@@ -18,8 +18,19 @@ class MenuBar(tk.Menu):
     def create_file_menu(self):
         menu_file = tk.Menu(self)
         self.add_cascade(menu=menu_file, label='File')
-        menu_file.add_command(label="Add text file to database", command=FileMenuHandler.select_file)
+        menu_file.add_command(label="Add text file to database", command=self.handle_text_file_upload)
+        menu_file.add_command(label="Delete all text samples from database", command=self.handle_text_samples_delete)
         # Add other file menu items as needed
+
+    def handle_text_file_upload(self):
+        result = FileMenuHandler.select_file()
+        if result:
+            self.update_gui()
+
+    def handle_text_samples_delete(self):
+        result = FileMenuHandler.delete_samples_from_db()
+        if result:
+            self.update_gui()        
 
     def create_api_menu(self):
         menu_api = tk.Menu(self)
@@ -30,9 +41,9 @@ class MenuBar(tk.Menu):
         result = ApiMenuHandler.get_api_key()
         if result:
             self.button_manager.set_api_key_status(result)
-            self.update_ui()
+            self.update_gui()
 
-    def update_ui(self):
+    def update_gui(self):
         self.text_sample.update_sample()
         self.text_field_instance.update_text_sample()
         self.button_manager.update_buttons()
