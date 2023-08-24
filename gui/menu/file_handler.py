@@ -1,4 +1,4 @@
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, simpledialog
 from db.database_handler import DatabaseHandler as DH
 
 class FileMenuHandler:
@@ -17,10 +17,11 @@ class FileMenuHandler:
 
     @staticmethod
     def delete_samples_from_db():
-        try:
+        confirmation_text = "DELETE"  # Confirmation text required from the user
+        user_input = simpledialog.askstring("Confirm Deletion", "Type 'DELETE' to confirm deletion:")
+        if user_input == confirmation_text:
             DH.delete_all_rows()
-            messagebox.showinfo("Success", "All text samples deleted successfully!")
             return True  # Return True to indicate success
-        except Exception as e:
-            messagebox.showerror("Error", f"Error deleting text samples: {str(e)}")
-            return False  # Return False to indicate failure
+        else:
+            messagebox.showinfo("Info", "Deletion was not confirmed.")
+            return False

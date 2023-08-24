@@ -2,6 +2,7 @@ import tkinter as tk
 from gui.menu.file_handler import FileMenuHandler
 from gui.menu.api_handler import ApiMenuHandler
 
+
 class MenuBar(tk.Menu):
     def __init__(self, parent, text_sample, text_field_instance, button_manager):
         super().__init__(parent)
