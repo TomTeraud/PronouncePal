@@ -11,6 +11,7 @@ class AudioRecorderGUI(tk.Tk):
         self.text_sample = text_sample
 
         self.title("Audio Recorder")
+        self.geometry("600x300")
         self.setup_gui()
 
     def setup_gui(self):
@@ -19,34 +20,31 @@ class AudioRecorderGUI(tk.Tk):
 
         # Create the RecordingProgresBar widget, duration comes from text_sample
         self.progress_bar = RecordingProgresBar(parent, self.text_sample)
-        self.progress_bar.grid(row=2, column=0, sticky="nsew", columnspan=2)
+        self.progress_bar.grid(row=2, column=0, sticky="nsew", columnspan=4)
 
         self.sample_text_field = SampleTextField(parent, self.text_sample)
-        self.sample_text_field.grid(row=0, column=0, sticky="nsew")
+        self.sample_text_field.grid(row=0, column=0, sticky="nsew", columnspan=2)
 
         self.transcribed_text_field = TranscribedTextField(parent)
-        self.transcribed_text_field.grid(row=0, column=1, sticky="nsew")
+        self.transcribed_text_field.grid(row=0, column=2, sticky="nsew", columnspan=2)
 
         self.button_manager = ButtonManager()
 
-        load_sample_frame = ttk.Frame(parent)
-        load_sample_frame.grid(row=1, column=0, sticky="nsew")  # Span two columns
-
         self.load_word_sample_button = LoadWordSampleButton(
-            load_sample_frame,
+            parent,
             self.text_sample,
             self.sample_text_field,
             button_manager=self.button_manager
         )
-        self.load_word_sample_button.grid(row=0, column=0, sticky="nsew")
+        self.load_word_sample_button.grid(row=1, column=0, sticky="nsew")
 
         self.load_sample_button = LoadSampleButton(
-            load_sample_frame,
+            parent,
             self.text_sample,
             self.sample_text_field,
             button_manager=self.button_manager
         )
-        self.load_sample_button.grid(row=0, column=1, sticky="nsew")
+        self.load_sample_button.grid(row=1, column=1, sticky="nsew")
 
         self.record_button = RecordButton(
             parent,
@@ -55,20 +53,18 @@ class AudioRecorderGUI(tk.Tk):
             self.button_manager,
             self.progress_bar,
         )
-        self.record_button.grid(row=1, column=1, sticky="nsew")
+        self.record_button.grid(row=1, column=2, sticky="nsew", columnspan=2)
 
         self.menu_bar = MenuBar(self, self.text_sample, self.sample_text_field, self.button_manager)
         self.config(menu=self.menu_bar)
 
         # Apply columnconfigure to each column
-        for col in range(2):
+        for col in range(4):
             parent.columnconfigure(col, weight=1)
-            load_sample_frame.columnconfigure(col, weight=1)
 
         # Apply rowconfigure to each row
         for row in range(3):
-            parent.rowconfigure(row, weight=1)
-            load_sample_frame.rowconfigure(row, weight=1)
+            parent.rowconfigure(row, weight=1, minsize=30)
 
         for child in parent.winfo_children():
             child.grid_configure(padx=2, pady=2)
