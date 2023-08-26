@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from utils.audio_recorder_controler import AudioRecorderController as ARC
 import os
 
@@ -117,10 +117,13 @@ class RecordButton(ttk.Button):
         self.update_button_state()
 
     def start_recording(self):
-        # Start recording and update button states
-        self.button_manager.start_recording()
-        self.progress_bar.start_recording_bar_progress()
-        ARC.start_recording(self.text_sample, self.start_audio_file_transcription)
+        if ARC.check_microphone():
+            # Start recording and update button states
+            self.button_manager.start_recording()
+            self.progress_bar.start_recording_bar_progress()
+            ARC.start_recording(self.text_sample, self.start_audio_file_transcription)
+        else:
+            messagebox.showerror("Error", "No recording davices found!")
 
     def start_audio_file_transcription(self):
         # Start transcribing audio, update transcribed text, and button states

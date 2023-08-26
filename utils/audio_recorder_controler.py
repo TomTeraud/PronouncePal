@@ -30,20 +30,32 @@ class AudioRecorderController:
 
 
     @classmethod
-    def start_recording(cls, text_sample, callback):
-        """
-        Start the audio recording process and automatically stop after recording_duration.
+    def check_microphone(cls):
+        try:
+            input_devices = sd.query_devices(kind='input')
+        except sd.PortAudioError as query_error:
+            print(f"Error querying input devices: {query_error}")
+            return False
 
-        Args:
-            text_sample (TextSample): An instance of the TextSample class.
-            callback (function): The callback function.
-        """
+        if not input_devices:
+            print("No available input devices.")
+            return False
+
+        return True
+
+    @classmethod
+    def start_recording(cls, text_sample, callback):
         recording_duration = text_sample.sec_to_read
-        audio_data = sd.rec(int(recording_duration * 44100), samplerate=44100, channels=1, dtype=np.int16)
-        
-        # Create a separate thread to handle the recording process
-        recording_thread = threading.Thread(target=cls._wait_and_stop_recording, args=(audio_data, recording_duration, callback))
-        recording_thread.start()
+
+        try:
+            audio_data = sd.rec(int(recording_duration * 44100), samplerate=44100, channels=1, dtype=np.int16)
+            recording_thread = threading.Thread(target=cls._wait_and_stop_recording, args=(audio_data, recording_duration, callback))
+            recording_thread.start()
+        except sd.PortAudioError as audio_error:
+            error_message = f"An error occurred with audio input: {audio_error}"
+            print(error_message)
+            if callback:
+                callback()
 
     @staticmethod
     def _wait_and_stop_recording(audio_data, recording_duration, callback):
