@@ -15,7 +15,7 @@ class AudioRecorderGUI(tk.Tk):
         self.setup_gui()
 
     def setup_gui(self):
-        parent = ttk.Frame(self, borderwidth=20, relief="solid")
+        parent = ttk.Frame(self)
         parent.grid(sticky=(tk.N, tk.W, tk.E, tk.S))
 
         # Create the RecordingProgresBar widget, duration comes from text_sample
