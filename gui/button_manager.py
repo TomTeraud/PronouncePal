@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from utils.audio_recorder_controler import AudioRecorderController as ARC
+from utils.transcribe_audio import Transcriber
+import openai
+
 import os
 
 class ButtonManager:
@@ -54,7 +57,6 @@ class ButtonManager:
         if self.record_button:
             self.record_button.update_button_state()
 
-
 class LoadSampleButton(ttk.Button):
     def __init__(self, parent, text_sample, text_field_instance, button_manager):
         super().__init__(parent, text="Load sentence", command=self.load_sample)
@@ -103,7 +105,6 @@ class LoadWordSampleButton(ttk.Button):
         else:
             self.config(state=tk.NORMAL)
 
-
 class RecordButton(ttk.Button):
     def __init__(self, parent, text_sample, transcribed_text_field, button_manager, progress_bar):
         super().__init__(parent, text="Start recording", command=self.start_recording)
@@ -123,15 +124,34 @@ class RecordButton(ttk.Button):
             self.progress_bar.start_recording_bar_progress()
             ARC.start_recording(self.text_sample, self.start_audio_file_transcription)
         else:
-            messagebox.showerror("Error", "No recording davices found!")
+            msg ="No recording davices found!"
+            self.error(msg)
 
     def start_audio_file_transcription(self):
         # Start transcribing audio, update transcribed text, and button states
         self.button_manager.start_transcribing()
         self.button_manager.stop_recording()
-        self.transcribed_text_field.update_transcribed_text()
+        result = Transcriber.transcribe_audio()
+        if isinstance(result, openai.error.RateLimitError):
+            # Handle rate limit error
+            msg = "Rate limit exceeded"
+            self.transcribed_text_field.update_transcribed_text(msg)
+            self.error(msg)
+
+        elif isinstance(result, openai.error.OpenAIError):
+            # Handle other OpenAI errors
+            msg = "An OpenAI error occurred"
+            self.transcribed_text_field.update_transcribed_text(msg)
+            self.error(msg)
+        else:
+            # Process the transcribed text
+            self.transcribed_text_field.update_transcribed_text(result)
+
         self.button_manager.stop_transcribing()
 
+    def error(self, error):
+        messagebox.showerror("Error", error)
+    
     def update_button_state(self):
         # Update button state based on sample, recording, transcribing, and API key status
         if not self.text_sample.sample_exists or self.button_manager.is_recording or self.button_manager.is_transcribing or not self.button_manager.is_api_key_set:

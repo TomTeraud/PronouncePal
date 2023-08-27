@@ -31,7 +31,6 @@ class RecordingProgresBar(ttk.Progressbar):
         Set the duration of the progress bar based on text_sample.
         """
         self.duration = self.text_sample.mill_sec_to_read
-        print(self.duration)
         self._step = self._MAX_PROGRESS / (self.duration / self._update_rate)
 
     def _update_progress(self):

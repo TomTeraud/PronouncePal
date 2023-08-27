@@ -2,10 +2,9 @@ import os
 import openai
 from config import engine_id, file_path
 
-
 class Transcriber:
     @classmethod
-    def transcribe_audio(cls, callback=None):
+    def transcribe_audio(cls):
         api_key = os.environ.get("OPENAI_API_KEY")
 
         try:
@@ -14,10 +13,8 @@ class Transcriber:
                 response = openai.Audio.transcribe(engine_id, audio_file)
                 transcribed_text = response["text"]
 
-                if callback:
-                    callback(transcribed_text)  # Call the callback with the transcribed text
-
                 return transcribed_text
-        except openai.error.OpenAIError as e:
-            print("Transcription failed:", e)
-            return None
+        except openai.error.RateLimitError as rate_limit_error:
+            return rate_limit_error
+        except openai.error.OpenAIError as openai_error:
+            return openai_error
