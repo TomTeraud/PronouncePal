@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
+import time
 
 class RecordingProgresBar(ttk.Progressbar):
-    _STEP_PER_SECOND = 30
+    _STEP_PER_SECOND = 60
     _MAX_PROGRESS = 100
 
     def __init__(self, parent, text_sample):
@@ -30,6 +31,7 @@ class RecordingProgresBar(ttk.Progressbar):
         Set the duration of the progress bar based on text_sample.
         """
         self.duration = self.text_sample.mill_sec_to_read
+        print(self.duration)
         self._step = self._MAX_PROGRESS / (self.duration / self._update_rate)
 
     def _update_progress(self):
@@ -37,19 +39,18 @@ class RecordingProgresBar(ttk.Progressbar):
         Update the progress bar value and schedule the next update.
         """
         if self._running:
-            current_value = self._progress_var.get()
-            if current_value < self._MAX_PROGRESS:
-                self._progress_var.set(current_value + self._step)
+            elapsed_time = time.time() - self.start_time
+            if elapsed_time < self.duration / 1000:  # Convert duration to seconds
+                progress = int((elapsed_time / (self.duration / 1000)) * self._MAX_PROGRESS)
+                self._progress_var.set(progress)
                 self.parent.after(self._update_rate, self._update_progress)
             else:
                 self._reset()
 
     def start_recording_bar_progress(self):
-        """
-        Start the recording progress.
-        """
         if not self._running:
             self.set_duration()
+            self.start_time = time.time()
             self._running = True
             self._update_progress()
 
@@ -59,6 +60,7 @@ class RecordingProgresBar(ttk.Progressbar):
         """
         self._progress_var.set(0)
         self._running = False
+        self._step = 0  # Reset _step
 
     def reset(self):
         """

@@ -5,4 +5,4 @@ file_path = "audio_recording.wav"
 engine_id = "whisper-1"  # Replace with your desired engine ID
 
 # Set db name
-DATABASE = 'db/your_database.db'
+DATABASE = 'your_database.db'
