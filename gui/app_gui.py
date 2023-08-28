@@ -4,6 +4,7 @@ from gui.text_fields import SampleTextField, TranscribedTextField
 from gui.button_manager import ButtonManager, LoadSampleButton, RecordButton, LoadWordSampleButton
 from gui.menu.menu_bar import MenuBar
 from gui.recording_progres_bar import RecordingProgresBar
+from gui.rating_bar import RatingBar
 
 class AudioRecorderGUI(tk.Tk):
     def __init__(self, text_sample):
@@ -11,7 +12,7 @@ class AudioRecorderGUI(tk.Tk):
         self.text_sample = text_sample
 
         self.title("Audio Recorder")
-        self.geometry("600x300")
+        self.geometry("600x200")
         self.setup_gui()
 
     def setup_gui(self):
@@ -21,6 +22,9 @@ class AudioRecorderGUI(tk.Tk):
         # Create the RecordingProgresBar widget, duration comes from text_sample
         self.progress_bar = RecordingProgresBar(parent, self.text_sample)
         self.progress_bar.grid(row=2, column=0, sticky="nsew", columnspan=4)
+
+        self.rating_bar = RatingBar(parent, self.text_sample)
+        self.rating_bar.grid(row=0, column=5, sticky="nsew", rowspan=3)
 
         self.sample_text_field = SampleTextField(parent, self.text_sample)
         self.sample_text_field.grid(row=0, column=0, sticky="nsew", columnspan=2)
@@ -34,7 +38,8 @@ class AudioRecorderGUI(tk.Tk):
             parent,
             self.text_sample,
             self.sample_text_field,
-            button_manager=self.button_manager
+            self.button_manager,
+            self.rating_bar,
         )
         self.load_word_sample_button.grid(row=1, column=0, sticky="nsew")
 
@@ -42,7 +47,8 @@ class AudioRecorderGUI(tk.Tk):
             parent,
             self.text_sample,
             self.sample_text_field,
-            button_manager=self.button_manager
+            self.button_manager,
+            self.rating_bar,
         )
         self.load_sample_button.grid(row=1, column=1, sticky="nsew")
 
@@ -59,7 +65,7 @@ class AudioRecorderGUI(tk.Tk):
         self.config(menu=self.menu_bar)
 
         # Apply columnconfigure to each column
-        for col in range(4):
+        for col in range(5):
             parent.columnconfigure(col, weight=1)
 
         # Apply rowconfigure to each row

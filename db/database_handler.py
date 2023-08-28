@@ -1,5 +1,4 @@
 import sqlite3
-import random
 import config
 
 class DatabaseHandler:
@@ -10,8 +9,8 @@ class DatabaseHandler:
     def __del__(self):
         self.connection.close()
 
-    @classmethod
-    def create_tables(cls):
+    @staticmethod
+    def create_tables():
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
@@ -21,13 +20,22 @@ class DatabaseHandler:
                             sentence TEXT
                         )''')
 
-        # Create the 'ratings' table
-        cursor.execute('''CREATE TABLE IF NOT EXISTS ratings (
+        # Create the 'ratings' table for sentences
+        cursor.execute('''CREATE TABLE IF NOT EXISTS sentence_ratings (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             sentence_id INTEGER,
                             rating INTEGER,
                             user_name TEXT,
                             FOREIGN KEY (sentence_id) REFERENCES sentences(id)
+                        )''')
+        
+        # Create the 'ratings' table for words
+        cursor.execute('''CREATE TABLE IF NOT EXISTS word_ratings (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            word_id INTEGER,
+                            rating INTEGER,
+                            user_name TEXT,
+                            FOREIGN KEY (word_id) REFERENCES words(id)
                         )''')
         
         # Create the 'words' table
@@ -48,12 +56,14 @@ class DatabaseHandler:
             # Delete all rows in 'sentences' table
             cursor.execute('DELETE FROM sentences')
 
-            # Delete all rows in 'ratings' table
-            cursor.execute('DELETE FROM ratings')
+            # Delete all rows in 'sentences ratings' table
+            cursor.execute('DELETE FROM sentences_ratings')
 
             # Delete all rows in 'words' table
             cursor.execute('DELETE FROM words')
 
+            # Delete all rows in 'words rating' table
+            cursor.execute('DELETE FROM words_rating')
             connection.commit()
         except Exception as e:
             connection.rollback()
@@ -108,59 +118,91 @@ class DatabaseHandler:
         finally:
             connection.close()
 
-
-    def add_rating(self, sentence_id, rating, user_name):
-        self.cursor.execute('INSERT INTO ratings (sentence_id, rating, user_name) VALUES (?, ?, ?)', (sentence_id, rating, user_name))
-        self.connection.commit()
-
-    def get_all_samples(self):
-        self.cursor.execute('SELECT * FROM sentences')
-        samples = self.cursor.fetchall()
-        return samples
-
-    @classmethod
-    def get_random_sample(cls):
+    @staticmethod
+    def add_word_rating(word_id, rating):
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT COUNT(*) FROM sentences')
-            total_samples = cursor.fetchone()[0]
+            cursor.execute('INSERT INTO word_ratings (word_id, rating) VALUES (?, ?)', (word_id, rating))
+            connection.commit()
+        except Exception as e:
+            connection.rollback()  # Roll back changes in case of an error
+            print("An error occurred while adding a rating to the table.")
+            print(e)
+        finally:
+            connection.close()
 
-            if total_samples == 0:
-                return None
+    @staticmethod
+    def add_sentence_rating(sentence_id, rating):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
 
-            random_index = random.randint(0, total_samples - 1)
+        try:
+            cursor.execute('INSERT INTO sentence_ratings (sentence_id, rating) VALUES (?, ?)', (sentence_id, rating))
+            connection.commit()
+        except Exception as e:
+            connection.rollback()  # Roll back changes in case of an error
+            print("An error occurred while adding a rating to the table.")
+            print(e)
+        finally:
+            connection.close()
 
-            cursor.execute('SELECT * FROM sentences LIMIT 1 OFFSET ?', (random_index,))
+    @classmethod
+    def get_random_sentence(cls):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('SELECT id, sentence '
+                        'FROM sentences '
+                        'ORDER BY RANDOM() '
+                        'LIMIT 1')
             random_sample = cursor.fetchone()
 
-            return random_sample[1]
+            return random_sample[1], random_sample[0]  # Return sentence and sentence ID
         finally:
             connection.close()
 
     @classmethod
-    def get_random_sample_word(cls):
+    def get_random_word(cls):
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT COUNT(*) FROM words')
-            total_words = cursor.fetchone()[0]
-
-            if total_words == 0:
-                return None
-
-            random_index = random.randint(0, total_words - 1)
-
-            cursor.execute('SELECT * FROM words LIMIT 1 OFFSET ?', (random_index,))
+            cursor.execute('SELECT id, word '
+                        'FROM words '
+                        'ORDER BY RANDOM() '
+                        'LIMIT 1')
             random_word = cursor.fetchone()
 
-            return random_word[1]
+            if random_word:
+                return random_word[1], random_word[0]  # Return word and word ID
+            else:
+                return None, None  # Return None if no word is found
         finally:
             connection.close()
 
-    def get_ratings_by_sentence(self, sentence_id):
-        self.cursor.execute('SELECT * FROM ratings WHERE sentence_id = ?', (sentence_id,))
-        ratings = self.cursor.fetchall()
-        return ratings
+    @classmethod
+    def get_rating_for_sentence(cls, sentence_id):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('SELECT AVG(rating) FROM sentence_ratings WHERE sentence_id = ?', (sentence_id,))
+            avg_rating = cursor.fetchone()[0]
+            return avg_rating
+        finally:
+            connection.close()
+
+    @classmethod
+    def get_rating_for_word(cls, word_id):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('SELECT AVG(rating) FROM word_ratings WHERE word_id = ?', (word_id,))
+            avg_rating = cursor.fetchone()[0]
+            return avg_rating
+        finally:
+            connection.close()

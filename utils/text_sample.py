@@ -1,4 +1,5 @@
 from db.database_handler import DatabaseHandler as DH
+import random
 
 class TextSample:
     def __init__(self):
@@ -8,17 +9,25 @@ class TextSample:
         self.sec_to_read = None  # Duration to read the sample in seconds
         self.mill_sec_to_read = None  # Duration to read the sample in milliseconds
         self.sample = None
+        self.avg_sample_rating = None
         self.update_sample()
         
     def update_sample(self, one_word_sample=True):
         # Method to retrieve a new random sample and update the 'sample' attribute
+        rating = random.randint(0, 100)
         if one_word_sample:
-            new_sample = DH.get_random_sample_word()  # Update the sample using the imported function
+            new_sample_text, new_sample_id = DH.get_random_word()
+            DH.add_word_rating(new_sample_id, rating)
+            avg_rating = DH.get_rating_for_word(new_sample_id)
         else:
-            new_sample = DH.get_random_sample()  # Update the sample using the imported function
-        if new_sample:
+            new_sample_text, new_sample_id = DH.get_random_sentence()
+            DH.add_sentence_rating(new_sample_id, rating)
+            avg_rating = DH.get_rating_for_sentence(new_sample_id)
+
+        if new_sample_text:
             self.sample_exists = True
-            self.sample = new_sample
+            self.sample = new_sample_text
+            self.avg_sample_rating = avg_rating
             self.update_word_count()
             self.calculate_duration()
         else:

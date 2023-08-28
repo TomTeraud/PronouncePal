@@ -3,7 +3,6 @@ from tkinter import ttk, messagebox
 from utils.audio_recorder_controler import AudioRecorderController as ARC
 from utils.transcribe_audio import Transcriber
 import openai
-
 import os
 
 class ButtonManager:
@@ -58,11 +57,11 @@ class ButtonManager:
             self.record_button.update_button_state()
 
 class LoadSampleButton(ttk.Button):
-    def __init__(self, parent, text_sample, text_field_instance, button_manager):
+    def __init__(self, parent, text_sample, text_field_instance, button_manager, rating_bar):
         super().__init__(parent, text="Load sentence", command=self.load_sample)
         self.button_manager = button_manager
         self.button_manager.set_load_sample_button(self)
-
+        self.rating_bar = rating_bar
         self.text_sample = text_sample
         self.text_field_instance = text_field_instance
         self.update_button_state()
@@ -70,6 +69,9 @@ class LoadSampleButton(ttk.Button):
     def load_sample(self):
         # Load sample text and update button state
         self.text_sample.update_sample(one_word_sample=False)
+        new_rating = self.text_sample.avg_sample_rating
+        self.rating_bar.update_rating(new_rating)
+
         self.text_field_instance.update_text_sample()
         self.button_manager.update_buttons()
 
@@ -82,11 +84,11 @@ class LoadSampleButton(ttk.Button):
             self.config(state=tk.NORMAL)
 
 class LoadWordSampleButton(ttk.Button):
-    def __init__(self, parent, text_sample, text_field_instance, button_manager):
+    def __init__(self, parent, text_sample, text_field_instance, button_manager, rating_bar):
         super().__init__(parent, text="Load word", command=self.load_sample)
         self.button_manager = button_manager
         self.button_manager.set_load_word_sample_button(self)
-
+        self.rating_bar = rating_bar
         self.text_sample = text_sample
         self.text_field_instance = text_field_instance
         self.update_button_state()
@@ -94,6 +96,8 @@ class LoadWordSampleButton(ttk.Button):
     def load_sample(self):
         # Load sample text and update button state
         self.text_sample.update_sample()
+        new_rating = self.text_sample.avg_sample_rating
+        self.rating_bar.update_rating(new_rating)
         self.text_field_instance.update_text_sample()
         self.button_manager.update_buttons()
 
