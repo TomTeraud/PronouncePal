@@ -14,32 +14,32 @@ class DatabaseHandler:
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
-        # Create the 'sentences' table
-        cursor.execute('''CREATE TABLE IF NOT EXISTS sentences (
+        # Create the 'sentence' table
+        cursor.execute('''CREATE TABLE IF NOT EXISTS sentence (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             sentence TEXT
                         )''')
 
-        # Create the 'ratings' table for sentences
-        cursor.execute('''CREATE TABLE IF NOT EXISTS sentence_ratings (
+        # Create the 'rating' table for sentence
+        cursor.execute('''CREATE TABLE IF NOT EXISTS sentence_rating (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             sentence_id INTEGER,
                             rating INTEGER,
                             user_name TEXT,
-                            FOREIGN KEY (sentence_id) REFERENCES sentences(id)
+                            FOREIGN KEY (sentence_id) REFERENCES sentence(id)
                         )''')
         
-        # Create the 'ratings' table for words
-        cursor.execute('''CREATE TABLE IF NOT EXISTS word_ratings (
+        # Create the 'rating' table for word
+        cursor.execute('''CREATE TABLE IF NOT EXISTS word_rating (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             word_id INTEGER,
                             rating INTEGER,
                             user_name TEXT,
-                            FOREIGN KEY (word_id) REFERENCES words(id)
+                            FOREIGN KEY (word_id) REFERENCES word(id)
                         )''')
         
         # Create the 'words' table
-        cursor.execute('''CREATE TABLE IF NOT EXISTS words (
+        cursor.execute('''CREATE TABLE IF NOT EXISTS word (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             word TEXT
                         )''')
@@ -54,16 +54,16 @@ class DatabaseHandler:
 
         try:
             # Delete all rows in 'sentences' table
-            cursor.execute('DELETE FROM sentences')
+            cursor.execute('DELETE FROM sentence')
 
             # Delete all rows in 'sentences ratings' table
-            cursor.execute('DELETE FROM sentences_ratings')
+            cursor.execute('DELETE FROM sentence_rating')
 
             # Delete all rows in 'words' table
-            cursor.execute('DELETE FROM words')
+            cursor.execute('DELETE FROM word')
 
             # Delete all rows in 'words rating' table
-            cursor.execute('DELETE FROM words_rating')
+            cursor.execute('DELETE FROM word_rating')
             connection.commit()
         except Exception as e:
             connection.rollback()
@@ -83,7 +83,7 @@ class DatabaseHandler:
                 for sentence in sentences:
                     stripped_sentence = sentence.strip()
                     if stripped_sentence:  # Check if the sentence is not empty
-                        cursor.execute('INSERT INTO sentences (sentence) VALUES (?)', (stripped_sentence,))
+                        cursor.execute('INSERT INTO sentence (sentence) VALUES (?)', (stripped_sentence,))
 
             connection.commit()
         except Exception as e:
@@ -99,7 +99,7 @@ class DatabaseHandler:
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT sentence FROM sentences')
+            cursor.execute('SELECT sentence FROM sentence')
             sentences = cursor.fetchall()
 
             for sentence in sentences:
@@ -108,7 +108,7 @@ class DatabaseHandler:
                     stripped_word = word.strip().lower()
                     stripped_word = ''.join(filter(str.isalpha, stripped_word))  # Remove non-alphabetic characters
                     if stripped_word and len(stripped_word) >= 3:  # Check word length
-                        cursor.execute('INSERT INTO words (word) VALUES (?)', (stripped_word,))
+                        cursor.execute('INSERT INTO word (word) VALUES (?)', (stripped_word,))
 
             connection.commit()
         except Exception as e:
@@ -124,7 +124,7 @@ class DatabaseHandler:
         cursor = connection.cursor()
 
         try:
-            cursor.execute('INSERT INTO word_ratings (word_id, rating) VALUES (?, ?)', (word_id, rating))
+            cursor.execute('INSERT INTO word_rating (word_id, rating) VALUES (?, ?)', (word_id, rating))
             connection.commit()
         except Exception as e:
             connection.rollback()  # Roll back changes in case of an error
@@ -139,7 +139,7 @@ class DatabaseHandler:
         cursor = connection.cursor()
 
         try:
-            cursor.execute('INSERT INTO sentence_ratings (sentence_id, rating) VALUES (?, ?)', (sentence_id, rating))
+            cursor.execute('INSERT INTO sentence_rating (sentence_id, rating) VALUES (?, ?)', (sentence_id, rating))
             connection.commit()
         except Exception as e:
             connection.rollback()  # Roll back changes in case of an error
@@ -155,7 +155,7 @@ class DatabaseHandler:
 
         try:
             cursor.execute('SELECT id, sentence '
-                        'FROM sentences '
+                        'FROM sentence '
                         'ORDER BY RANDOM() '
                         'LIMIT 1')
             random_sample = cursor.fetchone()
@@ -171,7 +171,7 @@ class DatabaseHandler:
 
         try:
             cursor.execute('SELECT id, word '
-                        'FROM words '
+                        'FROM word '
                         'ORDER BY RANDOM() '
                         'LIMIT 1')
             random_word = cursor.fetchone()
@@ -189,7 +189,7 @@ class DatabaseHandler:
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT AVG(rating) FROM sentence_ratings WHERE sentence_id = ?', (sentence_id,))
+            cursor.execute('SELECT AVG(rating) FROM sentence_rating WHERE sentence_id = ?', (sentence_id,))
             avg_rating = cursor.fetchone()[0]
             return avg_rating
         finally:
@@ -201,7 +201,7 @@ class DatabaseHandler:
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT AVG(rating) FROM word_ratings WHERE word_id = ?', (word_id,))
+            cursor.execute('SELECT AVG(rating) FROM word_rating WHERE word_id = ?', (word_id,))
             avg_rating = cursor.fetchone()[0]
             return avg_rating
         finally:
