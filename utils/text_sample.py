@@ -58,13 +58,6 @@ class TextSample:
         
     def get_avg_rating_sentence(self, id):
         self.avg_rating = DH.get_rating_for_sentence(id)
-    
-    def calculate_similarity(self, string2):
-        string1_lower = self.sample.lower()
-        string2_lower = string2.lower()
-        similarity_ratio = SequenceMatcher(None, string1_lower, string2_lower).ratio()
-        self.rating = round(similarity_ratio * 100)
-        print(f"calculated rating: {self.rating}")
 
     def add_rating_to_db(self):
         if self.one_word_sample:
@@ -75,3 +68,14 @@ class TextSample:
             DH.add_sentence_rating_to_db(self.sample_id, self.rating)
             # update avg-rating instance variable
             self.get_avg_rating_sentence(self.sample_id)
+
+    def preprocess_string(self, text):
+    # Convert to lowercase and remove trailing dot and comma if present
+        return text.lower().rstrip('.,')
+
+    def calculate_similarity(self, string2):
+        string1_lower = self.preprocess_string(self.sample)
+        string2_lower = self.preprocess_string(string2)
+        similarity_ratio = SequenceMatcher(None, string1_lower, string2_lower).ratio()
+        self.rating = round(similarity_ratio * 100)
+        print(f"calculated rating: {self.rating}")

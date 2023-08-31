@@ -57,12 +57,13 @@ class ButtonManager:
             self.record_button.update_button_state()
 
 class WordSampleButton(ttk.Button):
-    def __init__(self, parent, text_sample, text_field_instance, button_manager, rating_bar):
+    def __init__(self, parent, text_sample, transcribed_text_field, text_field_instance, button_manager, rating_bar):
         super().__init__(parent, text="Load word", command=self.load_sample)
         self.button_manager = button_manager
         self.button_manager.set_load_word_sample_button(self)
         self.rating_bar = rating_bar
         self.text_sample = text_sample
+        self.transcribed_text_field = transcribed_text_field
         self.text_field_instance = text_field_instance
         self.update_button_state()
 
@@ -71,6 +72,7 @@ class WordSampleButton(ttk.Button):
         self.text_sample.update_sample()
         new_rating = self.text_sample.avg_rating
         self.rating_bar.update_rating(new_rating)
+        self.transcribed_text_field.update_transcribed_text("")
         self.text_field_instance.update_text_sample()
         self.button_manager.update_buttons()
 
@@ -83,12 +85,13 @@ class WordSampleButton(ttk.Button):
             self.config(state=tk.NORMAL)
 
 class SentenceSampleButton(ttk.Button):
-    def __init__(self, parent, text_sample, text_field_instance, button_manager, rating_bar):
+    def __init__(self, parent, text_sample, transcribed_text_field, text_field_instance, button_manager, rating_bar):
         super().__init__(parent, text="Load sentence", command=self.load_sample)
         self.button_manager = button_manager
         self.button_manager.set_load_sample_button(self)
         self.rating_bar = rating_bar
         self.text_sample = text_sample
+        self.transcribed_text_field = transcribed_text_field
         self.text_field_instance = text_field_instance
         self.update_button_state()
 
@@ -97,6 +100,7 @@ class SentenceSampleButton(ttk.Button):
         self.text_sample.update_sample(one_word_sample=False)
         new_rating = self.text_sample.avg_rating
         self.rating_bar.update_rating(new_rating)
+        self.transcribed_text_field.update_transcribed_text("")
         self.text_field_instance.update_text_sample()
         self.button_manager.update_buttons()
 

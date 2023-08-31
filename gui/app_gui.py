@@ -37,6 +37,7 @@ class AudioRecorderGUI(tk.Tk):
         self.load_word_sample_button = WordSampleButton(
             parent,
             self.text_sample,
+            self.transcribed_text_field,
             self.sample_text_field,
             self.button_manager,
             self.rating_bar,
@@ -46,6 +47,7 @@ class AudioRecorderGUI(tk.Tk):
         self.load_sample_button = SentenceSampleButton(
             parent,
             self.text_sample,
+            self.transcribed_text_field,
             self.sample_text_field,
             self.button_manager,
             self.rating_bar,
