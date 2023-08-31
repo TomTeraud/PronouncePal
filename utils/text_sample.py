@@ -1,33 +1,34 @@
 from db.database_handler import DatabaseHandler as DH
-import random
+from difflib import SequenceMatcher
+
 
 class TextSample:
     def __init__(self):
         # Initialize instance variables
-        self.sample_exists = False  # Flag to indicate if a sample exists
-        self.word_count = None  # Number of words in the sample
-        self.sec_to_read = None  # Duration to read the sample in seconds
-        self.mill_sec_to_read = None  # Duration to read the sample in milliseconds
+        self.sample_exists = False
+        self.word_count = None
+        self.sec_to_read = None
+        self.mill_sec_to_read = None
         self.sample = None
-        self.avg_sample_rating = None
+        self.sample_id = None
+        self.avg_rating = None
+        self.rating = None
         self.update_sample()
-        
+
     def update_sample(self, one_word_sample=True):
-        # Method to retrieve a new random sample and update the 'sample' attribute
-        rating = random.randint(0, 100)
         if one_word_sample:
+            self.one_word_sample = True
             new_sample_text, new_sample_id = DH.get_random_word()
-            DH.add_word_rating(new_sample_id, rating)
-            avg_rating = DH.get_rating_for_word(new_sample_id)
+            self.get_avg_rating_word(new_sample_id)
         else:
+            self.one_word_sample = False
             new_sample_text, new_sample_id = DH.get_random_sentence()
-            DH.add_sentence_rating(new_sample_id, rating)
-            avg_rating = DH.get_rating_for_sentence(new_sample_id)
+            self.get_avg_rating_sentence(new_sample_id)
 
         if new_sample_text:
             self.sample_exists = True
             self.sample = new_sample_text
-            self.avg_sample_rating = avg_rating
+            self.sample_id = new_sample_id
             self.update_word_count()
             self.calculate_duration()
         else:
@@ -51,3 +52,26 @@ class TextSample:
             # Ensure the calculated duration is not less than 2 seconds
             self.sec_to_read = max(self.sec_to_read, 2)
             self.mill_sec_to_read = int(self.sec_to_read * 1000)
+        
+    def get_avg_rating_word(self, id):
+        self.avg_rating = DH.get_rating_for_word(id)
+        
+    def get_avg_rating_sentence(self, id):
+        self.avg_rating = DH.get_rating_for_sentence(id)
+    
+    def calculate_similarity(self, string2):
+        string1_lower = self.sample.lower()
+        string2_lower = string2.lower()
+        similarity_ratio = SequenceMatcher(None, string1_lower, string2_lower).ratio()
+        self.rating = round(similarity_ratio * 100)
+        print(f"calculated rating: {self.rating}")
+
+    def add_rating_to_db(self):
+        if self.one_word_sample:
+            DH.add_word_rating_to_db(self.sample_id, self.rating)
+            # update avg-rating instance variable
+            self.get_avg_rating_word(self.sample_id)
+        else:
+            DH.add_sentence_rating_to_db(self.sample_id, self.rating)
+            # update avg-rating instance variable
+            self.get_avg_rating_sentence(self.sample_id)

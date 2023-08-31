@@ -6,14 +6,14 @@ class RatingBar(ttk.Progressbar):
 
     def __init__(self, parent, text_sample):
         self.parent = parent
-        self.rating = text_sample.avg_sample_rating
 
         self._progress_var = tk.DoubleVar()
+        self.rating = text_sample.avg_rating if text_sample.avg_rating is not None else 0
         self._progress_var.set(self.rating)
 
         super().__init__(self.parent, mode="determinate", maximum=self._MAX_PROGRESS, orient="vertical")
         self.configure(variable=self._progress_var)
 
     def update_rating(self, new_rating):
-        self.rating = new_rating
+        self.rating = new_rating if new_rating is not None else 0
         self._progress_var.set(self.rating)

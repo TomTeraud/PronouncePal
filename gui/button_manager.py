@@ -56,34 +56,7 @@ class ButtonManager:
         if self.record_button:
             self.record_button.update_button_state()
 
-class LoadSampleButton(ttk.Button):
-    def __init__(self, parent, text_sample, text_field_instance, button_manager, rating_bar):
-        super().__init__(parent, text="Load sentence", command=self.load_sample)
-        self.button_manager = button_manager
-        self.button_manager.set_load_sample_button(self)
-        self.rating_bar = rating_bar
-        self.text_sample = text_sample
-        self.text_field_instance = text_field_instance
-        self.update_button_state()
-
-    def load_sample(self):
-        # Load sample text and update button state
-        self.text_sample.update_sample(one_word_sample=False)
-        new_rating = self.text_sample.avg_sample_rating
-        self.rating_bar.update_rating(new_rating)
-
-        self.text_field_instance.update_text_sample()
-        self.button_manager.update_buttons()
-
-    def update_button_state(self):
-        # Disable the button if no sample, recording, or API key is not set
-        self.sample_exists = self.text_sample.sample_exists
-        if not self.sample_exists or self.button_manager.is_recording or self.button_manager.is_transcribing or not self.button_manager.is_api_key_set:
-            self.config(state=tk.DISABLED)
-        else:
-            self.config(state=tk.NORMAL)
-
-class LoadWordSampleButton(ttk.Button):
+class WordSampleButton(ttk.Button):
     def __init__(self, parent, text_sample, text_field_instance, button_manager, rating_bar):
         super().__init__(parent, text="Load word", command=self.load_sample)
         self.button_manager = button_manager
@@ -96,7 +69,33 @@ class LoadWordSampleButton(ttk.Button):
     def load_sample(self):
         # Load sample text and update button state
         self.text_sample.update_sample()
-        new_rating = self.text_sample.avg_sample_rating
+        new_rating = self.text_sample.avg_rating
+        self.rating_bar.update_rating(new_rating)
+        self.text_field_instance.update_text_sample()
+        self.button_manager.update_buttons()
+
+    def update_button_state(self):
+        # Disable the button if no sample, recording, or API key is not set
+        self.sample_exists = self.text_sample.sample_exists
+        if not self.sample_exists or self.button_manager.is_recording or self.button_manager.is_transcribing or not self.button_manager.is_api_key_set:
+            self.config(state=tk.DISABLED)
+        else:
+            self.config(state=tk.NORMAL)
+
+class SentenceSampleButton(ttk.Button):
+    def __init__(self, parent, text_sample, text_field_instance, button_manager, rating_bar):
+        super().__init__(parent, text="Load sentence", command=self.load_sample)
+        self.button_manager = button_manager
+        self.button_manager.set_load_sample_button(self)
+        self.rating_bar = rating_bar
+        self.text_sample = text_sample
+        self.text_field_instance = text_field_instance
+        self.update_button_state()
+
+    def load_sample(self):
+        # Load sample text and update button state
+        self.text_sample.update_sample(one_word_sample=False)
+        new_rating = self.text_sample.avg_rating
         self.rating_bar.update_rating(new_rating)
         self.text_field_instance.update_text_sample()
         self.button_manager.update_buttons()
@@ -110,9 +109,10 @@ class LoadWordSampleButton(ttk.Button):
             self.config(state=tk.NORMAL)
 
 class RecordButton(ttk.Button):
-    def __init__(self, parent, text_sample, transcribed_text_field, button_manager, progress_bar):
+    def __init__(self, parent, text_sample, transcribed_text_field, button_manager, progress_bar, rating_bar):
         super().__init__(parent, text="Start recording", command=self.start_recording)
         self.progress_bar = progress_bar
+        self.rating_bar =rating_bar
         self.button_manager = button_manager
         self.button_manager.set_record_button(self)
 
@@ -150,7 +150,11 @@ class RecordButton(ttk.Button):
         else:
             # Process the transcribed text
             self.transcribed_text_field.update_transcribed_text(result)
-
+            # Calculate rating from sample text and transcribed text
+            self.text_sample.calculate_similarity(result)
+            self.text_sample.add_rating_to_db()
+            # Update rating bar
+            self.rating_bar.update_rating(self.text_sample.avg_rating)
         self.button_manager.stop_transcribing()
 
     def error(self, error):

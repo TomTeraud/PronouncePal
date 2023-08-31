@@ -119,7 +119,7 @@ class DatabaseHandler:
             connection.close()
 
     @staticmethod
-    def add_word_rating(word_id, rating):
+    def add_word_rating_to_db(word_id, rating):
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
@@ -134,7 +134,7 @@ class DatabaseHandler:
             connection.close()
 
     @staticmethod
-    def add_sentence_rating(sentence_id, rating):
+    def add_sentence_rating_to_db(sentence_id, rating):
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
