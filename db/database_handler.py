@@ -1,4 +1,5 @@
 import sqlite3
+import re
 import config
 
 class DatabaseHandler:
@@ -46,6 +47,27 @@ class DatabaseHandler:
 
         connection.commit()
         connection.close()
+        DatabaseHandler.populate_database_if_empty()
+
+    @staticmethod
+    def is_sentence_table_empty():
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
+
+        cursor.execute('SELECT COUNT(*) FROM sentence')
+        count = cursor.fetchone()[0]
+
+        connection.close()
+
+        return count == 0
+
+    @staticmethod
+    def populate_database_if_empty():
+        if DatabaseHandler.is_sentence_table_empty():
+            # Database is empty, so populate it
+            DatabaseHandler.get_and_save_sentences_from_text_file("placeholder.txt")
+            DatabaseHandler.save_words_from_sentences()
+
 
     @classmethod
     def delete_all_rows(cls):
@@ -79,7 +101,9 @@ class DatabaseHandler:
 
         try:
             with open(selected_file_path, 'r') as file:
-                sentences = file.readlines()
+                text = file.read()
+                sentences = re.split(r'(?<=[.!?])\s+', text)
+
                 for sentence in sentences:
                     stripped_sentence = sentence.strip()
                     if stripped_sentence:  # Check if the sentence is not empty
