@@ -8,3 +8,5 @@ __pycache__
 your_database.db
 your_text_file.txt
 build
+mainspec
+dist

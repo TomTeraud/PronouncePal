@@ -11,7 +11,7 @@ class AudioRecorderGUI(tk.Tk):
         super().__init__()
         self.text_sample = text_sample
 
-        self.title("Audio Recorder")
+        self.title("PronouncePal")
         self.geometry("600x200")
         self.setup_gui()
 
