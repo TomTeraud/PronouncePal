@@ -15,6 +15,7 @@ class MenuBar(tk.Menu):
     def create_menus(self):
         self.create_file_menu()
         self.create_api_menu()
+        self.create_help_menu()
 
     def create_file_menu(self):
         menu_file = tk.Menu(self)
@@ -43,6 +44,28 @@ class MenuBar(tk.Menu):
         if result:
             self.button_manager.set_api_key_status(result)
             self.update_gui()
+
+    def create_help_menu(self):
+        menu_help = tk.Menu(self)
+        self.add_cascade(menu=menu_help, label='Help')
+        menu_help.add_command(label="Readme", command=self.show_readme)
+
+    def show_readme(self):
+        readme_path = "README.md"  # Use a relative path
+
+        # Read the contents of the readme.md file
+        with open(readme_path, 'r') as file:
+            readme_content = file.read()
+
+        # Create a new window to display the readme content
+        readme_window = tk.Toplevel(self)
+        readme_window.title("Readme")
+        readme_text = tk.Text(readme_window, wrap=tk.WORD)
+        readme_text.pack(fill=tk.BOTH, expand=True)
+
+        # Insert the readme content into the Text widget
+        readme_text.insert(tk.END, readme_content)
+        readme_text.config(state=tk.DISABLED)  # Make it read-only
 
     def update_gui(self):
         self.text_sample.update_sample()
