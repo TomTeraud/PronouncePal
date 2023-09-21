@@ -1,6 +1,7 @@
 import sqlite3
 import re
 import config
+from helpers import resource_path
 
 class DatabaseHandler:
     def __init__(self):
@@ -65,7 +66,7 @@ class DatabaseHandler:
     def populate_database_if_empty():
         if DatabaseHandler.is_sentence_table_empty():
             # Database is empty, so populate it
-            DatabaseHandler.get_and_save_sentences_from_text_file("placeholder.txt")
+            DatabaseHandler.get_and_save_sentences_from_text_file(resource_path("placeholder.txt"))
             DatabaseHandler.save_words_from_sentences()
 
 
