@@ -1,5 +1,5 @@
 from tkinter import filedialog, messagebox, simpledialog
-from db.database_handler import DatabaseHandler as DH
+from database_handler import DatabaseHandler as DH
 
 class FileMenuHandler:
     @staticmethod

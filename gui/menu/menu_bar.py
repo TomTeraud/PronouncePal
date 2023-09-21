@@ -1,7 +1,7 @@
 import tkinter as tk
 from gui.menu.file_handler import FileMenuHandler
 from gui.menu.api_handler import ApiMenuHandler
-import os
+from helpers import resource_path
 
 
 class MenuBar(tk.Menu):
@@ -52,14 +52,8 @@ class MenuBar(tk.Menu):
         menu_help.add_command(label="Readme", command=self.show_readme)
 
     def show_readme(self):
-        # Get the directory of the script (menu_bar.py)
-        script_dir = os.path.dirname(os.path.abspath(__file__))
         
-        # Go up two levels in the directory tree to the app's root folder (audio-to-text)
-        app_root_dir = os.path.abspath(os.path.join(script_dir, '..', '..'))
-        
-        # Construct the path to the README.md file in the app's root folder (audio-to-text)
-        readme_path = os.path.join(app_root_dir, "README.md")
+        readme_path = resource_path("README.md")
 
         # Read the contents of the readme.md file with UTF-8 encoding
         with open(readme_path, 'r', encoding='utf-8') as file:

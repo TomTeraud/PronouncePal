@@ -1,4 +1,4 @@
-from db.database_handler import DatabaseHandler as DH
+from database_handler import DatabaseHandler as DH
 from difflib import SequenceMatcher
 
 

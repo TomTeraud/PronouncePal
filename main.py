@@ -1,4 +1,4 @@
-from db.database_handler import DatabaseHandler
+from database_handler import DatabaseHandler
 from utils.text_sample import TextSample
 from gui.app_gui import AudioRecorderGUI
 from dotenv import load_dotenv
