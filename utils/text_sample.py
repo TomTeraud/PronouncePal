@@ -53,18 +53,18 @@ class TextSample:
             self.mill_sec_to_read = int(self.sec_to_read * 1000)
         
     def get_avg_rating_word(self, id):
-        self.avg_rating = DH.get_rating_for_word(id)
+        self.avg_rating = DH.get_avg_word_rating(id)
         
     def get_avg_rating_sentence(self, id):
-        self.avg_rating = DH.get_rating_for_sentence(id)
+        self.avg_rating = DH.get_avg_sentence_rating(id)
 
     def add_rating_to_db(self):
         if self.one_word_sample:
-            DH.add_word_rating_to_db(self.sample_id, self.rating)
+            DH.update_avg_word_rating(self.sample_id, self.rating)
             # update avg-rating instance variable
             self.get_avg_rating_word(self.sample_id)
         else:
-            DH.add_sentence_rating_to_db(self.sample_id, self.rating)
+            DH.update_avg_sentence_rating(self.sample_id, self.rating)
             # update avg-rating instance variable
             self.get_avg_rating_sentence(self.sample_id)
 

@@ -8,8 +8,8 @@ class FileMenuHandler:
         selected_file_path = filedialog.askopenfilename(filetypes=file_types)
 
         if selected_file_path:
-            DH.get_and_save_sentences_from_text_file(selected_file_path)
-            DH.save_words_from_sentences()
+            DH.populate_sentences_table_from_text_file(selected_file_path)
+            DH.populate_words_table_from_sentences_table()
             messagebox.showinfo("Success", "Text file uploaded successfully!")
             return True  # Return True to indicate success
         else:

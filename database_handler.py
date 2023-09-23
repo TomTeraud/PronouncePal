@@ -19,31 +19,15 @@ class DatabaseHandler:
         # Create the 'sentence' table
         cursor.execute('''CREATE TABLE IF NOT EXISTS sentence (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            sentence TEXT
+                            sentence TEXT,
+                            sentence_avg_rating INTEGER
                         )''')
-
-        # Create the 'rating' table for sentence
-        cursor.execute('''CREATE TABLE IF NOT EXISTS sentence_rating (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            sentence_id INTEGER,
-                            rating INTEGER,
-                            user_name TEXT,
-                            FOREIGN KEY (sentence_id) REFERENCES sentence(id)
-                        )''')
-        
-        # Create the 'rating' table for word
-        cursor.execute('''CREATE TABLE IF NOT EXISTS word_rating (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            word_id INTEGER,
-                            rating INTEGER,
-                            user_name TEXT,
-                            FOREIGN KEY (word_id) REFERENCES word(id)
-                        )''')
-        
+              
         # Create the 'words' table
         cursor.execute('''CREATE TABLE IF NOT EXISTS word (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            word TEXT
+                            word TEXT,
+                            word_avg_rating INTEGER
                         )''')
 
         connection.commit()
@@ -51,52 +35,26 @@ class DatabaseHandler:
         DatabaseHandler.populate_database_if_empty()
 
     @staticmethod
-    def is_sentence_table_empty():
-        connection = sqlite3.connect(config.DATABASE)
-        cursor = connection.cursor()
-
-        cursor.execute('SELECT COUNT(*) FROM sentence')
-        count = cursor.fetchone()[0]
-
-        connection.close()
-
-        return count == 0
-
-    @staticmethod
     def populate_database_if_empty():
         if DatabaseHandler.is_sentence_table_empty():
             # Database is empty, so populate it
-            DatabaseHandler.get_and_save_sentences_from_text_file(resource_path("placeholder.txt"))
-            DatabaseHandler.save_words_from_sentences()
+            DatabaseHandler.populate_sentences_table_from_text_file(resource_path("placeholder.txt"))
+            DatabaseHandler.populate_words_table_from_sentences_table()
 
-
-    @classmethod
-    def delete_all_rows(cls):
+    @staticmethod
+    def is_sentence_table_empty():
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
-
-        try:
-            # Delete all rows in 'sentences' table
-            cursor.execute('DELETE FROM sentence')
-
-            # Delete all rows in 'sentences ratings' table
-            cursor.execute('DELETE FROM sentence_rating')
-
-            # Delete all rows in 'words' table
-            cursor.execute('DELETE FROM word')
-
-            # Delete all rows in 'words rating' table
-            cursor.execute('DELETE FROM word_rating')
-            connection.commit()
-        except Exception as e:
-            connection.rollback()
-            print("An error occurred while deleting rows from the tables.")
-            print(e)
-        finally:
-            connection.close()
+        # Execute a SQL query to count the rows in the 'sentence' table
+        cursor.execute('SELECT COUNT(*) FROM sentence')
+        # Fetch the count result (it's a single value)
+        count = cursor.fetchone()[0]
+        connection.close()
+        # Return True if the table is empty (count is 0), otherwise False
+        return count == 0
 
     @classmethod
-    def get_and_save_sentences_from_text_file(cls, selected_file_path):
+    def populate_sentences_table_from_text_file(cls, selected_file_path):
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
@@ -119,7 +77,7 @@ class DatabaseHandler:
             connection.close()
 
     @classmethod
-    def save_words_from_sentences(cls):
+    def populate_words_table_from_sentences_table(cls):
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
@@ -143,32 +101,22 @@ class DatabaseHandler:
         finally:
             connection.close()
 
-    @staticmethod
-    def add_word_rating_to_db(word_id, rating):
+    @classmethod
+    def delete_all_rows(cls):
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
         try:
-            cursor.execute('INSERT INTO word_rating (word_id, rating) VALUES (?, ?)', (word_id, rating))
-            connection.commit()
-        except Exception as e:
-            connection.rollback()  # Roll back changes in case of an error
-            print("An error occurred while adding a rating to the table.")
-            print(e)
-        finally:
-            connection.close()
+            # Delete all rows in 'sentences' table
+            cursor.execute('DELETE FROM sentence')
 
-    @staticmethod
-    def add_sentence_rating_to_db(sentence_id, rating):
-        connection = sqlite3.connect(config.DATABASE)
-        cursor = connection.cursor()
-
-        try:
-            cursor.execute('INSERT INTO sentence_rating (sentence_id, rating) VALUES (?, ?)', (sentence_id, rating))
+            # Delete all rows in 'words' table
+            cursor.execute('DELETE FROM word')
             connection.commit()
+
         except Exception as e:
-            connection.rollback()  # Roll back changes in case of an error
-            print("An error occurred while adding a rating to the table.")
+            connection.rollback()
+            print("An error occurred while deleting rows from the tables.")
             print(e)
         finally:
             connection.close()
@@ -209,24 +157,73 @@ class DatabaseHandler:
             connection.close()
 
     @classmethod
-    def get_rating_for_sentence(cls, sentence_id):
+    def update_avg_sentence_rating(cls, sentence_id, new_rating):
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT AVG(rating) FROM sentence_rating WHERE sentence_id = ?', (sentence_id,))
+            cursor.execute('SELECT sentence_avg_rating FROM sentence WHERE id = ?', (sentence_id,))
+            old_avg_rating = cursor.fetchone()
+
+            if old_avg_rating[0]:
+                old_avg_rating = old_avg_rating[0]  # Extract the value from the result tuple
+                calculated_avg_rating = ((old_avg_rating + new_rating) / 2)
+                cursor.execute('UPDATE sentence SET sentence_avg_rating = ? WHERE id = ?', (calculated_avg_rating, sentence_id))
+            else:
+                cursor.execute('UPDATE sentence SET sentence_avg_rating = ? WHERE id = ?', (new_rating, sentence_id))
+            connection.commit()
+
+        except Exception as e:
+            connection.rollback()  # Roll back changes in case of an error
+            print("An error occurred while updating the rating.")
+            print(e)
+        finally:
+            connection.close()
+
+    @classmethod
+    def get_avg_sentence_rating(cls, sentence_id):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('SELECT sentence_avg_rating FROM sentence WHERE id = ?', (sentence_id,))
             avg_rating = cursor.fetchone()[0]
             return avg_rating
         finally:
             connection.close()
 
+    @staticmethod
+    def update_avg_word_rating(word_id, new_rating):
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
+        print(word_id, new_rating)
+
+        try:
+            cursor.execute('SELECT word_avg_rating FROM word WHERE id = ?', (word_id,))
+            old_avg_rating = cursor.fetchone()
+
+            if old_avg_rating[0]:
+                old_avg_rating = old_avg_rating[0]  # Extract the value from the result tuple
+                calculated_avg_rating = ((old_avg_rating + new_rating) / 2)
+                cursor.execute('UPDATE word SET word_avg_rating = ? WHERE id = ?', (calculated_avg_rating, word_id))
+            else:
+                cursor.execute('UPDATE word SET word_avg_rating = ? WHERE id = ?', (new_rating, word_id))
+            
+            connection.commit()
+        except Exception as e:
+            connection.rollback()  # Roll back changes in case of an error
+            print("An error occurred while adding a rating to the table.")
+            print(e)
+        finally:
+            connection.close()
+
     @classmethod
-    def get_rating_for_word(cls, word_id):
+    def get_avg_word_rating(cls, word_id):
         connection = sqlite3.connect(config.DATABASE)
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT AVG(rating) FROM word_rating WHERE word_id = ?', (word_id,))
+            cursor.execute('SELECT word_avg_rating FROM word WHERE id = ?', (word_id,))
             avg_rating = cursor.fetchone()[0]
             return avg_rating
         finally:
