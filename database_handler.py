@@ -228,3 +228,27 @@ class DatabaseHandler:
             return avg_rating
         finally:
             connection.close()
+    
+    @staticmethod
+    def fetch_sentences_from_database():
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('SELECT sentence, sentence_avg_rating FROM sentence')
+            sentences = cursor.fetchall()
+            return sentences
+        finally:
+            connection.close()
+
+    @staticmethod
+    def fetch_words_from_database():
+        connection = sqlite3.connect(config.DATABASE)
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('SELECT word, word_avg_rating FROM word')
+            words = cursor.fetchall()
+            return words
+        finally:
+            connection.close()

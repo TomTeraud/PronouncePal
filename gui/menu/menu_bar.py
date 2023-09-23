@@ -1,6 +1,6 @@
 import tkinter as tk
-from gui.menu.file_handler import FileMenuHandler
-from gui.menu.api_handler import ApiMenuHandler
+from gui.menu._file_handler import FileMenuHandler
+from gui.menu._api_handler import ApiMenuHandler
 from helpers import resource_path
 
 
