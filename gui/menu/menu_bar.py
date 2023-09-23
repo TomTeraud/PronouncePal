@@ -1,7 +1,7 @@
 import tkinter as tk
 from gui.menu._file_handler import FileMenuHandler
 from gui.menu._api_handler import ApiMenuHandler
-from helpers import resource_path
+from gui.menu._help_handler import HelpMenuHandler
 
 
 class MenuBar(tk.Menu):
@@ -33,7 +33,7 @@ class MenuBar(tk.Menu):
     def handle_text_samples_delete(self):
         result = FileMenuHandler.delete_samples_from_db()
         if result:
-            self.update_gui()        
+            self.update_gui()
 
     def create_api_menu(self):
         menu_api = tk.Menu(self)
@@ -49,25 +49,7 @@ class MenuBar(tk.Menu):
     def create_help_menu(self):
         menu_help = tk.Menu(self)
         self.add_cascade(menu=menu_help, label='Help')
-        menu_help.add_command(label="Readme", command=self.show_readme)
-
-    def show_readme(self):
-        
-        readme_path = resource_path("README.md")
-
-        # Read the contents of the readme.md file with UTF-8 encoding
-        with open(readme_path, 'r', encoding='utf-8') as file:
-            readme_content = file.read()
-
-        # Create a new window to display the readme content
-        readme_window = tk.Toplevel(self)
-        readme_window.title("Readme")
-        readme_text = tk.Text(readme_window, wrap=tk.WORD)
-        readme_text.pack(fill=tk.BOTH, expand=True)
-
-        # Insert the readme content into the Text widget
-        readme_text.insert(tk.END, readme_content)
-        readme_text.config(state=tk.DISABLED)  # Make it read-only
+        menu_help.add_command(label="Readme", command=HelpMenuHandler.show_readme)
 
     def update_gui(self):
         self.text_sample.update_sample()
