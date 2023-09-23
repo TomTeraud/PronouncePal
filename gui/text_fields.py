@@ -2,7 +2,7 @@ import tkinter as tk
 
 class SampleTextField(tk.Text):
     def __init__(self, parent, text_sample):
-        super().__init__(parent, borderwidth=4, relief="solid")
+        super().__init__(parent, borderwidth=4, relief="solid", wrap="word")
         self.text_sample = text_sample
 
         # Call method to update the displayed text sample
@@ -20,7 +20,7 @@ class SampleTextField(tk.Text):
 
 class TranscribedTextField(tk.Text):
     def __init__(self, parent):
-        super().__init__(parent, borderwidth=4, relief="solid")
+        super().__init__(parent, borderwidth=4, relief="solid", wrap="word")
 
     def update_transcribed_text(self, transcribed_text):
         # Clear the existing content and insert new transcribed text
