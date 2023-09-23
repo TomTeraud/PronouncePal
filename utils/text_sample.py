@@ -29,28 +29,27 @@ class TextSample:
             self.sample_exists = True
             self.sample = new_sample_text
             self.sample_id = new_sample_id
-            self.update_word_count()
+            self.update_char_count()
             self.calculate_duration()
         else:
             self.sample_exists = False
             self.sample = "No sample available. Hint: File/Add text file to database"
             print("Failed to obtain sample from get_random_sample()")
 
-    def update_word_count(self):
-        # Method to update the word count based on the current sample
+    def update_char_count(self):
+        # Method to update the character count based on the current sample
         if self.sample is None:
-            self.word_count = None
+            self.char_count = None
         else:
-            # Split the sample text into words using spaces and update the word_count
-            self.word_count = len(self.sample.split())
+            self.char_count = len(self.sample)
 
     def calculate_duration(self):
-        # Method to calculate the duration to read the text sample based on word count
-        words_per_minute = 120  # Assumed average reading speed in words per minute
-        if self.word_count is not None:
-            self.sec_to_read = self.word_count / (words_per_minute / 60)
+        # Method to calculate the duration to read the text sample based on character count
+        chars_per_minute = 300  # Assumed average reading speed in characters per minute
+        if self.char_count is not None:
+            self.sec_to_read = self.char_count / (chars_per_minute / 60)
             # Ensure the calculated duration is not less than 2 seconds
-            self.sec_to_read = max(self.sec_to_read, 2)
+            self.sec_to_read = self.sec_to_read + 1.5
             self.mill_sec_to_read = int(self.sec_to_read * 1000)
         
     def get_avg_rating_word(self, id):
