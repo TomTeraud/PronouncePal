@@ -17,9 +17,13 @@ class RatingMenuHandler:
         frame.grid(row=0, column=0, sticky=(tk.N, tk.W, tk.E, tk.S))
 
         # Pagination settings
-        page_size = 10  # Number of items per page
+        # Determin number of items per page
+        if title == "Words Ratings":
+            page_size = 10  
+        else:
+            page_size = 4
         current_page = 1  # Current page index
-
+        
         # Function to update the frame with data for the current page
         def update_frame():
             start_index = (current_page - 1) * page_size
