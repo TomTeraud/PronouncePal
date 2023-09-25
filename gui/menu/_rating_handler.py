@@ -123,7 +123,7 @@ class RatingMenuHandler:
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT word, word_avg_rating FROM word')
+            cursor.execute('SELECT word, word_avg_rating FROM word ORDER BY word_avg_rating DESC')
             words = cursor.fetchall()
             return words
         finally:
@@ -135,7 +135,7 @@ class RatingMenuHandler:
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT sentence, sentence_avg_rating FROM sentence')
+            cursor.execute('SELECT sentence, sentence_avg_rating FROM sentence ORDER BY sentence_avg_rating DESC')
             sentences = cursor.fetchall()
             return sentences
         finally:
