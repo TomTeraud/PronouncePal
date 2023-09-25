@@ -85,13 +85,17 @@ class DatabaseHandler:
             cursor.execute('SELECT sentence FROM sentence')
             sentences = cursor.fetchall()
 
+            # Create a set to keep track of unique words
+            unique_words = set()
+
             for sentence in sentences:
                 words = sentence[0].split()  # Split sentence into words
                 for word in words:
                     stripped_word = word.strip().lower()
                     stripped_word = ''.join(filter(str.isalpha, stripped_word))  # Remove non-alphabetic characters
-                    if stripped_word and len(stripped_word) >= 3:  # Check word length
+                    if stripped_word and len(stripped_word) >= 3 and stripped_word not in unique_words:
                         cursor.execute('INSERT INTO word (word) VALUES (?)', (stripped_word,))
+                        unique_words.add(stripped_word)  # Add the word to the set
 
             connection.commit()
         except Exception as e:
