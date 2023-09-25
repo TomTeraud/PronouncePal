@@ -2,6 +2,7 @@ import tkinter as tk
 from gui.menu._file_handler import FileMenuHandler
 from gui.menu._api_handler import ApiMenuHandler
 from gui.menu._help_handler import HelpMenuHandler
+from gui.menu._rating_handler import RatingMenuHandler
 
 
 class MenuBar(tk.Menu):
@@ -15,6 +16,7 @@ class MenuBar(tk.Menu):
 
     def create_menus(self):
         self.create_file_menu()
+        self.create_rating_menu()
         self.create_api_menu()
         self.create_help_menu()
 
@@ -50,6 +52,12 @@ class MenuBar(tk.Menu):
         menu_help = tk.Menu(self)
         self.add_cascade(menu=menu_help, label='Help')
         menu_help.add_command(label="Readme", command=HelpMenuHandler.show_readme)
+
+    def create_rating_menu(self):
+        menu_rating = tk.Menu(self)
+        self.add_cascade(menu=menu_rating, label='Ratings')
+        menu_rating.add_command(label="Sentences ratings", command=RatingMenuHandler.show_sentences_ratings)
+        menu_rating.add_command(label="Words ratings", command=RatingMenuHandler.show_words_ratings)
 
     def update_gui(self):
         self.text_sample.update_sample()
