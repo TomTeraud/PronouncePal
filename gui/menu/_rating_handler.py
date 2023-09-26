@@ -8,6 +8,12 @@ class RatingMenuHandler:
     @classmethod
     def show_ratings(cls, data, title):
         data_len = len(data)
+        word_lines = 10
+        sentence_lines = 5
+
+        # Determine the number of rows based on the title
+        num_rows = word_lines if title == "Words Ratings" else sentence_lines
+        
         # Create a new top-level window
         root = tk.Toplevel()
         root.title(title)
@@ -19,9 +25,9 @@ class RatingMenuHandler:
         # Pagination settings
         # Determin number of items per page
         if title == "Words Ratings":
-            page_size = 10  
+            page_size = word_lines  
         else:
-            page_size = 4
+            page_size = sentence_lines
         current_page = 1  # Current page index
         
         # Function to update the frame with data for the current page
@@ -99,9 +105,20 @@ class RatingMenuHandler:
         # Update the frame with data for the initial page
         update_frame()
 
+       
+        frame.columnconfigure(0, weight=1)
+
+        # Apply rowconfigure to each row
+        for row in range(num_rows):
+            frame.rowconfigure(row, weight=1, minsize=30)
+
         # Configure row and column weights to make the frame resize properly
         button_frame.grid_columnconfigure(0, weight=1)
         button_frame.grid_rowconfigure(0, weight=1)
+
+        # Configure row and column weights for the grid
+        root.grid_rowconfigure(0, weight=1)
+        root.grid_columnconfigure(0, weight=1)
         frame.grid_rowconfigure(0, weight=1)
         frame.grid_columnconfigure(0, weight=1)
 
