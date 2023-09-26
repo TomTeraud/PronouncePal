@@ -1,6 +1,7 @@
 import sqlite3
 import re
 import config
+from sqlite3 import IntegrityError
 from helpers import resource_path
 
 class DatabaseHandler:
@@ -55,26 +56,47 @@ class DatabaseHandler:
 
     @classmethod
     def populate_sentences_table_from_text_file(cls, selected_file_path):
-        connection = sqlite3.connect(config.DATABASE)
-        cursor = connection.cursor()
-
         try:
+            connection = sqlite3.connect(config.DATABASE)
+            cursor = connection.cursor()
+
+            # Read the file using a context manager
             with open(selected_file_path, 'r') as file:
                 text = file.read()
-                sentences = re.split(r'(?<=[.!?])\s+', text)
 
-                for sentence in sentences:
-                    stripped_sentence = sentence.strip()
-                    if stripped_sentence:  # Check if the sentence is not empty
-                        cursor.execute('INSERT INTO sentence (sentence) VALUES (?)', (stripped_sentence,))
+            # Remove newlines and other unwanted characters
+            cleaned_text = text.replace('\n', ' ').replace('\r', '')
 
-            connection.commit()
-        except Exception as e:
-            connection.rollback()
+            # Split the cleaned text into sentences using regex
+            sentences = re.split(r'(?<=[.!?])\s+', cleaned_text)
+
+            # Use executemany to insert multiple sentences at once
+            stripped_sentences = [(sentence.strip(),) for sentence in sentences if sentence.strip()]
+            if stripped_sentences:
+                try:
+                    cursor.executemany('INSERT INTO sentence (sentence) VALUES (?)', stripped_sentences)
+                except sqlite3.Error as e:
+                    connection.rollback()
+                    print("An error occurred during insert:", e)
+                else:
+                    connection.commit()  # Commit here if no exceptions occurred
+
+        except sqlite3.Error as e:
             print("An error occurred while reading the text file or inserting into the database.")
             print(e)
+        except FileNotFoundError:
+            print(f"File not found at path: {selected_file_path}")
+        except IntegrityError as ie:
+            print("Integrity error occurred. Possibly a duplicate sentence insertion.")
+        except Exception as ex:
+            print("An unexpected error occurred.")
+            print(ex)
         finally:
-            connection.close()
+            # Make sure to close the connection, whether an exception occurred or not
+            if connection:
+                connection.close()
+
+
 
     @classmethod
     def populate_words_table_from_sentences_table(cls):
@@ -228,7 +250,13 @@ class DatabaseHandler:
 
         try:
             cursor.execute('SELECT word_avg_rating FROM word WHERE id = ?', (word_id,))
-            avg_rating = cursor.fetchone()[0]
+            result = cursor.fetchone()
+
+            if result is not None:
+                avg_rating = result[0]
+            else:
+                avg_rating = 0.0  # Set a default value when no result is found
+
             return avg_rating
         finally:
             connection.close()
