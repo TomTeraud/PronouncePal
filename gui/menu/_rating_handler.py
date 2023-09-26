@@ -37,7 +37,7 @@ class RatingMenuHandler:
                 rating_bg_color = "light gray" if index % 2 == 0 else "white"
 
 
-                text_label = ttk.Label(frame, text=text, background=text_bg_color)
+                text_label = ttk.Label(frame, text=text, background=text_bg_color, wraplength=300)
                 rating_label = ttk.Label(frame, text=rating, background=rating_bg_color,padding=(10, 10, 10, 0))
 
                 text_label.grid(column=0, row=index % page_size, sticky=(tk.N, tk.W, tk.E, tk.S))
