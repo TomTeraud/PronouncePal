@@ -1,5 +1,6 @@
 from database_handler import DatabaseHandler as DH
 from difflib import SequenceMatcher
+import nltk
 
 
 class TextSample:
@@ -10,6 +11,7 @@ class TextSample:
         self.sec_to_read = None
         self.mill_sec_to_read = None
         self.sample = None
+        self.phoneme = None
         self.sample_id = None
         self.avg_rating = None
         self.rating = None
@@ -27,6 +29,7 @@ class TextSample:
 
         if new_sample_text:
             self.sample_exists = True
+            self.get_phonemes(new_sample_text)
             self.sample = new_sample_text
             self.sample_id = new_sample_id
             self.update_char_count()
@@ -78,3 +81,12 @@ class TextSample:
         similarity_ratio = SequenceMatcher(None, string1_lower, string2_lower).ratio()
         self.rating = round(similarity_ratio * 100)
         print(f"calculated rating: {self.rating}")
+
+    def get_phonemes(self, sample_text):
+        # Initialize the CMU Pronouncing Dictionary
+        pronouncing_dict = nltk.corpus.cmudict.dict()
+        if sample_text.lower() in pronouncing_dict:
+            phonemes = pronouncing_dict[sample_text.lower()][0]
+            self.phoneme =  ' '.join(f'/{p}/' for p in phonemes)
+        else:
+            self.phoneme = 'None'

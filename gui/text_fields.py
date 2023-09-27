@@ -22,7 +22,7 @@ class PhonemicTextField(tk.Text):
         self.update_sample()
 
     def update_sample(self):
-        phoneme_sample = self.phoneme_sample.sample
+        phoneme_sample = self.phoneme_sample.phoneme
         self.delete("1.0", tk.END)
         self.insert("1.0", phoneme_sample)
 
