@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from gui.text_fields import SampleTextField, TranscribedTextField
+from gui.text_fields import SampleTextFrame, TranscribedTextField
 from gui.button_manager import ButtonManager, SentenceSampleButton, RecordButton, WordSampleButton
 from gui.menu.menu_bar import MenuBar
 from gui.recording_progres_bar import RecordingProgresBar
@@ -26,7 +26,7 @@ class AudioRecorderGUI(tk.Tk):
         self.rating_bar = RatingBar(parent, self.text_sample)
         self.rating_bar.grid(row=0, column=5, sticky="nsew", rowspan=3)
 
-        self.sample_text_field = SampleTextField(parent, self.text_sample)
+        self.sample_text_field = SampleTextFrame(parent, self.text_sample)
         self.sample_text_field.grid(row=0, column=0, sticky="nsew", columnspan=2)
 
         self.transcribed_text_field = TranscribedTextField(parent)
