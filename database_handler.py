@@ -96,8 +96,6 @@ class DatabaseHandler:
             if connection:
                 connection.close()
 
-
-
     @classmethod
     def populate_words_table_from_sentences_table(cls):
         connection = sqlite3.connect(config.DATABASE)

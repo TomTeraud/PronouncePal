@@ -12,8 +12,8 @@ def main():
     DatabaseHandler.create_tables()
     
     # Create an instance of TextSample to manage sample text
-    text_sample = TextSample()  
-
+    text_sample = TextSample()
+    
     # Create the main GUI window using initialized components
     gui = AudioRecorderGUI(text_sample)
 

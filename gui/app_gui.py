@@ -1,82 +1,103 @@
 import tkinter as tk
 from tkinter import ttk
 from gui.text_fields import SampleTextFrame, TranscribedTextField
-from gui.button_manager import ButtonManager, SentenceSampleButton, RecordButton, WordSampleButton
+from gui.button_manager import ButtonManager, SentenceSampleButton, RecordButton, WordSampleButton, ApiKeySetupButtonOpenAi, SelectOpenAiButton, SelectAlternativeButton, StartMainGuiButton
 from gui.menu.menu_bar import MenuBar
 from gui.recording_progres_bar import RecordingProgresBar
 from gui.rating_bar import RatingBar
+from gui.label_fields import MainSetupLabel
+from app_setup import SetupManager as sm
+
 
 class AudioRecorderGUI(tk.Tk):
     def __init__(self, text_sample):
         super().__init__()
         self.text_sample = text_sample
-
+        
         self.title("PronouncePal")
-        self.geometry("600x200")
-        self.setup_gui()
+        self.geometry("400x150")
+        self.start_main_frame_and_widgets()
 
-    def setup_gui(self):
+    
+    def destroy_all_widgets(self):
+        # Get a list of all widgets in the frame
+        widgets = self.winfo_children()
+
+        # Loop through the widgets and destroy each one
+        for widget in widgets:
+            widget.destroy()
+
+    def start_main_frame_and_widgets(self):
         parent = ttk.Frame(self)
         parent.grid(sticky=(tk.N, tk.W, tk.E, tk.S))
 
-        # Create the RecordingProgresBar widget, duration comes from text_sample
-        self.progress_bar = RecordingProgresBar(parent, self.text_sample)
-        self.progress_bar.grid(row=2, column=0, sticky="nsew", columnspan=4)
+        if sm.check_app_setup_state():
+            # Create main GUI components
+            self.progress_bar = RecordingProgresBar(parent, self.text_sample)
+            self.rating_bar = RatingBar(parent, self.text_sample)
+            self.sample_text_field = SampleTextFrame(parent, self.text_sample)
+            self.transcribed_text_field = TranscribedTextField(parent)
+            self.button_manager = ButtonManager()
+            self.load_word_sample_button = WordSampleButton(
+                parent, self.text_sample, self.transcribed_text_field,
+                self.sample_text_field, self.button_manager, self.rating_bar,
+            )
+            self.load_sample_button = SentenceSampleButton(
+                parent, self.text_sample, self.transcribed_text_field, 
+                self.sample_text_field, self.button_manager, self.rating_bar,
+            )
+            self.record_button = RecordButton(
+                parent, self.text_sample, self.transcribed_text_field,
+                self.button_manager, self.progress_bar, self.rating_bar,
+            )
+            self.menu_bar = MenuBar(self, self.text_sample, self.sample_text_field, self.button_manager)
+            self.config(menu=self.menu_bar)
 
-        self.rating_bar = RatingBar(parent, self.text_sample)
-        self.rating_bar.grid(row=0, column=5, sticky="nsew", rowspan=3)
+            # Grid layout for main components
+            self.progress_bar.grid(row=2, column=0, sticky="nsew", columnspan=4)
+            self.rating_bar.grid(row=0, column=5, sticky="nsew", rowspan=3)
+            self.sample_text_field.grid(row=0, column=0, sticky="nsew", columnspan=2)
+            self.transcribed_text_field.grid(row=0, column=2, sticky="nsew", columnspan=2)
+            self.load_word_sample_button.grid(row=1, column=0, sticky="nsew")
+            self.load_sample_button.grid(row=1, column=1, sticky="nsew")
+            self.record_button.grid(row=1, column=2, sticky="nsew", columnspan=2)
 
-        self.sample_text_field = SampleTextFrame(parent, self.text_sample)
-        self.sample_text_field.grid(row=0, column=0, sticky="nsew", columnspan=2)
+            # Configure columns and rows
+            self.setup_column_configure(parent, 5)
+            self.setup_row_configure(parent, 3)
+        else:
+            # Create setup labels
+            self.setup_label = MainSetupLabel(parent)
+            # Create setup buttons
+            self.api_setup_button = ApiKeySetupButtonOpenAi(parent, self)
+            self.select_openai_button = SelectOpenAiButton(parent, self)
+            self.select_alternative_button = SelectAlternativeButton(parent, self)
+            self.start_main_gui_button = StartMainGuiButton(parent, self)
+            # Grid layout
+            self.setup_label.grid(row=0, column=0, sticky="nsew", columnspan=2)
+            self.select_openai_button.grid(row=1, column=0, sticky="nsew")
+            self.api_setup_button.grid(row=1, column=1, sticky="nsew")
+            self.select_alternative_button.grid(row=2, column=0, sticky="nsew")
+            self.start_main_gui_button.grid(row=3, column=0, sticky="nsew", columnspan=2)
+            
+            # Configure columns and rows
+            self.setup_column_configure(parent, 2)
+            self.setup_row_configure(parent, 3)
 
-        self.transcribed_text_field = TranscribedTextField(parent)
-        self.transcribed_text_field.grid(row=0, column=2, sticky="nsew", columnspan=2)
-
-        self.button_manager = ButtonManager()
-
-        self.load_word_sample_button = WordSampleButton(
-            parent,
-            self.text_sample,
-            self.transcribed_text_field,
-            self.sample_text_field,
-            self.button_manager,
-            self.rating_bar,
-        )
-        self.load_word_sample_button.grid(row=1, column=0, sticky="nsew")
-
-        self.load_sample_button = SentenceSampleButton(
-            parent,
-            self.text_sample,
-            self.transcribed_text_field,
-            self.sample_text_field,
-            self.button_manager,
-            self.rating_bar,
-        )
-        self.load_sample_button.grid(row=1, column=1, sticky="nsew")
-
-        self.record_button = RecordButton(
-            parent,
-            self.text_sample,
-            self.transcribed_text_field,
-            self.button_manager,
-            self.progress_bar,
-            self.rating_bar,
-        )
-        self.record_button.grid(row=1, column=2, sticky="nsew", columnspan=2)
-
-        self.menu_bar = MenuBar(self, self.text_sample, self.sample_text_field, self.button_manager)
-        self.config(menu=self.menu_bar)
-
-        # Apply columnconfigure to each column
-        for col in range(5):
-            parent.columnconfigure(col, weight=1)
-
-        # Apply rowconfigure to each row
-        for row in range(3):
-            parent.rowconfigure(row, weight=1, minsize=30)
-
+        # Add padding to child widgets
         for child in parent.winfo_children():
             child.grid_configure(padx=2, pady=2)
 
+        # Configure grid for the main window
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+
+    # Apply columnconfigure to each column
+    def setup_column_configure(self, parent, num_columns):
+        for col in range(num_columns):
+            parent.columnconfigure(col, weight=1)
+        
+    # Apply rowconfigure to each row
+    def setup_row_configure(self, parent, num_rows):
+        for row in range(num_rows):
+            parent.rowconfigure(row, weight=1, minsize=30)

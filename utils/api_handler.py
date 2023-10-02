@@ -2,12 +2,13 @@ from tkinter import simpledialog, messagebox
 import requests
 from dotenv import load_dotenv
 
-class ApiMenuHandler:
+
+class ApiHandler:
     @classmethod
-    def get_api_key(cls):
+    def ask_for_openai_key(cls):
         api_key = simpledialog.askstring("Input", "Enter your API key:")
         if api_key:
-            if cls.validate_api_key(api_key):
+            if cls.validate_openai_key(api_key):
                 with open(".env", "a") as env_file:
                     env_file.write(f"\nOPENAI_API_KEY={api_key}")
                 load_dotenv()
@@ -18,7 +19,7 @@ class ApiMenuHandler:
                 return False
 
     @staticmethod
-    def validate_api_key(api_key):
+    def validate_openai_key(api_key):
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}"

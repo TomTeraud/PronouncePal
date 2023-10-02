@@ -1,6 +1,5 @@
 import tkinter as tk
 from gui.menu._file_handler import FileMenuHandler
-from gui.menu._api_handler import ApiMenuHandler
 from gui.menu._help_handler import HelpMenuHandler
 from gui.menu._rating_handler import RatingMenuHandler
 
@@ -17,7 +16,6 @@ class MenuBar(tk.Menu):
     def create_menus(self):
         self.create_file_menu()
         self.create_rating_menu()
-        self.create_api_menu()
         self.create_help_menu()
 
     def create_file_menu(self):
@@ -35,17 +33,6 @@ class MenuBar(tk.Menu):
     def handle_text_samples_delete(self):
         result = FileMenuHandler.delete_samples_from_db()
         if result:
-            self.update_gui()
-
-    def create_api_menu(self):
-        menu_api = tk.Menu(self)
-        self.add_cascade(menu=menu_api, label='API')
-        menu_api.add_command(label="Set your chatGPT API key", command=self.handle_api_key_result)
-
-    def handle_api_key_result(self):
-        result = ApiMenuHandler.get_api_key()
-        if result:
-            self.button_manager.set_api_key_status(result)
             self.update_gui()
 
     def create_help_menu(self):
