@@ -215,7 +215,6 @@ class SelectOpenAiButton(ttk.Button):
         self.argi.destroy_all_widgets()
         self.argi.start_main_frame_and_widgets()
 
-
 class SelectAlternativeButton(ttk.Button):  
     def __init__(self, parent, argi):
         super().__init__(parent, text="Alternative (in developement)", command=self.select_alternative)
@@ -238,13 +237,11 @@ class SelectAlternativeButton(ttk.Button):
         self.argi.destroy_all_widgets()
         self.argi.start_main_frame_and_widgets()
 
-
-
 class StartMainGuiButton(ttk.Button):  
     def __init__(self, parent, argi):
         super().__init__(parent, text="Start!", command=self.start_main_gui)
         self.argi = argi
-        if sm.openai_api_selected or sm.alternative_api_selected:
+        if sm.openai_api_selected:
             self.config(state=tk.NORMAL)
         else:
             self.config(state=tk.DISABLED)
