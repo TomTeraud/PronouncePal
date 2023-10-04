@@ -5,13 +5,14 @@ from title_page_controler import ButtonState as BS
 
 
 class ApiKeySetupButtonOpenAi(ttk.Button):  
-    def __init__(self, parent, select_openai_inst):
+    def __init__(self, parent):
         super().__init__(parent, text="Add API key", command=self.manage_api_key)
-        self.openai_inst = select_openai_inst
+
     def manage_api_key(self):
         if OAKH.ask_for_key():
             BS.openai_key_set = True
-            self.openai_inst.set_openai_state(False)
+            if BS.alter_selected is False:
+                self.select_openai.set_openai_state(False)
 
 class SelectOpenAiButton(ttk.Button):  
     def __init__(self, parent):
@@ -21,10 +22,11 @@ class SelectOpenAiButton(ttk.Button):
 
     def openai_selected(self):
         self.result = BS.toggle_openai_selected()
+        print(f"btn cliked. result is:{self.result}")
         self.select_alternative.set_alter_state(self.result)
         self.start_main_gui.set_start_state(self.result)
         self.set_color(self.result)
-        
+
     def set_color(self, state):
         style = ttk.Style()
         if state:
@@ -72,10 +74,10 @@ class StartMainGuiButton(ttk.Button):
     def start_main_gui(self):
         if BS.openai_selected:
             BS.ready_to_start = True
+            self.argi.destroy_all_widgets()
+            self.argi.start_main_frame_and_widgets()
         else:
             messagebox.showinfo("Info", "An alternative transcriber is under development")
-        self.argi.destroy_all_widgets()
-        self.argi.start_main_frame_and_widgets()
 
     def set_start_state(self, state):
         if state:

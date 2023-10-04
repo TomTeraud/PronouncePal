@@ -72,7 +72,7 @@ class AudioRecorderGUI(tk.Tk):
             # Create setup buttons
             self.select_openai = SelectOpenAiButton(parent)
             self.select_alternative = SelectAlternativeButton(parent)
-            self.api_key_setup = ApiKeySetupButtonOpenAi(parent, self.select_openai)
+            self.api_key_setup = ApiKeySetupButtonOpenAi(parent)
             self.start_main_gui = StartMainGuiButton(parent, self)
  
             # Set references between instances
@@ -80,6 +80,7 @@ class AudioRecorderGUI(tk.Tk):
             self.select_openai.start_main_gui = self.start_main_gui
             self.select_alternative.select_openai = self.select_openai
             self.select_alternative.start_main_gui = self.start_main_gui
+            self.api_key_setup.select_openai = self.select_openai
  
             # Grid layout
             self.setup_label.grid(row=0, column=0, sticky="nsew", columnspan=2)

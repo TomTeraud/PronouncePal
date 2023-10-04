@@ -17,6 +17,8 @@ class FileMenuHandler:
     @staticmethod
     def handle_change_transcriber(arg):
         BS.ready_to_start = False
+        BS.openai_selected = False
+        BS.alter_selected = False
         arg.destroy_all_widgets()
         arg.start_main_frame_and_widgets()
 
