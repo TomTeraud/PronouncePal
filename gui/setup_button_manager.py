@@ -22,7 +22,6 @@ class SelectOpenAiButton(ttk.Button):
 
     def openai_selected(self):
         self.result = BS.toggle_openai_selected()
-        print(f"btn cliked. result is:{self.result}")
         self.select_alternative.set_alter_state(self.result)
         self.start_main_gui.set_start_state(self.result)
         self.set_color(self.result)

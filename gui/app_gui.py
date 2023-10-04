@@ -67,6 +67,10 @@ class AudioRecorderGUI(tk.Tk):
             self.setup_column_configure(parent, 5)
             self.setup_row_configure(parent, 3)
         else:
+            # Create menu bar( only ratings and readme)
+            self.menu_bar = MenuBar(self)
+            self.config(menu=self.menu_bar)
+
             # Create setup labels
             self.setup_label = MainSetupLabel(parent)
             # Create setup buttons
@@ -88,6 +92,8 @@ class AudioRecorderGUI(tk.Tk):
             self.api_key_setup.grid(row=1, column=1, sticky="nsew")
             self.select_alternative.grid(row=2, column=0, sticky="nsew")
             self.start_main_gui.grid(row=3, column=0, sticky="nsew", columnspan=2)
+
+
             
             # Configure columns and rows
             self.setup_column_configure(parent, 2)

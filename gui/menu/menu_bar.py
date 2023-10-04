@@ -2,20 +2,22 @@ import tkinter as tk
 from gui.menu._file_menu_handler import FileMenuHandler as FMH
 from gui.menu._help_handler import HelpMenuHandler as HMH
 from gui.menu._rating_handler import RatingMenuHandler as RMH
+from title_page_controler import ButtonState as BS
 
 
 class MenuBar(tk.Menu):
-    def __init__(self, parent, text_sample, text_field_instance, button_manager):
+    def __init__(self, parent, text_sample = None, text_field_instance = None, button_manager = None):
         super().__init__(parent)
+        self.arg = parent
         self.text_sample = text_sample
         self.text_field_instance = text_field_instance
         self.button_manager = button_manager
-        self.arg = parent
 
         self.create_menus()
 
     def create_menus(self):
-        self.create_file_menu()
+        if BS.ready_to_start:
+            self.create_file_menu()
         self.create_rating_menu()
         self.create_help_menu()
 
