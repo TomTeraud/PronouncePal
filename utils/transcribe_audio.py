@@ -2,7 +2,7 @@ import os
 import openai
 from config import engine_id, file_path
 
-class Transcriber:
+class OpenaiTranscriber:
     @classmethod
     def transcribe_audio(cls):
         api_key = os.environ.get("OPENAI_API_KEY") # Get the API key

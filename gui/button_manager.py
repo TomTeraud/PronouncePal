@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from utils.audio_recorder_controler import AudioRecorderController as ARC
-from utils.transcribe_audio import Transcriber
-from utils.api_handler import ApiHandler as ah
-from app_setup import SetupManager as sm
+from utils.transcribe_audio import OpenaiTranscriber
 import openai
 import os
 
@@ -142,7 +140,7 @@ class RecordButton(ttk.Button):
         # Start transcribing audio, update transcribed text, and button states
         self.button_manager.start_transcribing()
         self.button_manager.stop_recording()
-        result = Transcriber.transcribe_audio()
+        result = OpenaiTranscriber.transcribe_audio()
         if isinstance(result, openai.error.RateLimitError):
             # Handle rate limit error
             msg = "Rate limit exceeded"
@@ -181,75 +179,3 @@ class RecordButton(ttk.Button):
                 self.config(text="setup API key first")
         else:
             self.config(text=f"Start recording ({self.text_sample.sec_to_read} seconds)", state=tk.NORMAL)
-
-class ApiKeySetupButtonOpenAi(ttk.Button):  
-    def __init__(self, parent, argi):
-        super().__init__(parent, text="Add API key", command=self.manage_api_key)
-        self.argi = argi
-    
-    def manage_api_key(self):
-        if ah.ask_for_openai_key():
-            # Call setup_gui_widgets to reload the GUI
-            self.argi.destroy_all_widgets()
-            self.argi.start_main_frame_and_widgets()
-
-class SelectOpenAiButton(ttk.Button):  
-    def __init__(self, parent, argi):
-        super().__init__(parent, text="OpenAI", command=self.select_open_ai)
-        self.argi = argi
-
-        if sm.openai_key_set and sm.alternative_api_selected is False:
-            self.config(state=tk.NORMAL)
-        else:
-            self.config(state=tk.DISABLED)
-
-        style = ttk.Style()
-        if sm.openai_api_selected:
-            style.configure("OpenAi.TButton", background="green")
-        else:
-            style.configure("OpenAi.TButton", background="gray90")
-        self.config(style="OpenAi.TButton")        
-    
-    def select_open_ai(self):
-        sm.toggle_openai_api_selected()
-        self.argi.destroy_all_widgets()
-        self.argi.start_main_frame_and_widgets()
-
-class SelectAlternativeButton(ttk.Button):  
-    def __init__(self, parent, argi):
-        super().__init__(parent, text="Alternative (in developement)", command=self.select_alternative)
-        self.argi = argi
-
-        if sm.alternative_api_set and sm.openai_api_selected is False:
-            self.config(state=tk.NORMAL)
-        else:
-            self.config(state=tk.DISABLED)
-
-        style = ttk.Style()
-        if sm.alternative_api_selected:
-            style.configure("Alternative.TButton", background="green")
-        else:
-            style.configure("Alternative.TButton", background="gray90")
-        self.config(style="Alternative.TButton")        
-    
-    def select_alternative(self):
-        sm.toggle_alternative_selected()
-        self.argi.destroy_all_widgets()
-        self.argi.start_main_frame_and_widgets()
-
-class StartMainGuiButton(ttk.Button):  
-    def __init__(self, parent, argi):
-        super().__init__(parent, text="Start!", command=self.start_main_gui)
-        self.argi = argi
-        if sm.openai_api_selected:
-            self.config(state=tk.NORMAL)
-        else:
-            self.config(state=tk.DISABLED)
-    
-    def start_main_gui(self):
-        if sm.openai_api_selected:
-            sm.transcriber_selected = True
-        else:
-            messagebox.showinfo("Info", "An alternative transcriber is under development")
-        self.argi.destroy_all_widgets()
-        self.argi.start_main_frame_and_widgets()

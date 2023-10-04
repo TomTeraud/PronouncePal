@@ -3,12 +3,12 @@ import requests
 from dotenv import load_dotenv
 
 
-class ApiHandler:
+class OpenaiApiKeyHandler:
     @classmethod
-    def ask_for_openai_key(cls):
+    def ask_for_key(cls):
         api_key = simpledialog.askstring("Input", "Enter your API key:")
         if api_key:
-            if cls.validate_openai_key(api_key):
+            if cls.validate_key(api_key):
                 with open(".env", "a") as env_file:
                     env_file.write(f"\nOPENAI_API_KEY={api_key}")
                 load_dotenv()
@@ -19,7 +19,7 @@ class ApiHandler:
                 return False
 
     @staticmethod
-    def validate_openai_key(api_key):
+    def validate_key(api_key):
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}"

@@ -1,12 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
 from gui.text_fields import SampleTextFrame, TranscribedTextField
-from gui.button_manager import ButtonManager, SentenceSampleButton, RecordButton, WordSampleButton, ApiKeySetupButtonOpenAi, SelectOpenAiButton, SelectAlternativeButton, StartMainGuiButton
+from gui.button_manager import ButtonManager, SentenceSampleButton, RecordButton, WordSampleButton
+from gui.setup_button_manager import ApiKeySetupButtonOpenAi, SelectOpenAiButton, SelectAlternativeButton, StartMainGuiButton
 from gui.menu.menu_bar import MenuBar
 from gui.recording_progres_bar import RecordingProgresBar
 from gui.rating_bar import RatingBar
 from gui.label_fields import MainSetupLabel
-from app_setup import SetupManager as sm
+from title_page_controler import ButtonState as BS
 
 
 class AudioRecorderGUI(tk.Tk):
@@ -31,7 +32,7 @@ class AudioRecorderGUI(tk.Tk):
         parent = ttk.Frame(self)
         parent.grid(sticky=(tk.N, tk.W, tk.E, tk.S))
 
-        if sm.check_app_setup_state():
+        if BS.check_start_state():
             # Create main GUI components
             self.progress_bar = RecordingProgresBar(parent, self.text_sample)
             self.rating_bar = RatingBar(parent, self.text_sample)
@@ -69,16 +70,22 @@ class AudioRecorderGUI(tk.Tk):
             # Create setup labels
             self.setup_label = MainSetupLabel(parent)
             # Create setup buttons
-            self.api_setup_button = ApiKeySetupButtonOpenAi(parent, self)
-            self.select_openai_button = SelectOpenAiButton(parent, self)
-            self.select_alternative_button = SelectAlternativeButton(parent, self)
-            self.start_main_gui_button = StartMainGuiButton(parent, self)
+
+            self.select_openai = SelectOpenAiButton(parent)
+            self.select_alternative = SelectAlternativeButton(parent)
+            # Set references between instances
+            self.select_openai.select_alternative = self.select_alternative
+            self.select_alternative.select_openai = self.select_openai
+            
+            self.api_key_setup = ApiKeySetupButtonOpenAi(parent, self.select_openai)
+            
+            self.start_main_gui = StartMainGuiButton(parent, self)
             # Grid layout
             self.setup_label.grid(row=0, column=0, sticky="nsew", columnspan=2)
-            self.select_openai_button.grid(row=1, column=0, sticky="nsew")
-            self.api_setup_button.grid(row=1, column=1, sticky="nsew")
-            self.select_alternative_button.grid(row=2, column=0, sticky="nsew")
-            self.start_main_gui_button.grid(row=3, column=0, sticky="nsew", columnspan=2)
+            self.select_openai.grid(row=1, column=0, sticky="nsew")
+            self.api_key_setup.grid(row=1, column=1, sticky="nsew")
+            self.select_alternative.grid(row=2, column=0, sticky="nsew")
+            self.start_main_gui.grid(row=3, column=0, sticky="nsew", columnspan=2)
             
             # Configure columns and rows
             self.setup_column_configure(parent, 2)

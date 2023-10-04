@@ -1,6 +1,6 @@
 from tkinter import filedialog, messagebox, simpledialog
 from database_handler import DatabaseHandler as DH
-from app_setup import SetupManager as sm
+from title_page_controler import ButtonState as BS
 
 class FileMenuHandler:
     @classmethod
@@ -16,7 +16,7 @@ class FileMenuHandler:
     
     @staticmethod
     def handle_change_transcriber(arg):
-        sm.transcriber_selected = False
+        BS.ready_to_start = False
         arg.destroy_all_widgets()
         arg.start_main_frame_and_widgets()
 
