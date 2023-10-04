@@ -14,7 +14,6 @@ class ButtonState:
     ready_to_start = False     
 
 
-
     @classmethod
     def check_start_state(cls):
         if cls.openai_selected or cls.alter_selected:

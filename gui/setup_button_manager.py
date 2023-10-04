@@ -22,9 +22,9 @@ class SelectOpenAiButton(ttk.Button):
     def openai_selected(self):
         self.result = BS.toggle_openai_selected()
         self.select_alternative.set_alter_state(self.result)
+        self.start_main_gui.set_start_state(self.result)
         self.set_color(self.result)
-
-
+        
     def set_color(self, state):
         style = ttk.Style()
         if state:
@@ -39,7 +39,6 @@ class SelectOpenAiButton(ttk.Button):
         else:
             self.config(state=tk.DISABLED)
 
-
 class SelectAlternativeButton(ttk.Button):  
     def __init__(self, parent, ):
         super().__init__(parent, text="Alternative (in developement)", command=self.alter_selected)
@@ -47,6 +46,7 @@ class SelectAlternativeButton(ttk.Button):
     def alter_selected(self):
         self.result = BS.toggle_alter_selected()
         self.select_openai.set_openai_state(self.result)
+        self.start_main_gui.set_start_state(self.result)
         self.set_color(self.result)
 
     def set_color(self, state):
@@ -63,17 +63,12 @@ class SelectAlternativeButton(ttk.Button):
         else:
             self.config(state=tk.DISABLED)
 
-
-
 class StartMainGuiButton(ttk.Button):  
     def __init__(self, parent, argi):
         super().__init__(parent, text="Start!", command=self.start_main_gui)
         self.argi = argi
-        if BS.openai_selected:
-            self.config(state=tk.NORMAL)
-        else:
-            self.config(state=tk.DISABLED)
-    
+        self.set_start_state(False)
+
     def start_main_gui(self):
         if BS.openai_selected:
             BS.ready_to_start = True
@@ -81,3 +76,9 @@ class StartMainGuiButton(ttk.Button):
             messagebox.showinfo("Info", "An alternative transcriber is under development")
         self.argi.destroy_all_widgets()
         self.argi.start_main_frame_and_widgets()
+
+    def set_start_state(self, state):
+        if state:
+            self.config(state=tk.NORMAL)
+        else:
+            self.config(state=tk.DISABLED)
