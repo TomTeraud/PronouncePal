@@ -22,8 +22,8 @@ class AudioRecorderGUI(tk.Tk):
         self.style.theme_use('clam')
 
         self.button_colors = {
-            "default_bg": "gray90",
-            "default_active_bg": "gray95",
+            "default_bg": "#DCDAD5",
+            "default_active_bg": "#EEEBE6",
             "selected_bg": "#92de85",
             "selected_active_bg": "#a5fa96"
         }

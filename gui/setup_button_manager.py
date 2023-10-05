@@ -48,7 +48,7 @@ class SelectOpenAiButton(ttk.Button):
 
 class SelectAlternativeButton(ttk.Button):
     def __init__(self, parent):
-        super().__init__(parent, text="Alternative (in development)", style="Alt.TButton", command=self.alter_selected)
+        super().__init__(parent, text="Alternative (under development)", style="Alt.TButton", command=self.alter_selected)
 
     def alter_selected(self):
         self.result = BS.toggle_alter_selected()
