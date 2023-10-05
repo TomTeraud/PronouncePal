@@ -16,9 +16,22 @@ class AudioRecorderGUI(tk.Tk):
         self.text_sample = text_sample
         
         self.title("PronouncePal")
-        self.geometry("400x150")
-        self.start_main_frame_and_widgets()
+        self.geometry("450x200")
 
+        self.style = ttk.Style()
+        self.style.theme_use('clam')
+
+        self.button_colors = {
+            "default_bg": "gray90",
+            "default_active_bg": "gray95",
+            "selected_bg": "#92de85",
+            "selected_active_bg": "#a5fa96"
+        }
+        self.start_main_frame_and_widgets()
+        
+    def configure_button_style(self, style_name, colors):
+        self.style.configure(style_name, background=colors["default_bg"])
+        self.style.map(style_name, background=[('active', colors["default_active_bg"]), ('alternate', colors["selected_bg"]), ('active', colors["selected_active_bg"])])
     
     def destroy_all_widgets(self):
         # Get a list of all widgets in the frame
@@ -29,9 +42,13 @@ class AudioRecorderGUI(tk.Tk):
             widget.destroy()
 
     def start_main_frame_and_widgets(self):
+
+        # Configure and apply the button styles using the colors from the dictionary
+        self.configure_button_style("Alt.TButton", self.button_colors)
+        self.configure_button_style("Openai.TButton", self.button_colors)
+
         parent = ttk.Frame(self)
         parent.grid(sticky=(tk.N, tk.W, tk.E, tk.S))
-
         if BS.check_start_state():
             # Create main GUI components
             self.progress_bar = RecordingProgresBar(parent, self.text_sample)
@@ -93,8 +110,6 @@ class AudioRecorderGUI(tk.Tk):
             self.select_alternative.grid(row=2, column=0, sticky="nsew")
             self.start_main_gui.grid(row=3, column=0, sticky="nsew", columnspan=2)
 
-
-            
             # Configure columns and rows
             self.setup_column_configure(parent, 2)
             self.setup_row_configure(parent, 3)
