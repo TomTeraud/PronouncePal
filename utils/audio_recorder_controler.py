@@ -1,6 +1,6 @@
 import sounddevice as sd
 import numpy as np
-from scipy.io import wavfile
+import wave
 import threading
 import time
 from config import file_path
@@ -16,7 +16,6 @@ class AudioRecorderController:
         """
         self.audio_data = None
         self.callback = None
-        self.file_path = file_path
         self.text_sample = text_sample
 
     def set_callback(self, callback):
@@ -62,7 +61,16 @@ class AudioRecorderController:
         # Wait for recording_duration seconds and then stop the recording
         time.sleep(recording_duration)
         sd.wait()
+        
+        # Convert the audio data to a NumPy array of dtype int16
         wav_data = np.array(audio_data, dtype=np.int16)
-        wavfile.write(file_path, 44100, wav_data)
+        
+        # Create a WAV file and write audio data to it
+        with wave.open(file_path, 'wb') as wav_file:
+            wav_file.setnchannels(1)  # Mono channel
+            wav_file.setsampwidth(2)  # 16-bit audio (2 bytes per sample)
+            wav_file.setframerate(44100)  # Sample rate
+            wav_file.writeframes(wav_data.tobytes())
+        
         if callback:
             callback()
