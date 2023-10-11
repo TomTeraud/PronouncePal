@@ -1,5 +1,5 @@
-from database_handler import DatabaseHandler
-from utils.text_sample import TextSample
+from database_handler import DatabaseInitializer
+from text_samples.ts import TextSample
 from gui.app_gui import AudioRecorderGUI
 from dotenv import load_dotenv
 
@@ -9,7 +9,7 @@ def main():
     load_dotenv()
     
     # Initialize the database and create tables if they don't exist
-    DatabaseHandler.create_tables()
+    DatabaseInitializer.create_tables()
     
     # Create an instance of TextSample to manage sample text
     text_sample = TextSample()

@@ -1,8 +1,8 @@
 import tkinter as tk
-from gui.menu._file_menu_handler import FileMenuHandler as FMH
-from gui.menu._help_handler import HelpMenuHandler as HMH
-from gui.menu._rating_handler import RatingMenuHandler as RMH
-from title_page_controler import ButtonState as BS
+from gui.menu_bar._file_menu_handler import FileMenuHandler as FMH
+from gui.menu_bar._help_handler import HelpMenuHandler as HMH
+from gui.menu_bar._rating_handler import RatingMenuHandler as RMH
+from gui.title_page.controler import ButtonState as BS
 
 
 class MenuBar(tk.Menu):

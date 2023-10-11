@@ -2,12 +2,12 @@ import tkinter as tk
 from tkinter import ttk
 from gui.text_fields import SampleTextFrame, TranscribedTextField
 from gui.button_manager import ButtonManager, SentenceSampleButton, RecordButton, WordSampleButton
-from gui.setup_button_manager import ApiKeySetupButtonOpenAi, SelectOpenAiButton, SelectAlternativeButton, StartMainGuiButton
-from gui.menu.menu_bar import MenuBar
+from gui.title_page.button_manager import ApiKeySetupButtonOpenAi, SelectOpenAiButton, SelectAlternativeButton, StartMainGuiButton
+from gui.menu_bar.menu_bar import MenuBar
 from gui.recording_progres_bar import RecordingProgresBar
 from gui.rating_bar import RatingBar
 from gui.label_fields import MainSetupLabel
-from title_page_controler import ButtonState as BS
+from gui.title_page.controler import ButtonState as BS
 
 
 class AudioRecorderGUI(tk.Tk):

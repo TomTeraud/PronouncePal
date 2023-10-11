@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from utils.api_handler import OpenaiApiKeyHandler as OAKH
-from title_page_controler import ButtonState as BS
+from gui.title_page.controler import ButtonState as BS
 
 
 class ApiKeySetupButtonOpenAi(ttk.Button):  
