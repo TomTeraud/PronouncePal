@@ -1,11 +1,11 @@
 import tkinter as tk
-from gui.menu_bar._file_menu_handler import FileMenuHandler as FMH
-from gui.menu_bar._help_handler import HelpMenuHandler as HMH
-from gui.menu_bar._rating_handler import RatingMenuHandler as RMH
-from gui.title_page.controler import ButtonState as BS
+from menu_bar._file_handler import FileMenuHandler as FMH
+from menu_bar._help_handler import HelpMenuHandler as HMH
+from menu_bar._rating_handler import RatingMenuHandler as RMH
+from title_page.controler import ButtonState as BS
 
 
-class MenuBar(tk.Menu):
+class MenuInitiator(tk.Menu):
     def __init__(self, parent, text_sample = None, text_field_instance = None, button_manager = None):
         super().__init__(parent)
         self.arg = parent

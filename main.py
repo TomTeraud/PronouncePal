@@ -1,7 +1,8 @@
-from database_handler import DatabaseInitializer
-from text_samples.ts import TextSample
-from gui.app_gui import AudioRecorderGUI
 from dotenv import load_dotenv
+
+from database_handler import DatabaseInitializer
+from text_samples._main import TextSample
+from app_window import AppWindow
 
 
 def main():
@@ -15,7 +16,7 @@ def main():
     text_sample = TextSample()
     
     # Create the main GUI window using initialized components
-    gui = AudioRecorderGUI(text_sample)
+    gui = AppWindow(text_sample)
 
     # Start the application by running the GUI event loop
     gui.mainloop()

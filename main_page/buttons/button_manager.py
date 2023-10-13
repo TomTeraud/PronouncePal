@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from utils.audio_recorder_controler import AudioRecorderController as ARC
-from utils.transcribe_audio import OpenaiTranscriber
+from utils.audio_recorder_controller import AudioRecorderController as ARC
+from utils.audio_transcribers import OpenaiTranscriber
 import openai
 import os
 
