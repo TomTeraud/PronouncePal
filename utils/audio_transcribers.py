@@ -1,6 +1,6 @@
 import os
 import openai
-from config import engine_id, file_path
+from config import ENGINE_ID, FILE_PATH
 
 class OpenaiTranscriber:
     @classmethod
@@ -9,8 +9,8 @@ class OpenaiTranscriber:
 
         try:
             openai.api_key = api_key  
-            with open(file_path, "rb") as audio_file:
-                response = openai.Audio.transcribe(engine_id, audio_file)
+            with open(FILE_PATH, "rb") as audio_file:
+                response = openai.Audio.transcribe(ENGINE_ID, audio_file)
                 transcribed_text = response["text"]
 
                 return transcribed_text

@@ -28,12 +28,11 @@ class AppWindow(tk.Tk):
     
 
     def start_main_frame_and_widgets(self):
-
+        
         title_page = TitlePageInitiator(self, self.text_sample)
         title_page.grid(row=0, column=0, sticky="nsew")
 
         if BS.check_start_state():
-            # Create Main Page
             main_page = MainPageInitiator(self, self.text_sample)
             main_page.grid(row=0, column=0, sticky="nsew")
 

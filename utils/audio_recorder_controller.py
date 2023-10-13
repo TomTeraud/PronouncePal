@@ -3,7 +3,7 @@ import numpy as np
 import wave
 import threading
 import time
-from config import file_path
+from config import FILE_PATH
 
 
 class AudioRecorderController:
@@ -66,7 +66,7 @@ class AudioRecorderController:
         wav_data = np.array(audio_data, dtype=np.int16)
         
         # Create a WAV file and write audio data to it
-        with wave.open(file_path, 'wb') as wav_file:
+        with wave.open(FILE_PATH, 'wb') as wav_file:
             wav_file.setnchannels(1)  # Mono channel
             wav_file.setsampwidth(2)  # 16-bit audio (2 bytes per sample)
             wav_file.setframerate(44100)  # Sample rate

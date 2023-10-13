@@ -8,8 +8,8 @@ class RatingMenuHandler:
     @classmethod
     def show_ratings(cls, data, title):
         data_len = len(data)
-        word_lines = 10
-        sentence_lines = 5
+        word_lines = config.LPP_WORD
+        sentence_lines = config.LPP_SENTENCE
 
         # Determine the number of rows based on the title
         num_rows = word_lines if title == "Words Ratings" else sentence_lines
