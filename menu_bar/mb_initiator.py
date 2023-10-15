@@ -24,7 +24,8 @@ class MenuInitiator(tk.Menu):
     def create_file_menu(self):
         menu_file = tk.Menu(self)
         self.add_cascade(menu=menu_file, label='File')
-        
+        print(self.text_field_instance)
+        print("+++++++++++++")
         menu_file.add_command(
         label="Add text file to database",
         command=lambda: FMH.handle_text_file_upload_with_args(

@@ -4,11 +4,12 @@ from tkinter import ttk
 class RatingBar(ttk.Progressbar):
     _MAX_PROGRESS = 100
 
-    def __init__(self, parent, text_sample):
+    def __init__(self, parent):
+        self.text_sample = parent.text_sample
         self.parent = parent
 
         self._progress_var = tk.DoubleVar()
-        self.rating = text_sample.avg_rating if text_sample.avg_rating is not None else 0
+        self.rating = self.text_sample.avg_rating if self.text_sample.avg_rating is not None else 0
         self._progress_var.set(self.rating)
 
         super().__init__(self.parent, mode="determinate", maximum=self._MAX_PROGRESS, orient="vertical")

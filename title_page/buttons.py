@@ -85,8 +85,7 @@ class StartMainGuiButton(ttk.Button):
     def start_main_gui(self):
         if BS.openai_selected:
             BS.ready_to_start = True
-            self.argi.destroy_all_widgets()
-            self.argi.start_main_frame_and_widgets()
+            self.argi.restart_all_widgets()
         else:
             messagebox.showinfo("Info", "An alternative transcriber is under development")
 

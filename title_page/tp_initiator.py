@@ -1,13 +1,12 @@
-import tkinter as tk
 from tkinter import ttk
 from title_page.buttons import ApiKeySetupButtonOpenAi, SelectOpenAiButton, SelectAlternativeButton, StartMainGuiButton
 from title_page.label_fields import MainSetupLabel
 
 
-class TitlePageInitiator(tk.Frame):
-    def __init__(self, parent, text_sample):
+
+class TitlePageInitiator(ttk.Frame):
+    def __init__(self, parent):
         super().__init__(parent)
-        self.text_sample = text_sample
         self.configure_button_style("Alt.TButton")
         self.configure_button_style("Openai.TButton")
         self.start_main_gui = StartMainGuiButton(self, parent)

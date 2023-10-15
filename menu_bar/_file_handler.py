@@ -19,8 +19,7 @@ class FileMenuHandler:
         BS.ready_to_start = False
         BS.openai_selected = False
         BS.alter_selected = False
-        arg.destroy_all_widgets()
-        arg.start_main_frame_and_widgets()
+        arg.restart_all_widgets()
 
     @classmethod
     def select_file(cls):
@@ -48,7 +47,7 @@ class FileMenuHandler:
     
     @classmethod
     def update_gui(cls, text_sample, text_field_instance, button_manager):
-        print("gui updated")
         text_sample.update_sample()
         text_field_instance.update_text_sample()
         button_manager.update_buttons()
+        print("gui updated")
