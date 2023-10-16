@@ -7,17 +7,18 @@ from main_page.progress_bars.rating_bar import RatingBar
 class MainPageInitiator(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
-        print(self)
-        self.text_sample = parent.text_sample
+        self.parent = parent
         self.progress_bar = RecordingProgresBar(self)
         self.rating_bar = RatingBar(self)
+        
         self.sample_text_field = SampleTextField(self)
         self.phonemic_text_field = PhonemicTextField(self)
         self.transcribed_text_field = TranscribedTextField(self)
+
         self.button_manager = ButtonManager()
-        self.next_word_button = WordSampleButton(self, parent)
-        self.next_sentence_button = SentenceSampleButton(self, parent)
-        self.record_button = RecordButton(self, parent)
+        self.next_word_button = WordSampleButton(self)
+        self.next_sentence_button = SentenceSampleButton(self)
+        self.record_button = RecordButton(self)
         self.configure_layout()
 
 

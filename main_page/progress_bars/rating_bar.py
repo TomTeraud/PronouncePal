@@ -5,7 +5,7 @@ class RatingBar(ttk.Progressbar):
     _MAX_PROGRESS = 100
 
     def __init__(self, parent):
-        self.text_sample = parent.text_sample
+        self.text_sample = parent.parent.text_sample
         self.parent = parent
 
         self._progress_var = tk.DoubleVar()

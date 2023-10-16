@@ -7,15 +7,8 @@ class RecordingProgresBar(ttk.Progressbar):
     _MAX_PROGRESS = 100
 
     def __init__(self, parent):
-        """
-        Initialize the RecordingProgresBar.
-
-        Args:
-            parent (tk.Widget): The parent widget.
-            text_sample (TextSample): The text sample object.
-        """
         self.parent = parent
-        self.text_sample = parent.text_sample
+        self.text_sample = parent.parent.text_sample
 
         self._progress_var = tk.DoubleVar()
         self._progress_var.set(0)
@@ -27,9 +20,6 @@ class RecordingProgresBar(ttk.Progressbar):
         self.configure(variable=self._progress_var)
 
     def set_duration(self):
-        """
-        Set the duration of the progress bar based on text_sample.
-        """
         self.duration = self.text_sample.mill_sec_to_read
         self._step = self._MAX_PROGRESS / (self.duration / self._update_rate)
 

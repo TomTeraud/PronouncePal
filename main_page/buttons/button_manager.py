@@ -58,12 +58,12 @@ class ButtonManager:
             self.record_button.update_button_state()
 
 class WordSampleButton(ttk.Button):
-    def __init__(self, parent, grand_parent):
+    def __init__(self, parent):
         super().__init__(parent, text="Load word", command=self.load_sample)
         self.button_manager = parent.button_manager
         self.button_manager.set_load_word_sample_button(self)
         self.rating_bar = parent.rating_bar
-        self.text_sample = grand_parent.text_sample
+        self.text_sample = parent.parent.text_sample
         self.transcribed_text_field = parent.transcribed_text_field
         self.text_field_instance = parent.sample_text_field
         self.phonemic_text_field = parent.phonemic_text_field
@@ -88,12 +88,12 @@ class WordSampleButton(ttk.Button):
             self.config(state=tk.NORMAL)
 
 class SentenceSampleButton(ttk.Button):
-    def __init__(self, parent, grand_parent):
+    def __init__(self, parent):
         super().__init__(parent, text="Load sentence", command=self.load_sample)
         self.button_manager = parent.button_manager
         self.button_manager.set_load_sample_button(self)
         self.rating_bar = parent.rating_bar
-        self.text_sample = grand_parent.text_sample
+        self.text_sample = parent.parent.text_sample
         self.transcribed_text_field = parent.transcribed_text_field
         self.sample_text_field = parent.sample_text_field
         self.update_button_state()
@@ -116,14 +116,14 @@ class SentenceSampleButton(ttk.Button):
             self.config(state=tk.NORMAL)
 
 class RecordButton(ttk.Button):
-    def __init__(self, parent, grand_parent):
+    def __init__(self, parent):
         super().__init__(parent, text="Start recording", command=self.start_recording)
         self.progress_bar = parent.progress_bar
         self.rating_bar =parent.rating_bar
         self.button_manager = parent.button_manager
         self.button_manager.set_record_button(self)
 
-        self.text_sample = grand_parent.text_sample
+        self.text_sample = parent.parent.text_sample
         self.transcribed_text_field = parent.transcribed_text_field
 
         self.update_button_state()
