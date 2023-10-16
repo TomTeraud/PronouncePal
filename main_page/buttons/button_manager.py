@@ -66,6 +66,7 @@ class WordSampleButton(ttk.Button):
         self.text_sample = grand_parent.text_sample
         self.transcribed_text_field = parent.transcribed_text_field
         self.text_field_instance = parent.sample_text_field
+        self.phonemic_text_field = parent.phonemic_text_field
         self.update_button_state()
 
     def load_sample(self):
@@ -75,6 +76,7 @@ class WordSampleButton(ttk.Button):
         self.rating_bar.update_rating(new_rating)
         self.transcribed_text_field.update_transcribed_text("")
         self.text_field_instance.update_text_sample()
+        self.phonemic_text_field.update_sample()
         self.button_manager.update_buttons()
 
     def update_button_state(self):
