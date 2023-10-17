@@ -4,22 +4,9 @@ from title_page.controler import ButtonState as BS
 
 class FileMenuHandler:
     @classmethod
-    def handle_text_file_upload_with_args(cls, text_sample, text_field_instance, button_manager):
+    def handle_text_file_upload_with_args(cls, grand_parent):
         if cls.select_file():
-            cls.update_gui(text_sample, text_field_instance, button_manager)
-
-    @classmethod
-    def handle_text_samples_delete_with_args(cls, text_sample, text_field_instance, button_manager):
-        result = cls.delete_samples_from_db()
-        if result:
-            cls.update_gui(text_sample, text_field_instance, button_manager)
-    
-    @staticmethod
-    def handle_change_transcriber(arg):
-        BS.ready_to_start = False
-        BS.openai_selected = False
-        BS.alter_selected = False
-        arg.restart_all_widgets()
+            grand_parent.restart_all_widgets()
 
     @classmethod
     def select_file(cls):
@@ -34,6 +21,13 @@ class FileMenuHandler:
         else:
             return False  # Return False to indicate failure
 
+
+    @classmethod
+    def handle_text_samples_delete_with_args(cls, grand_parent):
+        if cls.delete_samples_from_db():
+            # TODO update text sample, button state before restart
+            grand_parent.restart_all_widgets()
+    
     @classmethod
     def delete_samples_from_db(cls):
         confirmation_text = "DELETE"  # Confirmation text required from the user
@@ -44,10 +38,11 @@ class FileMenuHandler:
         else:
             messagebox.showinfo("Info", "Deletion was not confirmed.")
             return False
-    
-    @classmethod
-    def update_gui(cls, text_sample, text_field_instance, button_manager):
-        text_sample.update_sample()
-        text_field_instance.update_text_sample()
-        button_manager.update_buttons()
-        print("gui updated")
+        
+
+    @staticmethod
+    def handle_change_transcriber(grand_parent):
+        BS.ready_to_start = False
+        BS.openai_selected = False
+        BS.alter_selected = False
+        grand_parent.restart_all_widgets()

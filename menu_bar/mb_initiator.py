@@ -6,45 +6,33 @@ from title_page.controler import ButtonState as BS
 
 
 class MenuInitiator(tk.Menu):
-    def __init__(self, parent, text_sample = None, text_field_instance = None, button_manager = None):
+    def __init__(self, parent):
         super().__init__(parent)
-        self.arg = parent
-        self.text_sample = text_sample
-        self.text_field_instance = text_field_instance
-        self.button_manager = button_manager
+        self.parent = parent
 
         self.create_menus()
 
     def create_menus(self):
         if BS.ready_to_start:
-            self.create_file_menu()
+            self.create_file_menu() # Skip this if on titlepage
         self.create_rating_menu()
         self.create_help_menu()
 
     def create_file_menu(self):
         menu_file = tk.Menu(self)
         self.add_cascade(menu=menu_file, label='File')
-        print(self.text_field_instance)
-        print("+++++++++++++")
+        
         menu_file.add_command(
-        label="Add text file to database",
-        command=lambda: FMH.handle_text_file_upload_with_args(
-            self.text_sample,
-            self.text_field_instance,
-            self.button_manager
-            ))
+            label="Add text file to database",
+            command=lambda: FMH.handle_text_file_upload_with_args(self.parent))
+
         menu_file.add_command(
             label="Delete all text samples from database", 
-            command=lambda:FMH.handle_text_samples_delete_with_args(
-            self.text_sample,
-            self.text_field_instance,
-            self.button_manager
-            ))
+            command=lambda:FMH.handle_text_samples_delete_with_args(self.parent))
+        
         menu_file.add_command(
             label="Change transcriber", 
-            command=lambda:FMH.handle_change_transcriber(
-                self.arg
-            ))
+            command=lambda:FMH.handle_change_transcriber(self.parent))
 
     def create_rating_menu(self):
         menu_rating = tk.Menu(self)

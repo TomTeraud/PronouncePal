@@ -1,6 +1,7 @@
 from tkinter import ttk
 from main_page.text_fields.text_fields import *
-from main_page.buttons.button_manager import ButtonManager, SentenceSampleButton, RecordButton, WordSampleButton
+from main_page.buttons.widgets import SentenceSampleButton, RecordButton, WordSampleButton
+from main_page.buttons.controller import ButtonController
 from main_page.progress_bars.recording_progres_bar import RecordingProgresBar
 from main_page.progress_bars.rating_bar import RatingBar
 
@@ -15,7 +16,7 @@ class MainPageInitiator(ttk.Frame):
         self.phonemic_text_field = PhonemicTextField(self)
         self.transcribed_text_field = TranscribedTextField(self)
 
-        self.button_manager = ButtonManager()
+        self.button_controller = ButtonController()
         self.next_word_button = WordSampleButton(self)
         self.next_sentence_button = SentenceSampleButton(self)
         self.record_button = RecordButton(self)
