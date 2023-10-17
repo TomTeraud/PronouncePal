@@ -1,4 +1,4 @@
-class ButtonController:
+class MainPageButtonController:
     def __init__(self):
         self.sentence_button = None
         self.word_button = None
@@ -32,7 +32,7 @@ class ButtonController:
         self.update_buttons()
 
     def update_buttons(self):
-        # Update button states based on recording, transcribing, and API key status
+        # Update button states based on recording, transcribing status
         if self.sentence_button:
             self.sentence_button.update_button_state()
         if self.word_button:

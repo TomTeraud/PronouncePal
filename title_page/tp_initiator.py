@@ -1,6 +1,6 @@
 from tkinter import ttk
-from title_page.buttons import ApiKeySetupButtonOpenAi, SelectOpenAiButton, SelectAlternativeButton, StartMainGuiButton
-from title_page.label_fields import MainSetupLabel
+from title_page.buttons.widgets import ApiKeySetupButtonOpenAi, SelectOpenAiButton, SelectAlternativeButton, StartMainGuiButton
+from title_page.label_fields.label_fields import MainSetupLabel
 
 
 

@@ -2,7 +2,7 @@ import tkinter as tk
 from menu_bar._file_handler import FileMenuHandler as FMH
 from menu_bar._help_handler import HelpMenuHandler as HMH
 from menu_bar._rating_handler import RatingMenuHandler as RMH
-from title_page.controler import ButtonState as BS
+from title_page.buttons.controller import ButtonState as BS
 
 
 class MenuInitiator(tk.Menu):

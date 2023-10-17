@@ -7,8 +7,8 @@ import openai
 class WordSampleButton(ttk.Button):
     def __init__(self, parent):
         super().__init__(parent, text="Load word", command=self.load_sample)
-        self.button_controller = parent.button_controller
-        self.button_controller.set_word_button(self)
+        self.mp_button_controller = parent.mp_button_controller
+        self.mp_button_controller.set_word_button(self)
         self.rating_bar = parent.rating_bar
         self.text_sample = parent.parent.text_sample
         self.transcribed_text_field = parent.transcribed_text_field
@@ -24,11 +24,11 @@ class WordSampleButton(ttk.Button):
         self.transcribed_text_field.update_transcribed_text("")
         self.text_field_instance.update_text_sample()
         self.phonemic_text_field.update_sample()
-        self.button_controller.update_buttons()
+        self.mp_button_controller.update_buttons()
 
     def update_button_state(self):
         self.sample_exists = self.text_sample.sample_exists
-        if not self.sample_exists or self.button_controller.is_recording or self.button_controller.is_transcribing:
+        if not self.sample_exists or self.mp_button_controller.is_recording or self.mp_button_controller.is_transcribing:
             self.config(state=tk.DISABLED)
         else:
             self.config(state=tk.NORMAL)
