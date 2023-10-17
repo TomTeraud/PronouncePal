@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from text_samples.ts_main import TextSample
-from title_page.buttons.controller import ButtonState as BS
+from title_page.buttons.tpb_controller import ButtonState as BS
 from title_page.tp_initiator import TitlePageInitiator
 from main_page.mp_initiator import MainPageInitiator
 from menu_bar.mb_initiator import MenuInitiator

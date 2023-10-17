@@ -1,6 +1,6 @@
 from tkinter import filedialog, messagebox, simpledialog
 from database_handler import SentenceWordHandler as SWH
-from title_page.buttons.controller import ButtonState as BS
+from title_page.buttons.tpb_controller import ButtonState as BS
 
 class FileMenuHandler:
     @classmethod

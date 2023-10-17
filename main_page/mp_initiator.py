@@ -1,7 +1,7 @@
 from tkinter import ttk
 from main_page.text_fields.text_fields import *
-from main_page.buttons.widgets import SentenceSampleButton, RecordButton, WordSampleButton
-from main_page.buttons.controller import MainPageButtonController
+from main_page.buttons.mpb_main import SentenceSampleButton, RecordButton, WordSampleButton
+from main_page.buttons.mpb_controller import MainPageButtonController
 from main_page.progress_bars.recording_progres_bar import RecordingProgresBar
 from main_page.progress_bars.rating_bar import RatingBar
 
