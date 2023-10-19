@@ -1,66 +1,62 @@
-import os
+from utils.api_handler import OpenaiApiKeyHandler
 
-
-class ButtonState:
-    openai_key_set = False
-
-    openai_state_disabled = False
-    openai_selected = False
-        
-    alter_state_disabled = False
-    alter_selected = False
+class TitlePageButtonController:
+    def __init__(self):
+        # Initialize status flags
+        self.openai_api_key_ready = OpenaiApiKeyHandler.openai_api_key_status()
+        self.openai_selected = False 
+        self.openai_locked = False
+        self.alternative_selected = False
+        self.alternative_locked = False
+        self.ready_to_start = False
+        self.buttons = []  # List to store all button instances
     
-    start_app_state = False
-    ready_to_start = False     
+    def set_button(self, button_type, button_instance):
+        """
+        Set a button instance based on its type.
 
+        Args:
+            button_type (str): Type of the button ('openai_key', 'openai', 'alternative', 'app_start').
+            button_instance: The instance of the button to set.
+        """
+        if button_type == 'openai_key':
+            self.openai_key_button = button_instance
+        elif button_type == 'openai':
+            self.openai_button = button_instance
+        elif button_type == 'alternative':
+            self.alternative_button = button_instance
+        elif button_type == 'main_page':
+            self.app_start_button = button_instance
+        self.buttons.append(button_instance)  # Add the button to the list
 
-    @classmethod
-    def check_start_state(cls):
-        if cls.ready_to_start:
-            return True
-
-    @classmethod
-    def update_openai_state(cls):
-        if cls.alter_selected is False and cls.openai_key_set:
-            return True
+    def openai_triggered(self):
+        if self.openai_selected:
+            self.alternative_locked = False
+            self.openai_selected = False
+            self.ready_to_start = False
         else:
-            return False
+            self.alternative_locked = True
+            self.openai_selected = True
+            self.ready_to_start = True
+        self.update_buttons()
 
-    @classmethod
-    def update_alter_state(cls):
-        if cls.alter_selected is True:
-            return True
-        else:
-            return False
 
-    @classmethod
-    def toggle_openai_selected(cls):
-        if cls.openai_selected:
-            cls.openai_selected = False
-            cls.alter_state_disabled = False
-            return False
+    def alternative_triggered(self):
+        if self.alternative_selected:
+            self.openai_locked = False
+            self.alternative_selected = False
+            self.ready_to_start = False
         else:
-            cls.openai_selected = True        
-            cls.alter_state_disabled = True    
-            return True
+            self.openai_locked = True
+            self.alternative_selected = True
+            self.ready_to_start = True
+        self.update_buttons()
 
-    @classmethod
-    def toggle_alter_selected(cls):
-        if cls.alter_selected:
-            cls.alter_selected = False
-            cls.openai_state_disabled = False
-            return False
-        else:
-            cls.alter_selected = True
-            cls.openai_state_disabled = True
-        return True
 
-    @classmethod
-    def check_openai_key(cls):
-        # Check if OpenAI API key is set
-        if os.environ.get("OPENAI_API_KEY"):
-            cls.openai_key_set = True
-            return True
-        else:
-            cls.openai_key_set = False
-            return False
+
+    def update_buttons(self):
+        """
+        Update the state of buttons based on status.
+        """
+        for button in self.buttons:
+            button.update_button_state()

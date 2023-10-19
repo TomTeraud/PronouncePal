@@ -14,6 +14,7 @@ class TextSample:
         self.rating = None
         self.char_count = None
         self.one_word = True
+        self.sec_to_read = None
 
     def update_sample(self, one_word_sample=True):
         # Instantiate the sample manager based on the type of sample

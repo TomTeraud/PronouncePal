@@ -1,12 +1,11 @@
 from tkinter import filedialog, messagebox, simpledialog
 from database_handler import SentenceWordHandler as SWH
-from title_page.buttons.tpb_controller import ButtonState as BS
 
 class FileMenuHandler:
     @classmethod
     def handle_text_file_upload_with_args(cls, grand_parent):
         if cls.select_file():
-            grand_parent.restart_all_widgets()
+            grand_parent.restart_all_widgets(True)
 
     @classmethod
     def select_file(cls):
@@ -25,8 +24,9 @@ class FileMenuHandler:
     @classmethod
     def handle_text_samples_delete_with_args(cls, grand_parent):
         if cls.delete_samples_from_db():
-            # TODO update text sample, button state before restart
-            grand_parent.restart_all_widgets()
+            # Delete the object using the 'del' statement
+            del grand_parent.text_sample
+            grand_parent.restart_all_widgets(True)
     
     @classmethod
     def delete_samples_from_db(cls):
@@ -41,8 +41,5 @@ class FileMenuHandler:
         
 
     @staticmethod
-    def handle_change_transcriber(grand_parent):
-        BS.ready_to_start = False
-        BS.openai_selected = False
-        BS.alter_selected = False
-        grand_parent.restart_all_widgets()
+    def change_transcriber_return_to_tp(grand_parent):
+        grand_parent.restart_all_widgets(False)

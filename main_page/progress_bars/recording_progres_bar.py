@@ -6,9 +6,9 @@ class RecordingProgresBar(ttk.Progressbar):
     _STEP_PER_SECOND = 60
     _MAX_PROGRESS = 100
 
-    def __init__(self, parent):
+    def __init__(self, parent, grand_parent):
         self.parent = parent
-        self.text_sample = parent.parent.text_sample
+        self.text_sample = grand_parent.text_sample
 
         self._progress_var = tk.DoubleVar()
         self._progress_var.set(0)

@@ -1,5 +1,6 @@
 from tkinter import simpledialog, messagebox
 import requests
+import os
 from dotenv import load_dotenv
 
 
@@ -26,3 +27,7 @@ class OpenaiApiKeyHandler:
         }
         response = requests.get("https://api.openai.com/v1/engines", headers=headers)
         return response.status_code == 200
+    
+    @staticmethod
+    def openai_api_key_status():
+        return bool(os.environ.get("OPENAI_API_KEY"))

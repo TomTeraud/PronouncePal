@@ -9,20 +9,18 @@ class MainPageInitiator(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
-        self.progress_bar = RecordingProgresBar(self)
-        self.rating_bar = RatingBar(self)
+        self.progress_bar = RecordingProgresBar(self, parent)
+        self.rating_bar = RatingBar(self, parent)
         
-        self.sample_text_field = SampleTextField(self)
-        self.phonemic_text_field = PhonemicTextField(self)
+        self.sample_text_field = SampleTextField(self, parent)
+        self.phonemic_text_field = PhonemicTextField(self, parent)
         self.transcribed_text_field = TranscribedTextField(self)
 
-        self.mp_button_controller = MainPageButtonController()
+        self.mpb_controller = MainPageButtonController()
         self.next_word_button = WordSampleButton(self)
         self.next_sentence_button = SentenceSampleButton(self)
         self.record_button = RecordButton(self)
         self.configure_layout()
-
-
 
     def configure_layout(self):
         self.progress_bar.grid(row=3, column=0, sticky="nsew", columnspan=5)

@@ -17,9 +17,8 @@ class WordSample(SampleManager):
             text_sample.update_char_count()
             text_sample.avg_rating = SWH.get_avg_word_rating(new_sample_id)
         else:
-            text_sample.sample_exists = False
             text_sample.phoneme = ''
-            text_sample.sample = "No sample available. Hint: File/Add text file to database"
+            # text_sample.sample = "No sample available. Hint: File/Add text file to database"
             print("Failed to obtain sample from get_random_word()")
 
 class SentenceSample(SampleManager):
@@ -34,6 +33,5 @@ class SentenceSample(SampleManager):
             text_sample.update_char_count()
             text_sample.avg_rating = SWH.get_avg_sentence_rating(new_sample_id)
         else:
-            text_sample.sample_exists = False
             text_sample.sample = "No sample available. Hint: File/Add text file to database"
             print("Failed to obtain sample from get_random_sentence()")
