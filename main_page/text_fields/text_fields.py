@@ -5,9 +5,7 @@ class SampleTextField(tk.Text):
         super().__init__(parent, wrap="word")
         self.text_sample = grand_parent.text_sample
 
-        self.update_text_sample()
-
-    def update_text_sample(self):
+    def update_field(self):
         sample_text = self.text_sample.sample
         if sample_text:
             self.delete("1.0", tk.END)
@@ -17,8 +15,6 @@ class PhonemicTextField(tk.Text):
     def __init__(self, parent, grand_parent):
         super().__init__(parent, wrap="word")
         self.text_sample = grand_parent.text_sample
-
-        self.update_sample()
 
     def update_sample(self):
         sample_text = self.text_sample.sample

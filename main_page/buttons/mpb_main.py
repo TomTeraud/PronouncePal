@@ -12,24 +12,21 @@ class WordSampleButton(ttk.Button):
         self.parent = parent
         self.mpbc = parent.mpb_controller
         self.mpbc.set_button("word", self)
-        self.rating_bar = parent.rating_bar
-        self.text_sample = parent.parent.text_sample
-        self.transcribed_text_field = parent.transcribed_text_field
         self.sample_text_field = parent.sample_text_field
-        self.update_button_state()
+        self.transcribed_text_field = parent.transcribed_text_field
+        self.load_sample()
 
     def load_sample(self):
-        # Load sample text and update button state
-        self.text_sample.update_sample()
-        self.rating_bar.update_rating(self.text_sample.avg_rating)
         self.transcribed_text_field.update_transcribed_text("")
-        self.sample_text_field.update_text_sample()
+        self.g_parent.text_sample.update_sample()
+        self.parent.rating_bar.update_rating(self.g_parent.text_sample.avg_rating)
         self.mpbc.update_buttons()
+        self.sample_text_field.update_field()
         if self.g_parent.tp_phoneme_cb_state:
             self.parent.phonemic_text_field.update_sample()
     
     def update_button_state(self):
-        if self.mpbc.is_recording or self.mpbc.is_transcribing or self.text_sample.sample_exists == False:
+        if self.mpbc.is_recording or self.mpbc.is_transcribing or self.g_parent.text_sample.sample_exists == False:
             self.config(state=tk.DISABLED)
         else:
             self.config(state=tk.NORMAL)
@@ -41,25 +38,20 @@ class SentenceSampleButton(ttk.Button):
         self.parent = parent
         self.mpbc = parent.mpb_controller
         self.mpbc.set_button("sentence", self)
-        self.rating_bar = parent.rating_bar
-        self.text_sample = parent.parent.text_sample
-        self.transcribed_text_field = parent.transcribed_text_field
         self.sample_text_field = parent.sample_text_field
-        self.update_button_state()
+        self.transcribed_text_field = parent.transcribed_text_field
 
     def load_sample(self):
-        # Load sample text and update button state
-        self.text_sample.update_sample(one_word_sample=False)
-        new_rating = self.text_sample.avg_rating
-        self.rating_bar.update_rating(new_rating)
+        self.g_parent.text_sample.update_sample(one_word_sample=False)
         self.transcribed_text_field.update_transcribed_text("")
-        self.sample_text_field.update_text_sample()
+        self.sample_text_field.update_field()
+        self.parent.rating_bar.update_rating(self.g_parent.text_sample.avg_rating)
         self.mpbc.update_buttons()
         if self.g_parent.tp_phoneme_cb_state:
             self.parent.phonemic_text_field.update_sample()
 
     def update_button_state(self):
-        if self.mpbc.is_recording or self.mpbc.is_transcribing or self.text_sample.sample_exists == False:
+        if self.mpbc.is_recording or self.mpbc.is_transcribing or self.g_parent.text_sample.sample_exists == False:
             self.config(state=tk.DISABLED)
         else:
             self.config(state=tk.NORMAL)
