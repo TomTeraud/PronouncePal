@@ -13,18 +13,15 @@ class WordSample(SampleManager):
             text_sample.sample_exists = True
             text_sample.sample = new_sample_text
             text_sample.sample_id = new_sample_id
-            text_sample.get_phonemes(new_sample_text)
             text_sample.update_char_count()
             text_sample.avg_rating = SWH.get_avg_word_rating(new_sample_id)
         else:
-            text_sample.phoneme = ''
             # text_sample.sample = "No sample available. Hint: File/Add text file to database"
             print("Failed to obtain sample from get_random_word()")
 
 class SentenceSample(SampleManager):
     def update_sample(self, text_sample):
         new_sample_text, new_sample_id = SWH.get_random_sentence()
-        text_sample.phoneme = ''
         if new_sample_text:
             text_sample.one_word = False
             text_sample.sample_exists = True

@@ -13,20 +13,25 @@ class MainPageInitiator(ttk.Frame):
         self.rating_bar = RatingBar(self, parent)
         
         self.sample_text_field = SampleTextField(self, parent)
-        self.phonemic_text_field = PhonemicTextField(self, parent)
+        if self.parent.tp_phoneme_cb_state:
+            self.phonemic_text_field = PhonemicTextField(self, parent)
         self.transcribed_text_field = TranscribedTextField(self)
 
         self.mpb_controller = MainPageButtonController()
-        self.next_word_button = WordSampleButton(self)
-        self.next_sentence_button = SentenceSampleButton(self)
+        self.next_word_button = WordSampleButton(self, parent)
+        self.next_sentence_button = SentenceSampleButton(self, parent)
         self.record_button = RecordButton(self)
         self.configure_layout()
 
     def configure_layout(self):
         self.progress_bar.grid(row=3, column=0, sticky="nsew", columnspan=5)
         self.rating_bar.grid(row=0, column=5, sticky="nsew", rowspan=3)
-        self.sample_text_field.grid(row=0, column=0, sticky="nsew", columnspan=2)
-        self.phonemic_text_field.grid(row=1, column=0, sticky="nsew", columnspan=2)
+        # adjust grid based on phenomic_on
+        if self.parent.tp_phoneme_cb_state:
+            self.sample_text_field.grid(row=0, column=0, sticky="nsew", columnspan=2)
+            self.phonemic_text_field.grid(row=1, column=0, sticky="nsew", columnspan=2)
+        else: 
+            self.sample_text_field.grid(row=0, column=0, sticky="nsew", columnspan=2, rowspan=2)
         self.transcribed_text_field.grid(row=0, column=2, sticky="nsew", columnspan=2, rowspan=2)
         self.next_word_button.grid(row=2, column=0, sticky="nsew")
         self.next_sentence_button.grid(row=2, column=1, sticky="nsew")

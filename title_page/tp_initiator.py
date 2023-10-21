@@ -1,16 +1,19 @@
 from tkinter import ttk
 from title_page.buttons.tpb_main import OpenAiApiKeyManager, OpenAiSelector, AlternativeSelector, MainPageStarter
-from title_page.label_fields.label_fields import MainSetupLabel
+from title_page.label_fields.label_fields import WelcomeSelTransc, OtherSetings
 from title_page.buttons.tpb_controller import TitlePageButtonController
+from title_page.checkbuttons.tpc_main import PhonemeEnabler
 
 
 class TitlePageInitiator(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.setup_label = MainSetupLabel(self)
+        self.main_setup_label = WelcomeSelTransc(self)
+        self.other_setings_label = OtherSetings(self)
         self.configure_button_style("Alt.TButton")
         self.configure_button_style("Openai.TButton")
         self.tpb_controller = TitlePageButtonController()
+        self.phoneme_enabler = PhonemeEnabler(self, parent)
         # Create buttons
         self.openai_api_key_manager = OpenAiApiKeyManager(self)
         self.openai_selector = OpenAiSelector(self, parent)
@@ -31,13 +34,15 @@ class TitlePageInitiator(ttk.Frame):
         style.map(style_name, background=[('active', button_colors["default_active_bg"]), ('alternate', button_colors["selected_bg"]), ('active', button_colors["selected_active_bg"])])
 
     def setup_layout(self):
-        self.setup_label.grid(row=0, column=0, sticky="nsew", columnspan=2)
+        self.main_setup_label.grid(row=0, column=0, sticky="nsew", columnspan=2)
         self.openai_api_key_manager.grid(row=1, column=1, sticky="nsew")
         self.openai_selector.grid(row=1, column=0, sticky="nsew")
         self.alternative_selector.grid(row=2, column=0, sticky="nsew")
-        self.main_page_starter.grid(row=3, column=0, sticky="nsew", columnspan=2)
+        self.other_setings_label.grid(row=3, column=0, sticky="nsew", columnspan=2)
+        self.phoneme_enabler.grid(row=4, column=0, sticky="nsew")
+        self.main_page_starter.grid(row=5, column=0, sticky="nsew", columnspan=2)
         self.setup_column_configure(2)
-        self.setup_row_configure(3)
+        self.setup_row_configure(6)
 
     def setup_column_configure(self, num_columns):
         for col in range(num_columns):

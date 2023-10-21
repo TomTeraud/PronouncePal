@@ -1,16 +1,17 @@
-import nltk
 from difflib import SequenceMatcher
 from config import CHARS_PER_MINUTE, MIN_DURATION
 from text_samples.sample_managers import WordSample, SentenceSample
 from text_samples.rating_managers import WordRating, SentenceRating
+from text_samples.phoneme import Phoneme
+
 
 class TextSample:
-    def __init__(self):
+    def __init__(self, phoneme_state):
+        self.phonome_state = phoneme_state
         self.sample_exists = False
         self.sample = None
         self.sample_id = None
         self.avg_rating = None
-        self.phoneme = None
         self.rating = None
         self.char_count = None
         self.one_word = True
@@ -21,6 +22,14 @@ class TextSample:
         sample_manager = WordSample() if one_word_sample else SentenceSample()
         sample_manager.update_sample(self)
         self.calculate_duration()
+        self.manage_phoname()
+
+    def manage_phoname(self):
+        if self.phonome_state:
+            if self.one_word:
+                self.phoneme = Phoneme.get_phonemes(self.sample)
+            else:
+                self.phoneme = ""
 
     def add_rating_to_db(self):
         if self.one_word:
@@ -53,13 +62,3 @@ class TextSample:
         # Calculate the similarity ratio between two strings
         similarity_ratio = SequenceMatcher(None, string1_lower, string2_lower).ratio()
         self.rating = round(similarity_ratio * 100)
-
-    def get_phonemes(self, sample_text):
-        # Initialize the CMU Pronouncing Dictionary
-        pronouncing_dict = nltk.corpus.cmudict.dict()
-        if sample_text.lower() in pronouncing_dict:
-            phonemes = pronouncing_dict[sample_text.lower()][0]
-            # Create a string of phonemes enclosed in slashes
-            self.phoneme = ' '.join(f'/{p}/' for p in phonemes)
-        else:
-            self.phoneme = 'None'

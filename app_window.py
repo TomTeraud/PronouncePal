@@ -24,6 +24,7 @@ class AppWindow(tk.Tk):
         }
 
         self.ready_state = False
+        self.tp_phoneme_cb_state = False        
         self.start_new_widgets()
 
     def restart_all_widgets(self, state):
@@ -33,7 +34,7 @@ class AppWindow(tk.Tk):
     
     def start_new_widgets(self):
         if self.ready_state:
-            self.text_sample = TextSample()
+            self.text_sample = TextSample(self.tp_phoneme_cb_state)
             self.text_sample.update_sample()
             self.main_page = MainPageInitiator(self)
             self.main_page.grid(row=0, column=0, sticky="nsew")
@@ -56,3 +57,9 @@ class AppWindow(tk.Tk):
         # Loop through the widgets and destroy each one
         for widget in widgets:
             widget.destroy()
+
+    def phoneme_enabler_state_update(self, state):
+        if state:
+            self.tp_phoneme_cb_state = True
+        else:
+            self.tp_phoneme_cb_state = False

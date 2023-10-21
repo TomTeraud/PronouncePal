@@ -1,19 +1,21 @@
 import tkinter as tk
+import openai
 from tkinter import ttk, messagebox
 from utils.audio_recorder_controller import AudioRecorderController as ARC
 from utils.audio_transcribers import OpenaiTranscriber
-import openai
+
 
 class WordSampleButton(ttk.Button):
-    def __init__(self, parent):
+    def __init__(self, parent, g_parent):
         super().__init__(parent, text="Load word", command=self.load_sample)
+        self.g_parent = g_parent
+        self.parent = parent
         self.mpbc = parent.mpb_controller
         self.mpbc.set_button("word", self)
         self.rating_bar = parent.rating_bar
         self.text_sample = parent.parent.text_sample
         self.transcribed_text_field = parent.transcribed_text_field
         self.sample_text_field = parent.sample_text_field
-        self.phonemic_text_field = parent.phonemic_text_field
         self.update_button_state()
 
     def load_sample(self):
@@ -22,8 +24,9 @@ class WordSampleButton(ttk.Button):
         self.rating_bar.update_rating(self.text_sample.avg_rating)
         self.transcribed_text_field.update_transcribed_text("")
         self.sample_text_field.update_text_sample()
-        self.phonemic_text_field.update_sample()
         self.mpbc.update_buttons()
+        if self.g_parent.tp_phoneme_cb_state:
+            self.parent.phonemic_text_field.update_sample()
     
     def update_button_state(self):
         if self.mpbc.is_recording or self.mpbc.is_transcribing or self.text_sample.sample_exists == False:
@@ -32,15 +35,16 @@ class WordSampleButton(ttk.Button):
             self.config(state=tk.NORMAL)
 
 class SentenceSampleButton(ttk.Button):
-    def __init__(self, parent):
+    def __init__(self, parent, g_parent):
         super().__init__(parent, text="Load sentence", command=self.load_sample)
+        self.g_parent = g_parent
+        self.parent = parent
         self.mpbc = parent.mpb_controller
         self.mpbc.set_button("sentence", self)
         self.rating_bar = parent.rating_bar
         self.text_sample = parent.parent.text_sample
         self.transcribed_text_field = parent.transcribed_text_field
         self.sample_text_field = parent.sample_text_field
-        self.phonemic_text_field = parent.phonemic_text_field
         self.update_button_state()
 
     def load_sample(self):
@@ -50,8 +54,9 @@ class SentenceSampleButton(ttk.Button):
         self.rating_bar.update_rating(new_rating)
         self.transcribed_text_field.update_transcribed_text("")
         self.sample_text_field.update_text_sample()
-        self.phonemic_text_field.update_sample()
         self.mpbc.update_buttons()
+        if self.g_parent.tp_phoneme_cb_state:
+            self.parent.phonemic_text_field.update_sample()
 
     def update_button_state(self):
         if self.mpbc.is_recording or self.mpbc.is_transcribing or self.text_sample.sample_exists == False:
