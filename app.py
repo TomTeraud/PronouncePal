@@ -33,14 +33,14 @@ class AppWindow(tk.Tk):
         self.start_new_widgets()
     
     def start_new_widgets(self):
-        if self.ready_state:
+        if not self.ready_state:
+            self.title_page = TitlePageInitiator(self, self.get_phoneme_state, self.set_phoneme_state)
+            self.title_page.grid(row=0, column=0, sticky="nsew")
+        else:
             self.text_sample = TextSample(self.tp_phoneme_cb_state)
             self.text_sample.update_sample()
             self.main_page = MainPageInitiator(self)
             self.main_page.grid(row=0, column=0, sticky="nsew")
-        else:
-            self.title_page = TitlePageInitiator(self)
-            self.title_page.grid(row=0, column=0, sticky="nsew")
 
         self.menu_bar = MenuInitiator(self)
         self.config(menu=self.menu_bar)
@@ -58,8 +58,9 @@ class AppWindow(tk.Tk):
         for widget in widgets:
             widget.destroy()
 
-    def phoneme_enabler_state_update(self, state):
-        if state:
-            self.tp_phoneme_cb_state = True
-        else:
-            self.tp_phoneme_cb_state = False
+    def get_phoneme_state(self):
+        return self.tp_phoneme_cb_state
+    
+    def set_phoneme_state(self, state):
+        self.tp_phoneme_cb_state = state
+

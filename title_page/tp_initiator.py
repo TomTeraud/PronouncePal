@@ -6,14 +6,14 @@ from title_page.checkbuttons.tpc_main import PhonemeEnabler
 
 
 class TitlePageInitiator(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, get_phoneme_state, set_phoneme_state):
         super().__init__(parent)
         self.main_setup_label = WelcomeSelTransc(self)
         self.other_setings_label = OtherSetings(self)
         self.configure_button_style("Alt.TButton")
         self.configure_button_style("Openai.TButton")
         self.tpb_controller = TitlePageButtonController()
-        self.phoneme_enabler = PhonemeEnabler(self, parent)
+        self.phoneme_enabler = PhonemeEnabler(self, get_phoneme_state, set_phoneme_state)
         # Create buttons
         self.openai_api_key_manager = OpenAiApiKeyManager(self)
         self.openai_selector = OpenAiSelector(self, parent)

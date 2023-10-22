@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 
 from database_handler import DatabaseInitializer
-from app_window import AppWindow
+from app import AppWindow
 
 
 def main():
