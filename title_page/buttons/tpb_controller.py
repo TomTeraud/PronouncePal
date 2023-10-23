@@ -60,3 +60,9 @@ class TitlePageButtonController:
         """
         for button in self.buttons:
             button.update_button_state()
+
+    def set_openai_api_key_status(self, status):
+        self.openai_api_key_ready = status
+
+    def get_openai_api_key_status(self):
+        return self.openai_api_key_ready

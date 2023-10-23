@@ -14,15 +14,7 @@ class AppWindow(tk.Tk):
 
         self.title("PronouncePal")
         self.geometry("500x200")
-        self.style = ttk.Style()
-        self.style.theme_use('clam')
-        self.button_colors = {
-            "default_bg": "#DCDAD5",
-            "default_active_bg": "#EEEBE6",
-            "selected_bg": "#92de85",
-            "selected_active_bg": "#a5fa96"
-        }
-
+        
         self.ready_state = False
         self.tp_phoneme_cb_state = False        
         self.start_new_widgets()
@@ -34,7 +26,7 @@ class AppWindow(tk.Tk):
     
     def start_new_widgets(self):
         if not self.ready_state:
-            self.title_page = TitlePageInitiator(self, self.get_phoneme_state, self.set_phoneme_state)
+            self.title_page = TitlePageInitiator(self, self.get_phoneme_state, self.set_phoneme_state, self.restart_all_widgets)
             self.title_page.grid(row=0, column=0, sticky="nsew")
         else:
             self.text_sample = TextSample(self.tp_phoneme_cb_state)
