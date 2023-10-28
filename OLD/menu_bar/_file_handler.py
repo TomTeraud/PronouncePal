@@ -1,5 +1,5 @@
 from tkinter import filedialog, messagebox, simpledialog
-from database_handler import SentenceWordHandler as SWH
+from OLD.database_handler import SentenceWordHandler as SWH
 
 class FileMenuHandler:
     @classmethod

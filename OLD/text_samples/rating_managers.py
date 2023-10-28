@@ -1,4 +1,4 @@
-from database_handler import SentenceWordHandler as SWH
+from OLD.database_handler import SentenceWordHandler as SWH
 
 class RatingManager:
     def add_rating_to_db(self, text_sample):

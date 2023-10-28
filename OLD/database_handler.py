@@ -2,7 +2,7 @@ import sqlite3
 import re
 import config
 from sqlite3 import IntegrityError
-from helpers import resource_path
+from OLD.helpers import resource_path
 
 
 class DatabaseConnection:

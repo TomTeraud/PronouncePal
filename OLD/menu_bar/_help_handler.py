@@ -1,5 +1,5 @@
 import tkinter as tk
-from helpers import resource_path
+from OLD.helpers import resource_path
 
 class HelpMenuHandler:
     @staticmethod
