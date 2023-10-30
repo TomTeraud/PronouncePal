@@ -8,8 +8,8 @@ MIN_DURATION = 1.5
 # Engine ID for audio transcription
 ENGINE_ID = "whisper-1"  # Replace with your desired engine ID
 
-DATABASE = 'your_database.db'
-PLACEHOLDER_PATH = "placeholder.txt"
+DATABASE = 'model/your_database.db'
+PLACEHOLDER_PATH = "model/placeholder.txt"
 
 # Rating handler print out lines per page.
 LPP_WORD = 10
