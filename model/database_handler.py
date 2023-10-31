@@ -23,7 +23,6 @@ class DatabaseConnection:
             except sqlite3.Error as e:
                 print("Error while closing the database connection:", e)
 
-
 class DatabaseInitializer(DatabaseConnection):
     @staticmethod
     def create_tables():
@@ -55,6 +54,13 @@ class DatabaseInitializer(DatabaseConnection):
             DatabaseInitializer.populate_database_if_empty()
 
     @staticmethod
+    def populate_database_if_empty():
+        if DatabaseInitializer.is_sentence_table_empty():
+            # Database is empty, so populate it
+            SentenceWordHandler.populate_sentences_table(resource_path(config.PLACEHOLDER_PATH))
+            SentenceWordHandler.populate_words_table()
+
+    @staticmethod
     def is_sentence_table_empty():
         with DatabaseInitializer.get_connection() as connection:
             if connection:
@@ -65,14 +71,6 @@ class DatabaseInitializer(DatabaseConnection):
             else:
                 print("Failed to obtain a database connection.")
                 return False  # Return False to indicate the check couldn't be performed
-
-    @staticmethod
-    def populate_database_if_empty():
-        if DatabaseInitializer.is_sentence_table_empty():
-            # Database is empty, so populate it
-            SentenceWordHandler.populate_sentences_table(resource_path(config.PLACEHOLDER_PATH))
-            SentenceWordHandler.populate_words_table()
-
 
 class SentenceWordHandler(DatabaseConnection):
     @staticmethod
@@ -170,13 +168,15 @@ class SentenceWordHandler(DatabaseConnection):
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
                     cursor = connection.cursor()
-                    cursor.execute('SELECT id, sentence '
+                    cursor.execute('SELECT id, sentence, sentence_avg_rating '
                                 'FROM sentence '
                                 'ORDER BY RANDOM() '
                                 'LIMIT 1')
                     random_sample = cursor.fetchone()
                     if random_sample:
-                        return random_sample[1], random_sample[0]  # Return sentence and sentence ID
+                        return random_sample # Return sentence ID, sentence text, sentence rating
+                    else:
+                        return None
                 else:
                     print("Failed to obtain a database connection.")
         except sqlite3.Error as e:
@@ -189,21 +189,21 @@ class SentenceWordHandler(DatabaseConnection):
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
                     cursor = connection.cursor()
-                    cursor.execute('SELECT id, word '
+                    cursor.execute('SELECT id, word, word_avg_rating '
                                 'FROM word '
                                 'ORDER BY RANDOM() '
                                 'LIMIT 1')
                     random_word = cursor.fetchone()
                     if random_word:
-                        return random_word[1], random_word[0]  # Return word and word ID
+                        return random_word   # Return ID, word, rating
                     else:
-                        return None, None  # Return None if no word is found
+                        return  None# Return None if no word is found
                 else:
                     print("Failed to obtain a database connection.")
         except sqlite3.Error as e:
             print("An error occurred while fetching a random word.")
             print(e)
-
+    # Use to geting all db records for menubar
     @staticmethod
     def fetch_sentences_from_database():
         try:
@@ -218,7 +218,7 @@ class SentenceWordHandler(DatabaseConnection):
         except sqlite3.Error as e:
             print("An error occurred while fetching sentences from the database.")
             print(e)
-
+    # Use to geting all db records for menubar
     @staticmethod
     def fetch_words_from_database():
         try:
@@ -235,59 +235,24 @@ class SentenceWordHandler(DatabaseConnection):
             print(e)
 
     @staticmethod
-    def get_avg_word_rating(word_id):
-        try:
-            with SentenceWordHandler.get_connection() as connection:
-                if connection:
-                    cursor = connection.cursor()
-                    cursor.execute('SELECT word_avg_rating FROM word WHERE id = ?', (word_id,))
-                    result = cursor.fetchone()
-
-                    if result is not None:
-                        avg_rating = result[0]
-                    else:
-                        avg_rating = 0.0  # Set a default value when no result is found
-
-                    return avg_rating
-                else:
-                    print("Failed to obtain a database connection.")
-        except sqlite3.Error as e:
-            print("An error occurred while fetching the average word rating.")
-            print(e)
-
-    @staticmethod
-    def get_avg_sentence_rating(sentence_id):
-        try:
-            with SentenceWordHandler.get_connection() as connection:
-                if connection:
-                    cursor = connection.cursor()
-                    cursor.execute('SELECT sentence_avg_rating FROM sentence WHERE id = ?', (sentence_id,))
-                    avg_rating = cursor.fetchone()[0]
-                    return avg_rating
-                else:
-                    print("Failed to obtain a database connection.")
-        except sqlite3.Error as e:
-            print("An error occurred while fetching the average sentence rating.")
-            print(e)
-
-    @staticmethod
-    def update_avg_word_rating(word_id, new_rating):
+    def update_avg_word_rating(word_id:int, rating: int) ->int:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
                     cursor = connection.cursor()
 
                     cursor.execute('SELECT word_avg_rating FROM word WHERE id = ?', (word_id,))
-                    old_avg_rating = cursor.fetchone()
+                    db_avg_rating = cursor.fetchone()
 
-                    if old_avg_rating and old_avg_rating[0]:
-                        old_avg_rating = old_avg_rating[0]  # Extract the value from the result tuple
-                        calculated_avg_rating = ((old_avg_rating + new_rating) / 2)
-                        cursor.execute('UPDATE word SET word_avg_rating = ? WHERE id = ?', (calculated_avg_rating, word_id))
+                    if db_avg_rating and db_avg_rating[0]:
+                        db_avg_rating = db_avg_rating[0]  # Extract the value from the result tuple
+                        rating = ((db_avg_rating + rating) / 2)
+                        cursor.execute('UPDATE word SET word_avg_rating = ? WHERE id = ?', (rating, word_id))
                     else:
-                        cursor.execute('UPDATE word SET word_avg_rating = ? WHERE id = ?', (new_rating, word_id))
+                        cursor.execute('UPDATE word SET word_avg_rating = ? WHERE id = ?', (rating, word_id))
 
                     connection.commit()
+                    return rating
                 else:
                     print("Failed to obtain a database connection.")
         except sqlite3.Error as e:
@@ -295,23 +260,24 @@ class SentenceWordHandler(DatabaseConnection):
             print(e)
 
     @staticmethod
-    def update_avg_sentence_rating(sentence_id, new_rating):
+    def update_avg_sentence_rating(id : int, rating: int) -> int:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
                     cursor = connection.cursor()
 
-                    cursor.execute('SELECT sentence_avg_rating FROM sentence WHERE id = ?', (sentence_id,))
-                    old_avg_rating = cursor.fetchone()
+                    cursor.execute('SELECT sentence_avg_rating FROM sentence WHERE id = ?', (id,))
+                    db_avg_rating = cursor.fetchone()
 
-                    if old_avg_rating and old_avg_rating[0]:
-                        old_avg_rating = old_avg_rating[0]  # Extract the value from the result tuple
-                        calculated_avg_rating = ((old_avg_rating + new_rating) / 2)
-                        cursor.execute('UPDATE sentence SET sentence_avg_rating = ? WHERE id = ?', (calculated_avg_rating, sentence_id))
+                    if db_avg_rating and db_avg_rating[0]:
+                        db_avg_rating = db_avg_rating[0]  # Extract the value from the result tuple
+                        rating = ((db_avg_rating + rating) / 2)
+                        cursor.execute('UPDATE sentence SET sentence_avg_rating = ? WHERE id = ?', (rating, id))
                     else:
-                        cursor.execute('UPDATE sentence SET sentence_avg_rating = ? WHERE id = ?', (new_rating, sentence_id))
-
+                        cursor.execute('UPDATE sentence SET sentence_avg_rating = ? WHERE id = ?', (rating, id))
+                        
                     connection.commit()
+                    return rating
                 else:
                     print("Failed to obtain a database connection.")
         except sqlite3.Error as e:

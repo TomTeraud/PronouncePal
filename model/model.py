@@ -25,13 +25,13 @@ class Model:
         self.text_sample = TextSample(self.phoneme_state)
 
     def get_word_text(self) -> str:
-        sample = self.text_sample.get_single_word()
-        print(sample)
-        return sample
+        self.text_sample.load_new_word()
+        return self.text_sample.get_sample()
 
     def get_sentence_text(self) -> str:
-        sample = self.text_sample.get_sentence()
-        return sample
+        self.text_sample.load_new_sentence()
+        return self.text_sample.get_sample()
+        
 
     def get_setup_page_status(self) -> bool:
         return self.setup_page_needed

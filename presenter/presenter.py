@@ -46,8 +46,8 @@ class Presenter:
     def start_new_view_structure(self) -> None:
         status = self.model.get_setup_page_status()
         self.view.init_main_or_setup_ui(self, status)
+        self.handle_new_word_loading()
             
     def run(self) -> None:
         self.start_new_view_structure()
-        self.handle_new_word_loading()
         self.view.mainloop()

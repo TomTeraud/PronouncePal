@@ -11,40 +11,23 @@ class TextSample:
         self.sample_exists = False
         self.sample = None
         self.sample_id = None
-        self.avg_rating = None
-        self.rating = None
-        self.char_count = None
+        self.rating = 50
         self.one_word_type = True
         self.sec_to_read = None
-        self.get_single_word()
 
-
-    def get_single_word(self) -> str:
-        new_sample_text, new_sample_id = SWH.get_random_word()
-        if new_sample_text:
-            self.sample_exists = True
-            self.one_word_type = True
-            self.sample = new_sample_text
-            self.sample_id = new_sample_id
-            self.avg_rating = SWH.get_avg_word_rating(new_sample_id)
-        else:
-            print("Failed to obtain sample from get_random_word()")
-        self.manage_sample_parameters()
+    def load_new_word(self):
+        self.manage_new_sample_data(SWH.get_random_word())
+        self.sample_exists = True
+        self.one_word_type = True
         self.manage_phoname()
-        return self.sample
 
-    def get_sentence(self) -> str:
-        new_sample_text, new_sample_id = SWH.get_random_sentence()
-        if new_sample_text:
-            self.sample_exists = True
-            self.one_word_type = False
-            self.sample = new_sample_text
-            self.sample_id = new_sample_id
-            self.avg_rating = SWH.get_avg_sentence_rating(new_sample_id)
-        else:
-            print("Failed to obtain sample from get_random_word()")
-        self.manage_sample_parameters()
+    def load_new_sentence(self) -> str:
+        self.manage_new_sample_data(SWH.get_random_sentence())
+        self.sample_exists = True
+        self.one_word_type = False
         self.manage_phoname()
+    
+    def get_sample(self) -> str:
         return self.sample
     
     def manage_phoname(self) -> None:
@@ -54,23 +37,19 @@ class TextSample:
             else:
                 self.phoneme = ""
     
-    def manage_sample_parameters(self) -> None:
-        self.update_char_count()
-        self.calculate_duration()
+    def manage_new_sample_data(self, sample: tuple) -> None:
+        self.sample_id = sample[0]
+        self.sample = sample[1]
+        self.avg_rating = sample[2]
+        self.sec_to_read = self.calculate_duration(sample[1])
+
         
-    def update_char_count(self) -> None:
-        if self.sample is None:
-            self.char_count = None
-        else:
-            self.char_count = len(self.sample)
-
-    def calculate_duration(self) -> None:
-        if self.char_count is not None:
-            # Calculate the duration to read the sample text based on the character count
-            self.sec_to_read = self.char_count / (CHARS_PER_MINUTE / 60)
-            self.sec_to_read = self.sec_to_read + MIN_DURATION
-            self.mill_sec_to_read = int(self.sec_to_read * 1000)
-
+    def calculate_duration(self, sample: str) -> int:
+        # Calculate the duration to read the sample text based on the character count
+        char_count = len(sample)
+        sec_to_read = char_count / (CHARS_PER_MINUTE / 60)
+        return sec_to_read + MIN_DURATION
+        
     def preprocess_string(self, text: str) -> str:
         # Preprocess a string by converting it to lowercase and removing trailing dots and commas
         return text.lower().rstrip('.,')
@@ -82,15 +61,8 @@ class TextSample:
         similarity_ratio = SequenceMatcher(None, string1_lower, string2_lower).ratio()
         self.rating = round(similarity_ratio * 100)
 
-    def add_rating_to_db(self) -> None:
+    def update_avg_rating(self, id: int, rating:int) -> int:
         if self.one_word_type:
-            SWH.update_avg_word_rating(self.sample_id, self.rating)
+            return SWH.update_avg_word_rating(id, rating)
         else:
-            SWH.update_avg_sentence_rating(self.sample_id, self.rating)
-        self.update_avg_rating_value()
-            
-    def update_avg_rating_value(self) -> None:
-        if self.one_word_type:
-            self.avg_rating = SWH.get_avg_word_rating(self.sample_id)
-        else:
-            self.avg_rating = SWH.get_avg_sentence_rating(self.sample_id)
+            return SWH.update_avg_sentence_rating(id, rating)
