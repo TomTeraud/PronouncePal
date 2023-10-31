@@ -87,6 +87,7 @@ class TextSample:
             SWH.update_avg_word_rating(self.sample_id, self.rating)
         else:
             SWH.update_avg_sentence_rating(self.sample_id, self.rating)
+        self.update_avg_rating_value()
             
     def update_avg_rating_value(self) -> None:
         if self.one_word_type:

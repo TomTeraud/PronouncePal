@@ -53,6 +53,9 @@ class PronouncePal(Tk):
         for row in range(num_rows):
             frame.grid_rowconfigure(row, weight=1, minsize=30)
 
-    def update_text_field(self, sample):
+    def update_text_field(self, sample: str) -> None:
         self.main_page_widgets.update_text_field(sample)
+
+    def update_rating_bar_base_value(self, rating: int) ->None:
+        self.main_page_widgets.update_rating_bar_base_value(rating)
         

@@ -31,8 +31,14 @@ class Model:
 
     def get_sentence_text(self) -> str:
         sample = self.text_sample.get_sentence()
-        print(sample)
         return sample
 
     def get_setup_page_status(self) -> bool:
         return self.setup_page_needed
+    
+    def get_avg_rating(self)-> int:
+        rating = self.text_sample.avg_rating
+        if rating is None:
+            return 0
+        else:
+            return rating
