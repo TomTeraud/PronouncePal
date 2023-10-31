@@ -1,6 +1,5 @@
 from difflib import SequenceMatcher
 from model.config import CHARS_PER_MINUTE, MIN_DURATION
-from model.text_samples.rating_managers import WordRating, SentenceRating
 
 from model.database_handler import SentenceWordHandler as SWH
 from model.text_samples.phoneme import Phoneme
@@ -48,45 +47,49 @@ class TextSample:
         self.manage_phoname()
         return self.sample
     
-    def manage_sample_parameters(self) -> None:
-        self.update_char_count()
-        self.calculate_duration()
-        
-    def manage_phoname(self):
+    def manage_phoname(self) -> None:
         if self.phonome_state:
             if self.one_word_type:
                 self.phoneme = Phoneme.get_phonemes(self.sample)
             else:
                 self.phoneme = ""
-
-    def add_rating_to_db(self):
-        if self.one_word_type:
-            rating_manager = WordRating()
-        else:
-            rating_manager = SentenceRating()
-
-        rating_manager.add_rating_to_db(self)
-
-    def update_char_count(self):
+    
+    def manage_sample_parameters(self) -> None:
+        self.update_char_count()
+        self.calculate_duration()
+        
+    def update_char_count(self) -> None:
         if self.sample is None:
             self.char_count = None
         else:
             self.char_count = len(self.sample)
 
-    def calculate_duration(self):
+    def calculate_duration(self) -> None:
         if self.char_count is not None:
             # Calculate the duration to read the sample text based on the character count
             self.sec_to_read = self.char_count / (CHARS_PER_MINUTE / 60)
             self.sec_to_read = self.sec_to_read + MIN_DURATION
             self.mill_sec_to_read = int(self.sec_to_read * 1000)
 
-    def preprocess_string(self, text):
+    def preprocess_string(self, text: str) -> str:
         # Preprocess a string by converting it to lowercase and removing trailing dots and commas
         return text.lower().rstrip('.,')
 
-    def calculate_similarity(self, string2):
+    def calculate_similarity(self, string2: str) -> None:
         string1_lower = self.preprocess_string(self.sample)
         string2_lower = self.preprocess_string(string2)
         # Calculate the similarity ratio between two strings
         similarity_ratio = SequenceMatcher(None, string1_lower, string2_lower).ratio()
         self.rating = round(similarity_ratio * 100)
+
+    def add_rating_to_db(self) -> None:
+        if self.one_word_type:
+            SWH.update_avg_word_rating(self.sample_id, self.rating)
+        else:
+            SWH.update_avg_sentence_rating(self.sample_id, self.rating)
+            
+    def update_avg_rating_value(self) -> None:
+        if self.one_word_type:
+            self.avg_rating = SWH.get_avg_word_rating(self.sample_id)
+        else:
+            self.avg_rating = SWH.get_avg_sentence_rating(self.sample_id)
