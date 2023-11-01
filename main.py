@@ -1,7 +1,7 @@
 from model.model import Model
 from presenter.presenter import Presenter
 from view.view import PronouncePal
-from view.main_page import MainPageWidgets
+from view.main_page import MainPagesWidgets
 
 
 def main() -> None:

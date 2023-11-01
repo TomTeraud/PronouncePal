@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Protocol
 
 from model.model import Model
-from view.main_page import MainPageWidgets
 
 
 class View(Protocol):
@@ -14,12 +13,20 @@ class View(Protocol):
     def mainloop(self) -> None:
         ...
 
-    def update_text_field(self, sample: str) -> None:
+    def update_text_field(self, sample_text: str) -> None:
         ...
 
     def update_rating_bar_base_value(self, rating: int) -> None:
-        ...    
+        ...
 
+    def update_transcribed_text_field(self, text: str) -> None:
+        ...
+
+    def config_buttons_state(self, state:int) -> None:
+        ...
+
+    def config_button_names(self, state: int, time: float) -> None:
+        ...
 
 class Presenter:
     def __init__(self, model: Model, view: View) -> None:
@@ -27,17 +34,31 @@ class Presenter:
         self.view = view
 
     def handle_new_word_loading(self, event=None):
-        sample = self.model.get_word_text()
-        self.view.update_text_field(sample)
+        sample_text = self.model.get_word_text()
+        self.view.update_text_field(sample_text)
+        time = self.model.get_reading_time()
+        self.view.config_button_names(0, time)
         self.handle_avg_rating_receiving()
 
     def handle_new_sentence_loading(self, event=None):
-        sample = self.model.get_sentence_text()
-        self.view.update_text_field(sample)
+        sample_text = self.model.get_sentence_text()
+        time = self.model.get_reading_time()
+        self.view.update_text_field(sample_text)
+        self.view.config_button_names(0, time)
         self.handle_avg_rating_receiving()
 
     def handle_recording_start(self, event=None) -> None:
-        print("Recording start triggered!!!")
+        self.view.config_buttons_state(1)
+        self.view.config_button_names(1, None)
+        self.model.start_audio_recording(self)
+
+    def handle_audio_transcribing(self) -> None:
+        self.view.config_button_names(2, None)
+        sample_text = self.model.start_audio_transcribing()
+        self.view.update_transcribed_text_field(sample_text)
+        self.view.config_buttons_state(0)
+        time = self.model.get_reading_time()
+        self.view.config_button_names(0, time)
 
     def handle_avg_rating_receiving(self, event=None):
         rating = self.model.get_avg_rating()

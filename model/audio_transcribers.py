@@ -4,7 +4,7 @@ from model.config import ENGINE_ID, FILE_PATH
 
 class OpenaiTranscriber:
     @classmethod
-    def transcribe_audio(cls):
+    def transcribe_audio(cls) -> str:
         api_key = os.environ.get("OPENAI_API_KEY") # Get the API key
 
         try:

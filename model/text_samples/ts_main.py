@@ -27,7 +27,7 @@ class TextSample:
         self.one_word_type = False
         self.manage_phoname()
     
-    def get_sample(self) -> str:
+    def get_sample_text(self) -> str:
         return self.sample
     
     def manage_phoname(self) -> None:
@@ -44,7 +44,7 @@ class TextSample:
         self.sec_to_read = self.calculate_duration(sample[1])
 
         
-    def calculate_duration(self, sample: str) -> int:
+    def calculate_duration(self, sample: str) -> float:
         # Calculate the duration to read the sample text based on the character count
         char_count = len(sample)
         sec_to_read = char_count / (CHARS_PER_MINUTE / 60)
