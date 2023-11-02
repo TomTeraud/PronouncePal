@@ -14,7 +14,7 @@ class PronouncePal(Tk):
 
         self.column_row_configure(self, 1, 1)
 
-        self.frame = ttk.Frame(self, padding="5 5 5 5", borderwidth=10, relief="solid")
+        self.frame = ttk.Frame(self, padding="5 5 5 5")#, borderwidth=1, relief="solid")
         self.frame.grid(column=0, row=0, sticky=(N, S, E, W))
 
     def init_main_or_setup_ui(self, presenter, status: bool) -> None:
@@ -36,8 +36,7 @@ class PronouncePal(Tk):
         print("create mainpage widgets triggered")
 
     def main_pages_ui(self, presenter) -> None:
-        # Create main page widgets
-        self.column_row_configure(self.frame, 4, 2)
+        self.column_row_configure(self.frame, 5, 3)
         self.main_pages_widgets = MainPagesWidgets(self, presenter)
 
     def update_text_field(self, sample_text: str) -> None:
@@ -48,6 +47,9 @@ class PronouncePal(Tk):
 
     def update_rating_bar_base_value(self, rating: int) ->None:
         self.main_pages_widgets.update_rating_bar_base_value(rating)
+
+    def recording_bar_start(self, time: float) -> None:
+        self.main_pages_widgets.recording_bar.start_recording_bar_progress(time)
 
     def config_buttons_state(self, state:int) -> None:
         self.main_pages_widgets.set_button_state(state)

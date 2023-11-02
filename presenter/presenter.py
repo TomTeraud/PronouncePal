@@ -28,6 +28,9 @@ class View(Protocol):
     def config_button_names(self, state: int, time: float) -> None:
         ...
 
+    def recording_bar_start(self, time: float) -> None:
+        ...
+
 class Presenter:
     def __init__(self, model: Model, view: View) -> None:
         self.model = model
@@ -50,6 +53,8 @@ class Presenter:
     def handle_recording_start(self, event=None) -> None:
         self.view.config_buttons_state(1)
         self.view.config_button_names(1, None)
+        time = self.model.get_reading_time()
+        self.view.recording_bar_start(time)
         self.model.start_audio_recording(self)
 
     def handle_audio_transcribing(self) -> None:

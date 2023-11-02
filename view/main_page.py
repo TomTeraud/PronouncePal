@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import ttk
 from typing import Protocol
 
+from view.recording_progres_bar import RecordingProgresBar as RPB
+
 
 class Presenter(Protocol):
 
@@ -39,17 +41,19 @@ class MainPagesWidgets():
         self.sample_text_field = Text(self.frame, height=10, width=30, wrap="word")
         self.transcribed_text_field = Text(self.frame, height=10, width=30, wrap="word")
         self.rating_bar = ttk.Progressbar(self.frame, mode="determinate", maximum=self._MAX_PROGRESS, orient="vertical")
+        self.recording_bar = RPB(self.frame)
+
+
 
     def set_button_names(self, state: int, time: float = None) -> None:
+        rec, trn = "recording" , "transcribing"
         names = {
-            "word": ("Load new word", "recording", "transcribing"),
-            "sentence": ("Load new sentence", "recording", "transcribing"),
-            "record": ("Start recording", "recording", "transcribing"),
+            "word": ("Load new word", f"{rec}", f"{trn}"),
+            "sentence": ("Load new sentence", f"{rec}", f"{trn}"),
+            "record": ("Start recording", f"{rec}", f"{trn}"),
         }
-        
-        # Update the "record" button text by formatting the string
         if time is not None:
-            names["record"] = (f"Start recording {time} seconds", "recording", "transcribing")
+            names["record"] = (f"Start recording {time} seconds", f"{rec}", f"{trn}")
 
         self.new_word_button.config(text=names["word"][state])
         self.new_sentence_button.config(text=names["sentence"][state])
@@ -72,21 +76,22 @@ class MainPagesWidgets():
         self.rec_start_button.grid(row=1, column=2, sticky=NSEW, columnspan=2)
         self.sample_text_field.grid(row=0, column=0, sticky=NSEW, columnspan=2)
         self.transcribed_text_field.grid(row=0, column=2, sticky=NSEW, columnspan=2)
-        self.rating_bar.grid(row=0, column=5, sticky="nsew", rowspan=2)
+        self.rating_bar.grid(row=0, column=4, sticky="nsew", rowspan=2)
+        self.recording_bar.grid(row=2, column=0, sticky="nsew", columnspan=5)
 
-    def setup_widgets_items(self, presenter:Presenter):
+    def setup_widgets_items(self, presenter:Presenter) -> None:
         self.new_word_button.bind("<Button-1>", presenter.handle_new_word_loading)
         self.new_sentence_button.bind("<Button-1>", presenter.handle_new_sentence_loading)
         self.rec_start_button.bind("<Button-1>", presenter.handle_recording_start)
         self.manage_rating_bar_item(presenter)
 
-    def manage_rating_bar_item(self, presenter:Presenter):
-        self._progress_var = DoubleVar()
-        self.rating_bar.configure(variable=self._progress_var)
+    def manage_rating_bar_item(self, presenter:Presenter) -> None:
+        self._rating_progress_var = DoubleVar()
+        self.rating_bar.configure(variable=self._rating_progress_var)
         self.update_rating_bar_base_value()
 
     def update_rating_bar_base_value(self, rating:int = 0):
-        self._progress_var.set(rating)
+        self._rating_progress_var.set(rating)
 
     def update_transcribed_text_field(self, sample:str):
         self.clear_transcribed_text_field()
