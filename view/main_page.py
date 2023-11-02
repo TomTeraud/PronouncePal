@@ -23,27 +23,21 @@ class PronouncePal(Protocol):
     frame = ttk.Frame
 
 
-
 class MainPagesWidgets():
-    _MAX_PROGRESS = 100
-
     def __init__(self, parent:PronouncePal, presenter:Presenter) -> None:
         self.frame = parent.frame
         self.create_main_page_widgets()
         self.place_widgets_on_grid()
         self.setup_widgets_items(presenter)
 
-
-    def create_main_page_widgets(self):
+    def create_main_page_widgets(self) -> None:
         self.new_word_button = ttk.Button(self.frame)
         self.new_sentence_button = ttk.Button(self.frame)
         self.rec_start_button = ttk.Button(self.frame)
         self.sample_text_field = Text(self.frame, height=10, width=30, wrap="word")
         self.transcribed_text_field = Text(self.frame, height=10, width=30, wrap="word")
-        self.rating_bar = ttk.Progressbar(self.frame, mode="determinate", maximum=self._MAX_PROGRESS, orient="vertical")
+        self.rating_bar = ttk.Progressbar(self.frame, mode="determinate", maximum=100, orient="vertical")
         self.recording_bar = RPB(self.frame)
-
-
 
     def set_button_names(self, state: int, time: float = None) -> None:
         rec, trn = "recording" , "transcribing"
@@ -59,7 +53,6 @@ class MainPagesWidgets():
         self.new_sentence_button.config(text=names["sentence"][state])
         self.rec_start_button.config(text=names["record"][state])
 
-
     def set_button_state(self, state: int) -> None:
         if state == 0:
             self.new_word_button.config(state=NORMAL)
@@ -70,7 +63,7 @@ class MainPagesWidgets():
             self.new_sentence_button.config(state=DISABLED)
             self.rec_start_button.config(state=DISABLED)     
             
-    def place_widgets_on_grid(self):
+    def place_widgets_on_grid(self) -> None:
         self.new_word_button.grid(row=1, column=0, sticky=NSEW)
         self.new_sentence_button.grid(row=1, column=1, sticky=NSEW)
         self.rec_start_button.grid(row=1, column=2, sticky=NSEW, columnspan=2)
@@ -83,17 +76,17 @@ class MainPagesWidgets():
         self.new_word_button.bind("<Button-1>", presenter.handle_new_word_loading)
         self.new_sentence_button.bind("<Button-1>", presenter.handle_new_sentence_loading)
         self.rec_start_button.bind("<Button-1>", presenter.handle_recording_start)
-        self.manage_rating_bar_item(presenter)
+        self.manage_rating_bar_item()
 
-    def manage_rating_bar_item(self, presenter:Presenter) -> None:
+    def manage_rating_bar_item(self) -> None:
         self._rating_progress_var = DoubleVar()
         self.rating_bar.configure(variable=self._rating_progress_var)
         self.update_rating_bar_base_value()
 
-    def update_rating_bar_base_value(self, rating:int = 0):
+    def update_rating_bar_base_value(self, rating:int = 0) -> None:
         self._rating_progress_var.set(rating)
 
-    def update_transcribed_text_field(self, sample:str):
+    def update_transcribed_text_field(self, sample:str) -> None:
         self.clear_transcribed_text_field()
         self.transcribed_text_field.insert("1.0", sample)        
 

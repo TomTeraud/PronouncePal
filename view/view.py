@@ -4,23 +4,27 @@ from tkinter import ttk
 from view.main_page import MainPagesWidgets
 
 
-TITLE = "PronouncePal"
 
 class PronouncePal(Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title(TITLE)
+        self.title("PronouncePal")
         self.geometry("500x300")
 
         self.column_row_configure(self, 1, 1)
 
-        self.frame = ttk.Frame(self, padding="5 5 5 5")#, borderwidth=1, relief="solid")
+        self.frame = ttk.Frame(self, padding="5 5 5 5")
         self.frame.grid(column=0, row=0, sticky=(N, S, E, W))
+
+    def column_row_configure(self, frame: Frame, num_columns: int, num_rows :int) ->None:
+        for col in range(num_columns):
+            frame.grid_columnconfigure(col, weight=1)
+        for row in range(num_rows):
+            frame.grid_rowconfigure(row, weight=1, minsize=30)
 
     def init_main_or_setup_ui(self, presenter, status: bool) -> None:
         self.status = status
-        # Init menu bar
-        self.menu_bar(self.status)# Placeholder
+        # self.menu_bar(self.status)
         if self.status:
             self.setup_pages_ui(presenter)
         else:
@@ -31,8 +35,6 @@ class PronouncePal(Tk):
 
     def setup_pages_ui(self, presenter) -> None:
         # Create setup page widgets
-        Label(self.frame, text="SETUP PAGE!!!").grid(column=0, row=0)
-        # self.mpw = MainPageWidgets(self, presenter)
         print("create mainpage widgets triggered")
 
     def main_pages_ui(self, presenter) -> None:
@@ -56,9 +58,3 @@ class PronouncePal(Tk):
 
     def config_button_names(self, state: int, time: float) -> None:
         self.main_pages_widgets.set_button_names(state, time)
-
-    def column_row_configure(self, frame, num_columns: int, num_rows :int) ->None:
-        for col in range(num_columns):
-            frame.grid_columnconfigure(col, weight=1)
-        for row in range(num_rows):
-            frame.grid_rowconfigure(row, weight=1, minsize=30)
