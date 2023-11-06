@@ -12,7 +12,7 @@ class MasterWindow:
 
         self.root = MasterWindow.root
         self.root.title("PronouncePal")
-        self.root.geometry("300x300")
+        self.root.geometry("300x150")
         self.column_row_configure(self.root, 1, 1)
 
         self.mainframe = MasterWindow.mainframe    
