@@ -203,36 +203,6 @@ class SentenceWordHandler(DatabaseConnection):
         except sqlite3.Error as e:
             print("An error occurred while fetching a random word.")
             print(e)
-    # Use to geting all db records for menubar
-    @staticmethod
-    def fetch_sentences_from_database():
-        try:
-            with SentenceWordHandler.get_connection() as connection:
-                if connection:
-                    cursor = connection.cursor()
-                    cursor.execute('SELECT sentence, sentence_avg_rating FROM sentence')
-                    sentences = cursor.fetchall()
-                    return sentences
-                else:
-                    print("Failed to obtain a database connection.")
-        except sqlite3.Error as e:
-            print("An error occurred while fetching sentences from the database.")
-            print(e)
-    # Use to geting all db records for menubar
-    @staticmethod
-    def fetch_words_from_database():
-        try:
-            with SentenceWordHandler.get_connection() as connection:
-                if connection:
-                    cursor = connection.cursor()
-                    cursor.execute('SELECT word, word_avg_rating FROM word')
-                    words = cursor.fetchall()
-                    return words
-                else:
-                    print("Failed to obtain a database connection.")
-        except sqlite3.Error as e:
-            print("An error occurred while fetching words from the database.")
-            print(e)
 
     @staticmethod
     def update_avg_word_rating(word_id:int, rating: int) ->int:
@@ -283,3 +253,36 @@ class SentenceWordHandler(DatabaseConnection):
         except sqlite3.Error as e:
             print("An error occurred while updating the sentence rating.")
             print(e)
+
+    # Use to geting all db records for menubar
+    @staticmethod
+    def fetch_words_from_database():
+        try:
+            with SentenceWordHandler.get_connection() as connection:
+                if connection:
+                    cursor = connection.cursor()
+                    cursor.execute('SELECT word, word_avg_rating FROM word ORDER BY word_avg_rating DESC')
+                    words = cursor.fetchall()
+                    return words
+                else:
+                    print("Failed to obtain a database connection.")
+        except sqlite3.Error as e:
+            print("An error occurred while fetching words from the database.")
+            print(e)
+
+    # Use to geting all db records for menubar
+    @staticmethod
+    def fetch_sentences_from_database():
+        try:
+            with SentenceWordHandler.get_connection() as connection:
+                if connection:
+                    cursor = connection.cursor()
+                    cursor.execute('SELECT sentence, sentence_avg_rating FROM sentence ORDER BY sentence_avg_rating DESC')
+                    sentences = cursor.fetchall()
+                    return sentences
+                else:
+                    print("Failed to obtain a database connection.")
+        except sqlite3.Error as e:
+            print("An error occurred while fetching sentences from the database.")
+            print(e)
+

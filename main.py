@@ -1,17 +1,15 @@
 from model.model import Model
-from view.main_view import MainView
-from view.setup_view import SetupView
-from presenters.setup_presenter import SetupPresenter
-from presenters.main_presenter import MainPresenter
-def main() -> None:
+from presenters.presenters import Presenters
+from view.views import Views
+
+
+
+def main():
     model = Model()
-    setup_v = SetupView()
-    main_v = MainView()
-    main_presenter = MainPresenter(model, main_v)
-    setup_presenter = SetupPresenter(setup_v, main_presenter)
+    views = Views()
+    presenters = Presenters(model, views)
 
-    setup_presenter.run()
-
+    presenters.run()
 
 if __name__ == "__main__":
     main()

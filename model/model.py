@@ -1,7 +1,8 @@
 from typing import Protocol
 from dotenv import load_dotenv
 
-from model.database_handler import DatabaseInitializer as DBI
+from model.helpers import resource_path
+from model.database_handler import DatabaseInitializer as DBI, SentenceWordHandler as SWH
 from model.text_samples.ts_main import TextSample
 from model.audio_recorder_controller import AudioRecorderController as ARC
 from model.audio_transcribers import OpenaiTranscriber as OT
@@ -11,12 +12,22 @@ class Presenter(Protocol):
     def handle_audio_transcribing(self) -> None:
         ...
 
+
 class Model:
     def __init__(self) -> None:
         DBI.create_tables()
         self.setup_page_needed = False
         self.phoneme_state = False
         self.load_data_for_new_page()
+
+
+    def setup_action(self):
+        # Business logic for setup action goes here
+        print("Setup action in Model")
+
+    def main_action(self):
+        # Business logic for main action goes here
+        print("Main action in Model")
 
     def load_data_for_new_page(self) -> None:
         load_dotenv()
@@ -63,3 +74,13 @@ class Model:
 
     def start_audio_transcribing(self) -> str:
         return OT.transcribe_audio()
+    
+    def get_readme_text_for_menubar(self) -> str:
+        readme_path = resource_path("README.md")
+        # Read the contents of the readme.md file with UTF-8 encoding
+        with open(readme_path, 'r', encoding='utf-8') as file:
+            return file.read()
+
+    def get_single_word_ratings(self) -> str:
+        results = SWH.fetch_words_from_database()
+        return results
