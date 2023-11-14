@@ -81,6 +81,8 @@ class Model:
         with open(readme_path, 'r', encoding='utf-8') as file:
             return file.read()
 
-    def get_single_word_ratings(self) -> str:
-        results = SWH.fetch_words_from_database()
-        return results
+    def get_single_word_ratings(self) -> list[tuple]:
+        return SWH.fetch_words_from_database()
+    
+    def get_sentence_ratings(self) -> list[tuple]:
+        return SWH.fetch_sentences_from_database()

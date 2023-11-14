@@ -115,7 +115,7 @@ class SentenceWordHandler(DatabaseConnection):
             print(ex)
 
     @staticmethod
-    def populate_words_table():
+    def populate_words_table() -> None:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
@@ -144,7 +144,7 @@ class SentenceWordHandler(DatabaseConnection):
             print(e)
 
     @staticmethod
-    def delete_all_rows():
+    def delete_all_rows() -> None:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
@@ -163,7 +163,7 @@ class SentenceWordHandler(DatabaseConnection):
             print(e)
 
     @staticmethod
-    def get_random_sentence():
+    def get_random_sentence() -> tuple:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
@@ -184,7 +184,7 @@ class SentenceWordHandler(DatabaseConnection):
             print(e)
 
     @staticmethod
-    def get_random_word():
+    def get_random_word() -> tuple:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
@@ -256,7 +256,7 @@ class SentenceWordHandler(DatabaseConnection):
 
     # Use to geting all db records for menubar
     @staticmethod
-    def fetch_words_from_database():
+    def fetch_words_from_database() -> list[tuple]:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
@@ -272,7 +272,7 @@ class SentenceWordHandler(DatabaseConnection):
 
     # Use to geting all db records for menubar
     @staticmethod
-    def fetch_sentences_from_database():
+    def fetch_sentences_from_database() -> list[tuple]:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
