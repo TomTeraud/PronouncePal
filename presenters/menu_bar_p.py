@@ -15,6 +15,15 @@ class View(Protocol):
     def show_sentences_rating(self, data: list[tuple]) -> None:
         ...
 
+    def get_path_for_sample_file(self) -> str:
+        ...
+
+    def handle_sample_upload_with_given_path(self, path: str) -> bool:
+        ...
+
+    def notify_file_upload_status(self, status:bool) -> None:
+        ...
+        
 class MenuBarPresenter:
     def __init__(self, model: Model, view: View):
         self.view = view
@@ -23,11 +32,10 @@ class MenuBarPresenter:
     def handle_defoult_menu_bar_creation(self) -> None:
         self.view.add_defoult_menubar(self)
 
-    def open_file(self):
-        print("Open file action")
-
-    def save_file(self):
-        print("Save file action")
+    def handle_sample_text_upload(self, event=None) -> None:
+        path = self.view.get_path_for_sample_file()
+        result = self.model.handle_sample_upload_with_given_path(path)
+        self.view.notify_file_upload_status(result)
 
     def handle_readme_clicked(self, event=None):
         text = self.model.get_readme_text_for_menubar()

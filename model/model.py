@@ -86,3 +86,9 @@ class Model:
     
     def get_sentence_ratings(self) -> list[tuple]:
         return SWH.fetch_sentences_from_database()
+    
+    def handle_sample_upload_with_given_path(self, path: str) -> bool:
+        if SWH.populate_sentences_table(path) and SWH.populate_words_table():
+            return True 
+        else:
+            return False

@@ -74,7 +74,7 @@ class DatabaseInitializer(DatabaseConnection):
 
 class SentenceWordHandler(DatabaseConnection):
     @staticmethod
-    def populate_sentences_table(selected_file_path):
+    def populate_sentences_table(selected_file_path: str) -> bool:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
@@ -96,6 +96,7 @@ class SentenceWordHandler(DatabaseConnection):
                         try:
                             cursor.executemany('INSERT INTO sentence (sentence) VALUES (?)', stripped_sentences)
                             connection.commit()  # Commit here if no exceptions occurred
+                            return True
                         except sqlite3.Error as e:
                             connection.rollback()
                             print("An error occurred during insert:", e)
@@ -115,7 +116,7 @@ class SentenceWordHandler(DatabaseConnection):
             print(ex)
 
     @staticmethod
-    def populate_words_table() -> None:
+    def populate_words_table() -> bool:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
@@ -135,6 +136,8 @@ class SentenceWordHandler(DatabaseConnection):
                             if stripped_word and len(stripped_word) >= 3 and stripped_word not in unique_words:
                                 cursor.execute('INSERT INTO word (word) VALUES (?)', (stripped_word,))
                                 unique_words.add(stripped_word)  # Add the word to the set
+                                
+                                return True
 
                     connection.commit()
                 else:
