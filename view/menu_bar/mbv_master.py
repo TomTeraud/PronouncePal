@@ -27,7 +27,7 @@ class MenuBarView(MasterView):
         self.menubar = Menu(self)
         self.config(menu=self.menubar)
 
-    def setup_page_menubar(self, presenter: MenuBarPresenter) -> None:
+    def add_defoult_menubar(self, presenter: MenuBarPresenter) -> None:
 
         file_menu = Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="File", menu=file_menu)
@@ -44,10 +44,6 @@ class MenuBarView(MasterView):
         help_menu = Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="help", menu=help_menu)
         help_menu.add_command(label="Readme", command=presenter.handle_readme_clicked)
-
-    def main_page_menubar(self, presenter) -> None:
-        demo_menu = Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label="Demo menu", menu=demo_menu)
 
     def show_readme(self, readme_content: str) -> None:
         ReadmeHandler.show_readme(readme_content)

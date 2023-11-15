@@ -10,11 +10,6 @@ class View(Protocol):
     def mainloop(self) -> None:
         ...
 
-    def init_setup_page_ui(self, presenter: SetupPresenter) -> None:
-        ...
-        
-    def init_main_page_ui(self, presenter) -> None:
-        ...
 
 
 class Presenters(MenuBarPresenter, SetupPresenter, MainPresenter):
@@ -26,19 +21,11 @@ class Presenters(MenuBarPresenter, SetupPresenter, MainPresenter):
 
     def handle_main_page_start_button_click(self, event=None) -> None:
         self.handle_main_page_ui_loading()
-        self.handle_menu_bar_for_main_page()
 
     def handle_setup_page_start_button_click(self, event=None) -> None:
         self.handle_setup_page_ui_loading()
-        self.handle_menu_bar_for_setup_page()
-
-    def handle_setup_page_ui_loading(self) -> None:
-        self.view.init_setup_page_ui(self)
-
-    def handle_main_page_ui_loading(self) -> None:
-        self.view.init_main_page_ui(self)
 
     def run(self) -> None:
-        self.view.init_setup_page_ui(self)
-        self.handle_menu_bar_for_setup_page()
+        self.handle_defoult_menu_bar_creation()
+        self.handle_setup_page_ui_loading()
         self.view.mainloop()

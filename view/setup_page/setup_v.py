@@ -4,7 +4,6 @@ from typing import Protocol
 from view.master_view import MasterView
 
 class SetupPresenter(Protocol):
-    
     def handle_main_page_start_button_click(self, event=None) -> None:
         ...
 

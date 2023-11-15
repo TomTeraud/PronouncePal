@@ -3,10 +3,7 @@ from typing import Protocol
 
 
 class View(Protocol):
-    def setup_page_menubar(self, presenter) -> None:
-        ...
-
-    def main_page_menubar(self, presenter) -> None:
+    def add_defoult_menubar(self, presenter) -> None:
         ...
 
     def show_readme(self, readme_content: str) -> None:
@@ -23,11 +20,8 @@ class MenuBarPresenter:
         self.view = view
         self.model = model
         
-    def handle_menu_bar_for_main_page(self) -> None:
-        self.view.main_page_menubar(self)
-
-    def handle_menu_bar_for_setup_page(self) -> None:
-        self.view.setup_page_menubar(self)
+    def handle_defoult_menu_bar_creation(self) -> None:
+        self.view.add_defoult_menubar(self)
 
     def open_file(self):
         print("Open file action")
