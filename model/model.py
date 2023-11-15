@@ -92,3 +92,6 @@ class Model:
             return True 
         else:
             return False
+
+    def handle_personal_data_deletion(self) -> bool:
+        return SWH.delete_all_rows()

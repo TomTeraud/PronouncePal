@@ -147,7 +147,7 @@ class SentenceWordHandler(DatabaseConnection):
             print(e)
 
     @staticmethod
-    def delete_all_rows() -> None:
+    def delete_all_rows() -> bool:
         try:
             with SentenceWordHandler.get_connection() as connection:
                 if connection:
@@ -159,11 +159,15 @@ class SentenceWordHandler(DatabaseConnection):
                     # Delete all rows in 'words' table
                     cursor.execute('DELETE FROM word')
                     connection.commit()
+                    return True
                 else:
                     print("Failed to obtain a database connection.")
+                    return False
         except sqlite3.Error as e:
             print("An error occurred while deleting rows from the tables.")
             print(e)
+            return False
+
 
     @staticmethod
     def get_random_sentence() -> tuple:
