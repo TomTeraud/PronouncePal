@@ -19,6 +19,7 @@ class MainView(MasterView):
         main_button.grid(column=0, row=1, sticky=(N, S, E, W))
         main_button.config(command=presenter.handle_main_button_click)
     
+    
     # def init_main_page(self, presenter: Presenter) -> None:
     #     self.column_row_configure(self.mainframe, 5, 3)
     #     self.create_main_page_widgets(self.mainframe)

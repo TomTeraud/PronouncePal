@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from view.view_custom_fun import column_row_configure
+from view.helpers.view_custom_fun import column_row_configure
 
 class MasterView(Tk):
     def __init__(self):

@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import model.config as config
-from view.view_custom_fun import column_row_configure
+from view.helpers.view_custom_fun import column_row_configure
 
 
 class RatingMenuHandler:
