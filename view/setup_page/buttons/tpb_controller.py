@@ -1,4 +1,4 @@
-from model.api_handler import OpenaiApiKeyHandler
+from model.api_key_handler import OpenaiApiKeyHandler
 
 class TitlePageButtonController:
     def __init__(self):

@@ -1,23 +1,29 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
-from model.api_handler import OpenaiApiKeyHandler as OAKH
+from tkinter import *
+from tkinter import ttk, messagebox, simpledialog
 
 class OpenAiApiKeyManager(ttk.Button):
     def __init__(self, frame):
         super().__init__(frame, text="Add API key")
-        
-    # def manage_key(self):
-    #     if OAKH.ask_for_key():
-    #         # Set the OpenAI API key status and update buttons
-    #         self.ctrl.set_openai_api_key_status(True)
-    #         self.ctrl.update_buttons()
+    
 
-    # def update_button_state(self):
-    #     # Disable the button if the API key is set
-    #     if self.ctrl.get_openai_api_key_status():
-    #         self.config(state=tk.DISABLED)
-    #     else:
-    #         self.config(state=tk.NORMAL)
+    @staticmethod
+    def ask_for_key() -> str:
+        return simpledialog.askstring("Input", "Enter your API key:")
+
+    @staticmethod
+    def show_message_to_user(state: bool) -> None:
+        if state:
+            messagebox.showinfo("Success", "API key set successfully!")
+        else:
+            messagebox.showerror("Error", "Invalid API key")
+
+    def update_button_state(self, state: bool) -> None:
+        if state:
+            # Disable the button if the API key is set
+            self.config(state=DISABLED)
+        else:
+            self.config(state=NORMAL)
+
 
 class OpenAiSelector(ttk.Button):
     def __init__(self, frame):

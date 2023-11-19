@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from typing import Protocol
 from view.master_view import MasterView
-from view.setup_page.buttons.tpb_main import AlternativeSelector, MainPageStarter, OpenAiApiKeyManager, OpenAiSelector
+from view.setup_page.buttons.setup_page_main import AlternativeSelector, MainPageStarter, OpenAiApiKeyManager, OpenAiSelector
 from view.setup_page.checkbuttons.tpc_main import PhonemeEnabler
 from view.setup_page.label_fields.label_fields import WelcomeSelTransc, OtherSetings
 
@@ -14,6 +14,9 @@ from view.setup_page.label_fields.label_fields import WelcomeSelTransc, OtherSet
 
 class SetupPresenter(Protocol):
     def handle_main_page_start_button_click(self, event=None) -> None:
+        ...
+
+    def handle_add_openai_key_button_click(self, event=None) -> None:
         ...
 
 class SetupView(MasterView):
@@ -53,5 +56,22 @@ class SetupView(MasterView):
         self.main_page_starter.grid(row=5, column=0, sticky=NSEW, columnspan=2)
 
     def manage_widgets_items(self, presenter: SetupPresenter) -> None:
+        self.openai_selector.config(command=presenter.handle_select_openai_transcriber_button_click)
+        self.openai_api_key_manager.config(command=presenter.handle_add_openai_key_button_click)
+        self.alternative_selector.config(command=presenter.handle_select_alternative_transcriber_button_click)
+        self.phoneme_enabler.config(command=presenter.handle_phoneme_checkbox_clicked)
         self.main_page_starter.config(command=presenter.handle_main_page_start_button_click)
-        ...
+
+    # def notify_deletion_status(self, status: bool) -> None:
+    #     FileMenuHandler.message_data_deletion_status(status)
+
+    def ask_user_for_api_key(self) -> str:
+        return OpenAiApiKeyManager.ask_for_key()
+    
+    def notyfy_key_update_state(self, state: bool) -> None:
+        return OpenAiApiKeyManager.show_message_to_user(state)
+    
+    def update_openai_key_button_state(self, state: bool) -> None:
+        return OpenAiApiKeyManager.update_button_state(self.openai_api_key_manager, state)
+    
+

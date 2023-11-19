@@ -1,5 +1,5 @@
 from typing import Protocol
-from dotenv import load_dotenv
+from model.api_key_handler import OpenaiApiKeyHandler as OAKH
 
 from model.helpers import resource_path
 from model.database_handler import DatabaseInitializer as DBI, SentenceWordHandler as SWH
@@ -30,7 +30,6 @@ class Model:
         print("Main action in Model")
 
     def load_data_for_new_page(self) -> None:
-        load_dotenv()
         if self.setup_page_needed:
             self.load_setup_page_data()
         else:
@@ -95,3 +94,12 @@ class Model:
 
     def handle_personal_data_deletion(self) -> bool:
         return SWH.delete_all_rows()
+    
+    def store_valid_key(self, key) -> bool:
+        return OAKH.write_key_in_env_file(key)
+    
+    def validate_openai_api_key(self, key: str) -> bool:
+        return OAKH.validate_key(key)
+    
+    def check_key_status_in_os(self) -> bool:
+        return OAKH.openai_api_key_status()
