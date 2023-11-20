@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 import requests
 import os
 
@@ -23,4 +24,5 @@ class OpenaiApiKeyHandler:
     
     @staticmethod
     def openai_api_key_status() -> bool:
+        load_dotenv()
         return bool(os.environ.get("OPENAI_API_KEY"))

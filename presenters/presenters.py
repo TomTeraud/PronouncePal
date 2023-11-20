@@ -2,6 +2,8 @@
 from presenters.main_p import MainPresenter
 from presenters.setup_p import SetupPresenter
 from presenters.menu_bar_p import MenuBarPresenter
+from model.setup_page_button_controller import SetupPageButtonController as SPBC
+
 
 from typing import Protocol
 
@@ -18,6 +20,8 @@ class Presenters(MenuBarPresenter, SetupPresenter, MainPresenter):
         super().__init__(model, view)
         self.model = model
         self.view = view
+        self.s_p_b_ctrl = SPBC()
+
 
     def handle_main_page_start_button_click(self, event=None) -> None:
         self.handle_main_page_ui_loading()

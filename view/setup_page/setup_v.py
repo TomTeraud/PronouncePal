@@ -74,4 +74,11 @@ class SetupView(MasterView):
     def update_openai_key_button_state(self, state: bool) -> None:
         return OpenAiApiKeyManager.update_button_state(self.openai_api_key_manager, state)
     
-
+    def update_openai_selector_button_state(self, state: bool) -> None:
+        return OpenAiSelector.update_button_state(self.openai_selector, state)
+    
+    def update_alternative_selector_button_state(self, state: bool) -> None:
+        return AlternativeSelector.update_button_state(self.alternative_selector, state)
+    
+    def update_app_start_button_state(self, state: bool) -> None:
+        return MainPageStarter.update_button_state(self.main_page_starter, state)
