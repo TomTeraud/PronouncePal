@@ -1,4 +1,4 @@
-from tkinter import Tk, ttk
+from tkinter import NSEW,Tk, ttk
 from view.helpers.view_custom_fun import column_row_configure
 
 class MasterView(Tk):
@@ -8,5 +8,5 @@ class MasterView(Tk):
         self.geometry("300x200")
         column_row_configure(self, 1, 1)
         self.mainframe = ttk.Frame(self, borderwidth=3, relief="solid")
-        self.mainframe.grid(column=0, row=0, sticky=(N, S, E, W))
+        self.mainframe.grid(column=0, row=0, sticky=NSEW)
 
