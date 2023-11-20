@@ -19,6 +19,12 @@ class SetupPresenter(Protocol):
     def handle_add_openai_key_button_click(self, event=None) -> None:
         ...
 
+    def handle_select_openai_transcriber_button_click(self, event=None) -> None:
+        ...
+
+    def handle_select_alternative_transcriber_button_click(self, event=None) -> None:
+        ...
+
 class SetupView(MasterView):
     def __init__(self, ):
         super().__init__()
