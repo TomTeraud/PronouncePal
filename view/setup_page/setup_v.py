@@ -1,15 +1,9 @@
-from tkinter import *
-from tkinter import ttk
+from tkinter import NSEW, ttk
 from typing import Protocol
 from view.master_view import MasterView
-from view.setup_page.buttons.setup_page_main import AlternativeSelector, MainPageStarter, OpenAiApiKeyManager, OpenAiSelector
-from view.setup_page.checkbuttons.tpc_main import PhonemeEnabler
+from view.setup_page.buttons.setup_page_buttons import AlternativeSelector, MainPageStarter, OpenAiApiKeyManager, OpenAiSelector
+from view.setup_page.checkbuttons.setup_page_checkbox import PhonemeEnabler
 from view.setup_page.label_fields.label_fields import WelcomeSelTransc, OtherSetings
-
-# from title_page.buttons.tpb_main import OpenAiApiKeyManager, OpenAiSelector, AlternativeSelector, MainPageStarter
-# from title_page.label_fields.label_fields import WelcomeSelTransc, OtherSetings
-# from title_page.buttons.tpb_controller import TitlePageButtonController
-# from title_page.checkbuttons.tpc_main import PhonemeEnabler
 
 
 class SetupPresenter(Protocol):
@@ -25,9 +19,13 @@ class SetupPresenter(Protocol):
     def handle_select_alternative_transcriber_button_click(self, event=None) -> None:
         ...
 
+    def handle_phoneme_checkbox_clicked(self, event=None) -> None:
+        ...
+
 class SetupView(MasterView):
     def __init__(self, ):
         super().__init__()
+        self.check_box_state = False
         self.style = ttk.Style()
         self.style.theme_use('clam')
         self.button_colors = {
@@ -68,23 +66,24 @@ class SetupView(MasterView):
         self.phoneme_enabler.config(command=presenter.handle_phoneme_checkbox_clicked)
         self.main_page_starter.config(command=presenter.handle_main_page_start_button_click)
 
-    # def notify_deletion_status(self, status: bool) -> None:
-    #     FileMenuHandler.message_data_deletion_status(status)
-
     def ask_user_for_api_key(self) -> str:
-        return OpenAiApiKeyManager.ask_for_key()
+        return self.openai_api_key_manager.ask_for_key()
     
-    def notyfy_key_update_state(self, state: bool) -> None:
-        return OpenAiApiKeyManager.show_message_to_user(state)
+    def notify_key_update_state(self, state: bool) -> None:
+        self.openai_api_key_manager.show_message_to_user(state)
     
     def update_openai_key_button_state(self, state: bool) -> None:
-        return OpenAiApiKeyManager.update_button_state(self.openai_api_key_manager, state)
+        self.openai_api_key_manager.update_button_state(state)
     
     def update_openai_selector_button_state(self, state: bool) -> None:
-        return OpenAiSelector.update_button_state(self.openai_selector, state)
+        self.openai_selector.update_button_state(state)
     
     def update_alternative_selector_button_state(self, state: bool) -> None:
-        return AlternativeSelector.update_button_state(self.alternative_selector, state)
+        self.alternative_selector.update_button_state(state)
     
     def update_app_start_button_state(self, state: bool) -> None:
-        return MainPageStarter.update_button_state(self.main_page_starter, state)
+        self.main_page_starter.update_button_state(state)
+    
+    def update_check_box_state(self, state: bool) -> None:
+        self.phoneme_enabler.on_checkbox_change(state)
+    

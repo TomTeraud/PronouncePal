@@ -12,7 +12,7 @@ class View(Protocol):
     def ask_user_for_api_key(self) -> str:
         ...
     
-    def notyfy_key_update_state(self, state: bool) -> None:
+    def notify_key_update_state(self, state: bool) -> None:
         ...
     
     def update_openai_key_button_state(self, state: bool) -> None:
@@ -25,6 +25,9 @@ class View(Protocol):
         ...
     
     def update_app_start_button_state(self, state: bool) -> None:
+        ...
+
+    def update_check_box_state(self, state: bool) -> None:
         ...
 
 class SetupPresenter:
@@ -49,9 +52,9 @@ class SetupPresenter:
         key_state = self.model.validate_openai_api_key(key)
         # Store aquired key in .env if it is valid, if suceded then load key in nevironment
         if key_state and self.model.store_valid_key(key):
-            self.view.notyfy_key_update_state(True)
+            self.view.notify_key_update_state(True)
         else:
-            self.view.notyfy_key_update_state(False)
+            self.view.notify_key_update_state(False)
         self.update_setup_buttons()
 
     def handle_select_openai_transcriber_button_click(self, event=None) -> None:
@@ -63,11 +66,5 @@ class SetupPresenter:
         self.update_setup_buttons()
 
     def handle_phoneme_checkbox_clicked(self, event=None) -> None:
-        # self.view.init_setup_page_ui(self)
-        print("checkbox!!!")
-
-        # # self.main_page_starter.config(command=presenter.handle_main_page_start_button_click)
-        # self.openai_selector.config(command=presenter.handle_select_openai_transcriber_button_click)
-        # self.openai_api_key_manager.config(command=presenter.handle_add_openai_key_button_click)
-        # self.alternative_selector.config(command=presenter.handle_select_alternative_transcriber_button_click)
-        # self.alternative_selector.config(command=presenter.handle_phoneme_checkbox_clicked)
+        state = self.model.handle_phoneme_checkbox_click()
+        self.view.update_check_box_state(state)

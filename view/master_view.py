@@ -1,5 +1,4 @@
-from tkinter import *
-from tkinter import ttk
+from tkinter import Tk, ttk
 from view.helpers.view_custom_fun import column_row_configure
 
 class MasterView(Tk):

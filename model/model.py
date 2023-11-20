@@ -103,3 +103,7 @@ class Model:
     
     def check_key_status_in_os(self) -> bool:
         return OAKH.openai_api_key_status()
+    
+    def handle_phoneme_checkbox_click(self) -> bool:
+        self.phoneme_state = not self.phoneme_state
+        return self.phoneme_state

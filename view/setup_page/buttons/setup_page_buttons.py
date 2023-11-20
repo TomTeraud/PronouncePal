@@ -1,5 +1,4 @@
-from tkinter import *
-from tkinter import ttk, messagebox, simpledialog
+from tkinter import DISABLED, NORMAL, ttk, messagebox, simpledialog
 
 class OpenAiApiKeyManager(ttk.Button):
     def __init__(self, frame):
@@ -12,12 +11,10 @@ class OpenAiApiKeyManager(ttk.Button):
         else:
             self.config(state=DISABLED)
 
-    @staticmethod
-    def ask_for_key() -> str:
+    def ask_for_key(self) -> str:
         return simpledialog.askstring("Input", "Enter your API key:")
 
-    @staticmethod
-    def show_message_to_user(state: bool) -> None:
+    def show_message_to_user(self, state: bool) -> None:
         if state:
             messagebox.showinfo("Success", "API key set successfully!")
         else:
