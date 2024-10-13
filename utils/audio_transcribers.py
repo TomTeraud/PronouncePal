@@ -1,20 +1,25 @@
-import os
 import openai
-from config import ENGINE_ID, FILE_PATH
+from config import ENGINE_ID, AUDIO_FILE_PATH
 
 class OpenaiTranscriber:
     @classmethod
     def transcribe_audio(cls):
-        api_key = os.environ.get("OPENAI_API_KEY") # Get the API key
 
         try:
-            openai.api_key = api_key  
-            with open(FILE_PATH, "rb") as audio_file:
-                response = openai.Audio.transcribe(ENGINE_ID, audio_file)
-                transcribed_text = response["text"]
+            with open(AUDIO_FILE_PATH, "rb") as audio_file:
 
-                return transcribed_text
-        except openai.error.RateLimitError as rate_limit_error:
-            return rate_limit_error
-        except openai.error.OpenAIError as openai_error:
-            return openai_error
+                response = openai.audio.transcriptions.create(
+                    model=ENGINE_ID, 
+                    file=audio_file,
+                    response_format="text"
+                )
+                return response
+        except openai.RateLimitError as e:
+            print(f"OpenAI API request exceeded rate limit: {e}")
+            return e
+        except openai.OpenAIError as e:
+            print(f"OpenAI API returned an API Error: {e}")
+            return e
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            return e

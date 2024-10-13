@@ -84,15 +84,15 @@ class RecordButton(ttk.Button):
         self.mpbc.set_transcribing_status(True)
         self.mpbc.set_recording_status(False)
         result = OpenaiTranscriber.transcribe_audio()
-        if isinstance(result, openai.error.RateLimitError):
+        if isinstance(result, openai.RateLimitError):
             # Handle rate limit error
-            msg = "Rate limit exceeded"
+            msg = result.args
             self.transcribed_text_field.update_transcribed_text(msg)
             self.error(msg)
 
-        elif isinstance(result, openai.error.OpenAIError):
+        elif isinstance(result, openai.OpenAIError):
             # Handle other OpenAI errors
-            msg = "An OpenAI error occurred"
+            msg = result.args
             self.transcribed_text_field.update_transcribed_text(msg)
             self.error(msg)
         else:
