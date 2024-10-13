@@ -1,5 +1,5 @@
 # Recording configuration
-FILE_PATH = "audio_recording.wav"
+AUDIO_FILE_PATH = "audio_recording.wav"
 
 # Recording duration
 CHARS_PER_MINUTE = 300
